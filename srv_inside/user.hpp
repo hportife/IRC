@@ -11,6 +11,7 @@ private:
 
 public:
     user();
+    user(std::string login, std::string nickname, int id);
     ~user();
 
     std::string get_user_login();
