@@ -4,7 +4,13 @@
 #include <csignal>
 #include <iostream>
 
-bool
+bool work = true;
+
+void sigHandler(int signum)
+{
+	(void)signum;
+	work = false;
+}
 
 int main(int argc, char **argv)
 {
@@ -18,6 +24,20 @@ int main(int argc, char **argv)
 	{
 		std::cout << "Wrong port!" << std::endl;
 		exit(EXIT_FAILURE);
+	}
+	// Создание сокета
+
+	// bind, listen  нужно реализовать
+
+
+
+	signal(SIGINT, sigHandler);
+
+	while (work)
+	{
+		// Нужно добавить вызов функци проверки наличия коннекта клиентов,
+		// получения сообщении и т.д.
+		std::cout << "Am I working";
 	}
 
 }
