@@ -40,6 +40,13 @@ std::string Room::get_room_name() {return (room_name);}
 
 void Room::join_to_room(int joiner_id)
 {
+    std::cout << "DBG: id " <<  joiner_id << " join to "
     room_user_qt++;
-    //room_users_id.
+    room_users_id.push_back(joiner_id);
+    std::sort(room_users_id.begin(), room_users_id.end());
+}
+
+void Room::out_of_room(int user_id)
+{
+    std::find(room_users_id.begin(), room_users_id.end(), user_id);//////////
 }

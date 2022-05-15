@@ -6,6 +6,7 @@
 
 #include "user.hpp"
 #include <vector>
+#include <algorithm>
 
 class Room {
 private:
