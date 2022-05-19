@@ -1,9 +1,10 @@
 #ifndef IRC_NICKNAMESTORAGE_HPP
 #define IRC_NICKNAMESTORAGE_HPP
 
-#include "../tools/LogIdentifier.hpp"
-#include <iostream>
 #include <vector>
+#include <algorithm>
+#include "../tools/LogIdentifier.hpp"
+#include "user.hpp"
 
 class NicknameStorage{
 private:
@@ -17,9 +18,10 @@ public:
     int         get_storage_capacity();
     void        get_storage();
 
-    void        add_nickname(std::string added_nickname);
+    int         add_nickname(std::string added_nickname);
     int         delete_nickname(std::string deleted_nickname);
     int         search_a_conflict(std::string searched_nickname);
+    void        sort_a_storage();
 };
 
 #endif

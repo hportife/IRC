@@ -27,5 +27,54 @@ void NicknameStorage::add_nickname(std::string added_nickname) {
                 << added_nickname
                 << "add to nickname storage"
                 << std::endl;
+    NicknameStorage::sort_a_storage();
+}
+
+void NicknameStorage::sort_a_storage() {
+    std::sort(storage.begin(), storage.end());
+    std::cout   << LogIdentifier::debug()
+                << "nickname storage has been sorted"
+                << std::endl;
+}
+
+int NicknameStorage::delete_nickname(std::string deleted_nickname) {
+    for (int i = 0; i < storage.size(); ++i) {
+        if (storage[i].compare(deleted_nickname) == 0){
+            storage.erase(storage.begin() + i);
+            std::cout   << LogIdentifier::debug()
+                        << "nickname "
+                        << deleted_nickname
+                        << " has been deleted" << std::endl;
+            NicknameStorage::sort_a_storage();
+            return (0);
+        }
+    }
+    std::cout   << LogIdentifier::error()
+                << "When trying to delete, the nickname "
+                << deleted_nickname
+                << " was not found in the nickname storage"
+                << std::endl;
+    return (1);
+}
+
+int NicknameStorage::search_a_conflict(std::string searched_nickname) {
+    for (int i = 0; i < storage.size(); ++i) {
+        if (storage[i].compare(searched_nickname) == 0){
+            storage.erase(storage.begin() + i);
+            std::cout   << LogIdentifier::error()
+                        << "nickname "
+                        << searched_nickname
+                        << " is available in the repository, "
+                           "the user needs to choose another nickname"
+                        << std::endl;
+            return (ERR_NICKNAMEINUSE);
+        }
+    }
+    std::cout   << LogIdentifier::debug()
+                << "nickname "
+                << searched_nickname
+                << " is not in storage and may be taken"
+                << std::endl;
+    return (NICKNAMEISMAYBEGIVEN);
 }
 

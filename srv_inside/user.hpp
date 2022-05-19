@@ -1,8 +1,10 @@
 #ifndef IRC_USER_HPP
 #define IRC_USER_HPP
 
-#define CORRPASS   1000
-#define INCORRPASS 1001
+#define CORRPASS                1000
+#define INCORRPASS              1001
+#define NICKNAMEISMAYBEGIVEN    1010
+#define ERR_NICKNAMEINUSE       1011
 
 #include <iostream>
 
