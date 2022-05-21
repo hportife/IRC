@@ -64,7 +64,7 @@ int NicknameStorage::search_a_conflict(std::string searched_nickname) {
             std::cout   << LogIdentifier::error()
                         << "nickname "
                         << searched_nickname
-                        << " is available in the repository, "
+                        << " is available in the storage, "
                            "the user needs to choose another nickname"
                         << std::endl;
             return (ERR_NICKNAMEINUSE);

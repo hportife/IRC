@@ -5,21 +5,25 @@
 #define INCORRPASS              1001
 #define NICKNAMEISMAYBEGIVEN    1010
 #define ERR_NICKNAMEINUSE       1011
+#define ERR_NICKNAMEISTOOLONG   1012
 
+#include "NicknameStorage.hpp"
+#include "../tools/LogIdentifier.hpp"
 #include <iostream>
 
 class user {
 private:
-    std::string user_login;
-    std::string user_nickname;
-    int         user_id;
-
+    std::string         user_login;
+    std::string         user_nickname;
+    int                 user_id;
 public:
+
+
     user();
     user(std::string login, std::string nickname, int id);
     ~user();
-
     std::string get_user_login();
+
     std::string get_user_nickname();
     int         get_user_id();
 };
@@ -27,15 +31,17 @@ public:
 class user_creator
 {
 private:
-    int         id;
-    std::string password;
-    std::string login;
-    std::string nickname;
-    std::string realname;
-    user        tmp_user;
+    int                 id;
+    std::string         password;
+    std::string         correct_password;
+    std::string         login;
+    std::string         nickname;
+    std::string         realname;
+    user                tmp_user;
+    NicknameStorage     *nickname_storage;
 
 public:
-    user_creator(int tmp_id);
+    user_creator(int tmp_id, NicknameStorage *tmp_storage, std::string server_password);
     ~user_creator();
 
 //    void    set_id(int tmp_id);
@@ -45,6 +51,7 @@ public:
     void    set_realname(std::string tmp_realname);
 
     int     pass_validation(std::string correct_pass);
+    int     nickname_validation(std::string tested_nickname);
     int     parameter_validation(std::string correct_pass);
 };
 
