@@ -4,7 +4,6 @@ user_creator::user_creator(int tmp_id, NicknameStorage *tmp_storage, std::string
     id = tmp_id;
     nickname_storage = tmp_storage;
     correct_password = server_password;
-    tmp_user = new user();
     std::cout   << LogIdentifier::debug()
                 << "called user creator CONSTR for id: "
                 << id << std::endl;
@@ -69,10 +68,10 @@ int user_creator::nickname_validation(std::string tested_nickname) {
                     << std::endl;
         return (ERR_NICKNAMEISTOOLONG);
     }
-    else if (NicknameStorage::search_a_conflict(tested_nickname) == ERR_NICKNAMEINUSE) {
+    else if (nickname_storage->search_a_conflict(tested_nickname) == ERR_NICKNAMEINUSE) {
         return (ERR_NICKNAMEINUSE);
     }
-        return (NICKNAMEISMAYBEGIVEN);
+    return (NICKNAMEISMAYBEGIVEN);
 }
 
 int user_creator::parameter_validation(std::string correct_pass) {
@@ -80,4 +79,25 @@ int user_creator::parameter_validation(std::string correct_pass) {
         return (INCORRPASS);
     else if (nickname_validation(nickname) != NICKNAMEISMAYBEGIVEN)
         return (nickname_validation(nickname));
+    return (NICKNAMEISMAYBEGIVEN);
+}
+
+int user_creator::swap_nickname(user *user, std::string new_nickname) {
+    if (nickname_validation(nickname) != NICKNAMEISMAYBEGIVEN)
+        return (nickname_validation(nickname));
+    nickname_storage->add_nickname(new_nickname);
+    nickname_storage->delete_nickname(user->get_user_nickname());
+    tmp_user.set_nickname(new_nickname);
+    return (NICKNAMEHASBEENGIVEN);
+}
+
+user *user_creator::get_ready_user() {
+    tmp_user = new user(login, nickname, id, realname);
+    std::cout   << LogIdentifier::debug()
+                << "User creator created a user with: "
+                << "\n            -nickname: " << nickname
+                << "\n            -id      : " << id
+                << "\n            -realname: " << realname
+                << "\n            -login   : " << login << std::endl;
+    return (&tmp_user);
 }
