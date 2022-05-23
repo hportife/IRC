@@ -1,3 +1,4 @@
+#include "../tools/LogIdentifier.hpp"
 #include "NicknameStorage.hpp"
 
 NicknameStorage::NicknameStorage() {
@@ -22,11 +23,29 @@ void NicknameStorage::get_storage() {
 }
 
 void NicknameStorage::add_nickname(std::string added_nickname) {
-    storage.push_back(added_nickname);
+    if (added_nickname.length() > 9)
+    {
+        std::cout   << LogIdentifier::error()
+                    << added_nickname
+                    << " too long, and don't add"
+                       "to nickname storage"
+                    << std::endl;
+        return;
+    }
+    else if (added_nickname.empty())
+    {
+        std::cout   << LogIdentifier::error()
+                    << "added_nickname is empty, "
+                       "and don't add"
+                       "to nickname storage"
+                    << std::endl;
+        return;
+    }
     std::cout   << LogIdentifier::debug()
                 << added_nickname
-                << "add to nickname storage"
+                << " add to nickname storage"
                 << std::endl;
+    storage.push_back(added_nickname);
     NicknameStorage::sort_a_storage();
 }
 
@@ -60,7 +79,7 @@ int NicknameStorage::delete_nickname(std::string deleted_nickname) {
 int NicknameStorage::search_a_conflict(std::string searched_nickname) {
     for (int i = 0; i < storage.size(); ++i) {
         if (storage[i].compare(searched_nickname) == 0){
-            storage.erase(storage.begin() + i);
+//            storage.erase(storage.begin() + i);
             std::cout   << LogIdentifier::error()
                         << "nickname "
                         << searched_nickname

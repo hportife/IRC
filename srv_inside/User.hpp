@@ -12,7 +12,7 @@
 #include "../tools/LogIdentifier.hpp"
 #include <iostream>
 
-class user {
+class User {
 private:
     std::string         user_login;
     std::string         user_nickname;
@@ -21,9 +21,9 @@ private:
 public:
 
 
-    user();
-    user(std::string login, std::string nickname, int id, std::string realname);
-    ~user();
+    User();
+    User(std::string login, std::string nickname, int id, std::string realname);
+    ~User();
 
     void set_nickname(std::string new_nickname);
 
@@ -33,7 +33,7 @@ public:
     int         get_user_id();
 };
 
-class user_creator
+class UserCreator
 {
 private:
     int                 id;
@@ -42,12 +42,12 @@ private:
     std::string         login;
     std::string         nickname;
     std::string         realname;
-    user                tmp_user;
+    User                tmp_user;
     NicknameStorage     *nickname_storage;
 
 public:
-    user_creator(int tmp_id, NicknameStorage *tmp_storage, std::string server_password);
-    ~user_creator();
+    UserCreator(int tmp_id, NicknameStorage *tmp_storage, std::string server_password);
+    ~UserCreator();
 
 //    void    set_id(int tmp_id);
     void    set_password(std::string tmp_pass);
@@ -60,7 +60,7 @@ public:
     int     pass_validation(std::string correct_pass);
     int     nickname_validation(std::string tested_nickname);
     int     parameter_validation(std::string correct_pass);
-    int    swap_nickname(user *user, std::string new_nickname);
+    int     swap_nickname(user *user, std::string new_nickname);
 };
 
 #endif //IRC_USER_HPP
