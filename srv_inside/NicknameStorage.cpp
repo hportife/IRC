@@ -22,7 +22,7 @@ void NicknameStorage::get_storage() {
         std::cout << storage[i] << std::endl;
 }
 
-void NicknameStorage::add_nickname(std::string added_nickname) {
+int NicknameStorage::check_size_added_nickname(std::string added_nickname) {
     if (added_nickname.length() > 9)
     {
         std::cout   << LogIdentifier::error()
@@ -30,7 +30,7 @@ void NicknameStorage::add_nickname(std::string added_nickname) {
                     << " too long, and don't add"
                        "to nickname storage"
                     << std::endl;
-        return;
+        return (ERR_NICKNAMEISTOOLONG);
     }
     else if (added_nickname.empty())
     {
@@ -39,14 +39,22 @@ void NicknameStorage::add_nickname(std::string added_nickname) {
                        "and don't add"
                        "to nickname storage"
                     << std::endl;
-        return;
-    }
-    std::cout   << LogIdentifier::debug()
+        return(ERR_NICKNAMEISEMPTY);
+    } else
+        return (0);
+}
+
+void NicknameStorage::add_nickname(std::string added_nickname) {
+    if (check_size_added_nickname(added_nickname) != ERR_NICKNAMEISTOOLONG &&
+            check_size_added_nickname(added_nickname) != ERR_NICKNAMEISEMPTY)
+    {
+        std::cout   << LogIdentifier::debug()
                 << added_nickname
                 << " add to nickname storage"
                 << std::endl;
-    storage.push_back(added_nickname);
-    NicknameStorage::sort_a_storage();
+        storage.push_back(added_nickname);
+        NicknameStorage::sort_a_storage();
+    }
 }
 
 void NicknameStorage::sort_a_storage() {

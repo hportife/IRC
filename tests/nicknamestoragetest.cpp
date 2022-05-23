@@ -1,5 +1,6 @@
 #include "../tools/LogIdentifier.hpp"
 #include "../srv_inside/NicknameStorage.hpp"
+//compile: c++ ./nicknamestoragetest.cpp ../tools/LogIdentifier.cpp ../srv_inside/NicknameStorage.cpp
 
 int main(void)
 {
