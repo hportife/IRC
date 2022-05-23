@@ -14,6 +14,7 @@
 #include "../tools/LogIdentifier.hpp"
 //#include "User.hpp"
 
+// need to add check to size added nickname
 class NicknameStorage{
 private:
     std::vector<std::string>    storage;
