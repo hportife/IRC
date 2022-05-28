@@ -13,13 +13,12 @@ NicknameStorage::~NicknameStorage() {
                 << std::endl;
 }
 
-int NicknameStorage::get_storage_capacity() {
-    return (storage_capacity);
-}
-
 void NicknameStorage::get_storage() {
     for (int i = 0; i < storage.size(); i++)
-        std::cout << storage[i] << std::endl;
+        std::cout   << i + 1
+                    << ": "
+                    << storage[i]
+                    << std::endl;
 }
 
 int NicknameStorage::check_size_added_nickname(std::string added_nickname) {
