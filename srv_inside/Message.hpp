@@ -7,7 +7,7 @@
 #include <iostream>
 #include <vector>
 #include "User.hpp"
-
+//need to add a message counter for users
 class Message{
 private:
     std::string                 some_message;
