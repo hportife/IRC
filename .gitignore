@@ -41,7 +41,7 @@ a.out
 .vscode
 objects
 ircserv
-.idea
+.ideaadd
 bot/bot
 CMakeLists.txt
 /cmake-b*
