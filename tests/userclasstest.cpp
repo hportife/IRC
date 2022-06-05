@@ -13,18 +13,18 @@ int main(void)
     storage->add_nickname("Kern");
     storage->add_nickname("Alexa");
 
-    std::cout << LogIdentifier::info << "Create 4 UserCreator\n";
+    std::cout << LogIdentifier::info() << "Create 4 UserCreator\n";
     UserCreator *uc1 = new UserCreator(111, storage, "2109");
     UserCreator *uc2 = new UserCreator(222, storage, "2109");
     UserCreator *uc3 = new UserCreator(333, storage, "2109");
     UserCreator *uc4 = new UserCreator(444, storage, "2109");
 
-    std::cout << LogIdentifier::info << "For 1 user insert wrong password\n";
+    std::cout << LogIdentifier::info() << "For 1 user insert wrong password\n";
     uc1->set_password("2108");
     uc2->set_password("2109");
     uc3->set_password("2109");
     uc4->set_password("2109");
 
-    std::cout << LogIdentifier::info << "For 2 user insert wrong password\n";
+    std::cout << LogIdentifier::info() << "For 2 user insert wrong password\n";
     return (0);
 }

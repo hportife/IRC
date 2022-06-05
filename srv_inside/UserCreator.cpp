@@ -92,8 +92,8 @@ int UserCreator::swap_nickname(User *user, std::string new_nickname) {
 }
 
 User *UserCreator::get_ready_user() {
-    switch (parameter_validation(correct_password))
-        case NICKNAMEISMAYBEGIVEN:{
+    int result = parameter_validation(correct_password);
+    if (result == NICKNAMEISMAYBEGIVEN){
             tmp_user = new User(login, nickname, id, realname);
             nickname_storage->add_nickname(nickname);
             std::cout << LogIdentifier::debug()
@@ -103,16 +103,16 @@ User *UserCreator::get_ready_user() {
                       << "\n            -realname: " << realname
                       << "\n            -login   : " << login << std::endl;
             return (tmp_user);
-        }
-        case ERR_NICKNAMEINUSE:{
+    }
+    else if (result == ERR_NICKNAMEINUSE)
             std::cout   << LogIdentifier::error()
                         << " id " << id
                         << " need to set nickname, because nickname "
                         << nickname << " in use";
-            return (nullptr);
-        }
-        case INCORRPASS:{
-            delete tmp_user;
-            return (nullptr);
-        }
+    else if (result == INCORRPASS)
+        std::cout   << LogIdentifier::error()
+                    << " id " << id
+                    << " enter incorrect pass. Connect need to close"
+                    << std::endl;
+    return (nullptr);
 }
