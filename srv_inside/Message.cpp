@@ -1,5 +1,5 @@
-#include "Message.hpp"
 #include "../tools/LogIdentifier.hpp"
+#include "Message.hpp"
 
 Message::Message(User *user_sender, std::string message, int iscommand) {
     sender = user_sender;

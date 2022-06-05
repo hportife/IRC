@@ -69,25 +69,8 @@ int UserStorage::get_user_position_in_storage(User *user) {
     return (-1);
 }
 
-int UserStorage::delete_user_from_storage(std::string nickname, int id, User *user) {
-    if (!nickname.empty() && search_by_nickname(nickname) != nullptr){
-        user_storage.erase(user_storage.begin() +
-                            get_user_position_in_storage(search_by_nickname(nickname)));
-        std::cout   << LogIdentifier::debug()
-                    << "User with nickname: "
-                    << nickname
-                    << " has been deleted"
-                    << std::endl;
-    }else if (id != 0 && search_by_id(id) != nullptr){
-        user_storage.erase(user_storage.begin() +
-                           get_user_position_in_storage(search_by_id(id)));
-        std::cout   << LogIdentifier::debug()
-                    << "User with id: "
-                    << id
-                    << " has been deleted"
-                    << std::endl;
-        return (1);
-    }else if (user != nullptr){
+int UserStorage::delete_user_from_storage(User *user) {
+    if (user != nullptr && get_user_position_in_storage(user) != -1){
         user_storage.erase(user_storage.begin() +
                                    get_user_position_in_storage(user));
         std::cout   << LogIdentifier::debug()
@@ -101,7 +84,7 @@ int UserStorage::delete_user_from_storage(std::string nickname, int id, User *us
     }
     else{
         std::cout   << LogIdentifier::error()
-                    << "parameters of the deleted user were passed incorrectly"
+                    << "parameter for the deleted user were passed incorrectly"
                     << std::endl;
         return (0);
     }

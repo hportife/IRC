@@ -16,6 +16,6 @@ public:
     user    *search_by_nickname(std::string searched_nickname);
     user    *search_by_id(int searched_id);
     int     get_user_position_in_storage(User *user);
-    int     delete_user_from_storage(std::string nickname, int id, User *user);
+    int     delete_user_from_storage(User *user);
 };
 #endif

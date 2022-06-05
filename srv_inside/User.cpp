@@ -1,18 +1,18 @@
 #include "User.hpp"
 
-User::User()
-{
-    user_login = "oper4221";
-    user_nickname = "operator";
-    user_id = 0;
-}
-
 User::User(std::string login, std::string nickname, int id, std::string realname)
 {
     user_login = login;
     user_nickname = nickname;
     user_id = id;
     user_realname = realname;
+    std::cout   << LogIdentifier::info
+                << "User: | nick: "
+                << nickname
+                << " | id: "
+                << id
+                << " has been created"
+                << std::endl;
 }
 
 void User::set_nickname(std::string new_nickname) {

@@ -20,9 +20,6 @@ private:
     std::string         user_realname;
     int                 user_id;
 public:
-
-
-    User();
     User(std::string login, std::string nickname, int id, std::string realname);
     ~User();
 
