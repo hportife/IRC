@@ -43,3 +43,5 @@ objects
 ircserv
 .idea
 bot/bot
+CMakeLists.txt
+/cmake-b*
