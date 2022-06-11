@@ -9,8 +9,6 @@
 
 #include <vector>
 #include <algorithm>
-//#include "../tools/LogIdentifier.hpp"
-//#include "User.hpp"
 
 class NicknameStorage{
 private:
