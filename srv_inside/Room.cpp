@@ -1,7 +1,7 @@
 #include "../tools/LogIdentifier.hpp"
 #include "Room.hpp"
 
-Room::Room(std::string creator, int selected_mode/*, room_stirage *general storage*/) {
+Room::Room(std::string creator, int selected_mode/*, room_storage *general storage*/) {
     type = ROOM_TYPE_CHANNEL;
     mode = selected_mode;
 //    name = room_storage->get_serial_name();
@@ -110,4 +110,23 @@ int Room::is_oper(std::string nickname) {
     if (oper_nicknames.search_a_conflict(nickname) == ERR_NICKNAMEINUSE)
         return (USER_IS_OPER);
     return (USER_IS_NOT_OPER);
+}
+
+int Room::set_oper(std::string reporter, std::string new_oper) {
+    if (oper_nicknames->search_a_conflict(reporter) == ERR_NICKNAMEINUSE &&
+        oper_nicknames->search_a_conflict(new_oper) != ERR_NICKNAMEINUSE){
+        oper_nicknames->add_nickname(new_oper);
+        std::cout   << LogIdentifier::info()
+                    << "oper "
+                    << reporter
+                    << " take a oper rights for user "
+                    << new_oper
+                    << std::endl;
+        return (USER_IS_OPER);
+    } else{
+        std::cout   << LogIdentifier::error()
+                    << "failed to assign operator"
+                    << std::endl;
+        return (USER_IS_NOT_OPER);
+    }
 }
