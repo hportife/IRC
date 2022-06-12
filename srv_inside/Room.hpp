@@ -7,6 +7,10 @@
 #define ROOM_MODE_PUBLIC    302
 #define USER_IS_OPER        311
 #define USER_IS_NOT_OPER    312
+#define USER_IN_ROOM        321
+#define USER_NOT_IN_ROOM    322
+#define JOIN_COMPLETE       323
+#define LEAVE_COMPLETE      324
 
 #include "User.hpp"
 #include "NicknameStorage.hpp"
@@ -15,10 +19,11 @@
 
 class Room {
 private:
-    std::string     room_name;
-    NicknameStorage *room_users;
-    int             type;
-    int             mode;
+    std::string                 room_name;
+    NicknameStorage             *room_users;
+    NicknameStorage             oper_nicknames;
+    int                         type;
+    int                         mode;
 
 public:
     Room(std::string creator, std::string joiner);
@@ -30,7 +35,7 @@ public:
     void        set_room_name(std::string new_name);
     int         user_join(std::string joined_user);
     int         user_leave(std::string leaved_user);
-    int         select_mode(int selected_mode);
+    int         set_mode(int selected_mode);
     int         is_oper(std::string nickname);
 };
 

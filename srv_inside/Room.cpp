@@ -6,6 +6,7 @@ Room::Room(std::string creator, int selected_mode/*, room_stirage *general stora
     mode = selected_mode;
 //    name = room_storage->get_serial_name();
     room_users->add_nickname(creator);
+    oper_nicknames->add_nickname(creator);
     std::cout   << LogIdentifier::info
                 << "user "
                 << creator
@@ -19,6 +20,8 @@ Room::Room(std::string creator, std::string joiner) {
     room_name = creator + " & " + joiner + "'s chat";
     room_users->add_nickname(creator);
     room_users->add_nickname(joiner);
+    oper_nicknames->add_nickname(creator);
+    oper_nicknames->add_nickname(joiner);
     std::cout   << LogIdentifier::info
                 << "users "
                 << creator
@@ -51,4 +54,60 @@ void Room::set_room_name(std::string new_name) {
                 << new_name
                 << std::endl;
     room_name = new_name;
+}
+
+int Room::user_join(std::string joined_user) {
+    if (room_users->search_a_conflict(joined_user) == ERR_NICKNAMEINUSE){
+        std::cout   << LogIdentifier::error()
+                    << "user "
+                    << joined_user
+                    << " is already in the channel "
+                    << room_name
+                    << std::endl;
+        return (USER_IN_ROOM);
+    }
+    room_users->add_nickname(joined_user);
+    std::cout   << LogIdentifier::debug()
+                << "user "
+                << joined_user
+                << " join in the channel "
+                << room_name
+                << std::endl;
+    return (JOIN_COMPLETE);
+}
+
+int Room::user_leave(std::string leaved_user) {
+    if (room_users->search_a_conflict(joined_user) != ERR_NICKNAMEINUSE){
+        std::cout   << LogIdentifier::error()
+                    << "user "
+                    << joined_user
+                    << " not in the channel "
+                    << room_name
+                    << std::endl;
+        return (USER_NOT_IN_ROOM);
+    }
+    room_users->add_nickname(joined_user);
+    std::cout   << LogIdentifier::debug()
+                << "user "
+                << joined_user
+                << " leave the channel "
+                << room_name
+                << std::endl;
+    return (LEAVE_COMPLETE);
+}
+
+int Room::set_mode(int selected_mode) {
+    mode = selected_mode;
+    std::cout   << LogIdentifier::info()
+                << "room "
+                << room_name
+                << " swap mode to "
+                << selected_mode
+                << std::endl;
+}
+
+int Room::is_oper(std::string nickname) {
+    if (oper_nicknames.search_a_conflict(nickname) == ERR_NICKNAMEINUSE)
+        return (USER_IS_OPER);
+    return (USER_IS_NOT_OPER);
 }
