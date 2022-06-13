@@ -104,3 +104,6 @@ int NicknameStorage::search_a_conflict(std::string searched_nickname) {
     return (NICKNAMEISMAYBEGIVEN);
 }
 
+int NicknameStorage::get_capacity() {
+    return (storage.size());
+}

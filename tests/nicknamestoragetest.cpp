@@ -45,4 +45,5 @@ int main(void)
                 << LogIdentifier::info()
                 << "Test to get storage\n";
     storage->get_storage();
+    std::cout << storage->get_capacity();
 }

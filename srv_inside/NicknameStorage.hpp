@@ -25,6 +25,7 @@ public:
     int         delete_nickname(std::string deleted_nickname);
     int         search_a_conflict(std::string searched_nickname);
     void        sort_a_storage();
+    int         get_capacity();
 };
 
 #endif
