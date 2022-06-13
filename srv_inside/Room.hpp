@@ -1,8 +1,8 @@
 #ifndef IRC_ROOM_HPP
 #define IRC_ROOM_HPP
 
-#define ROOM_TYPE_CHAT          0
-#define ROOM_TYPE_CHANNEL       1
+//#define ROOM_TYPE_CHAT          0
+//#define ROOM_TYPE_CHANNEL       1
 #define ROOM_MODE_PRIVATE       301
 #define ROOM_MODE_PUBLIC        302
 #define USER_IS_OPER            311
@@ -22,11 +22,11 @@ private:
     std::string                 room_name;
     NicknameStorage             *room_users;
     NicknameStorage             *oper_nicknames;
-    int                         type;
+//    int                         type;
     int                         mode;
 
 public:
-    Room(std::string creator, std::string joiner);
+//    Room(std::string creator, std::string joiner);
     Room(std::string creator, int selected_mode);
     Room(std::string creator, int selected_mode, std::string set_room_name);
     ~Room();

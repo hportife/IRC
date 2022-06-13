@@ -2,7 +2,7 @@
 #include "Room.hpp"
 
 Room::Room(std::string creator, int selected_mode/*, room_storage *general storage*/) {
-    type = ROOM_TYPE_CHANNEL;
+//    type = ROOM_TYPE_CHANNEL;
     mode = selected_mode;
 //    name = room_storage->get_serial_name();
     room_users->add_nickname(creator);
@@ -14,25 +14,25 @@ Room::Room(std::string creator, int selected_mode/*, room_storage *general stora
                 << std::endl;
 }
 
-Room::Room(std::string creator, std::string joiner) {
-    type = ROOM_TYPE_CHAT;
-    mode = ROOM_MODE_PRIVATE;
-    room_name = creator + " & " + joiner + "'s chat";
-    room_users->add_nickname(creator);
-    room_users->add_nickname(joiner);
-    oper_nicknames->add_nickname(creator);
-    oper_nicknames->add_nickname(joiner);
-    std::cout   << LogIdentifier::info
-                << "users "
-                << creator
-                << " and "
-                << joiner
-                << " join to private chat"
-                << std::endl;
-}
+//Room::Room(std::string creator, std::string joiner) {
+//    type = ROOM_TYPE_CHAT;
+//    mode = ROOM_MODE_PRIVATE;
+//    room_name = creator + " & " + joiner + "'s chat";
+//    room_users->add_nickname(creator);
+//    room_users->add_nickname(joiner);
+//    oper_nicknames->add_nickname(creator);
+//    oper_nicknames->add_nickname(joiner);
+//    std::cout   << LogIdentifier::info
+//                << "users "
+//                << creator
+//                << " and "
+//                << joiner
+//                << " join to private chat"
+//                << std::endl;
+//}
 
 Room::Room(std::string creator, int selected_mode, std::string set_room_name) {
-    type = ROOM_TYPE_CHANNEL;
+//    type = ROOM_TYPE_CHANNEL;
     mode = selected_mode;
     room_name = set_room_name;
     room_users->add_nickname(creator);
@@ -135,6 +135,6 @@ int Room::get_users_capacity() {
     return (room_users->get_capacity());
 }
 
-int Room::get_room_type() {
-    return (type);
-}
+//int Room::get_room_type() {
+//    return (type);
+//}
