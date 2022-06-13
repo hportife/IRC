@@ -130,3 +130,11 @@ int Room::set_oper(std::string reporter, std::string new_oper) {
         return (USER_IS_NOT_OPER);
     }
 }
+
+int Room::get_users_capacity() {
+    return (room_users->get_capacity());
+}
+
+int Room::get_room_type() {
+    return (type);
+}
