@@ -40,7 +40,6 @@ public:
     int         is_oper(std::string nickname);
     int         set_oper(std::string reporter, std::string new_oper);
     int         get_users_capacity();
-    //need to add get capacity for NicknameStorage
 };
 
 
