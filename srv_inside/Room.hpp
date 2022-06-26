@@ -39,11 +39,14 @@ public:
     int         set_mode(int const selected_mode);
 
     int         set_oper(std::string reporter, std::string new_oper);
-    int         unset_oper(std::string const reporter, std::string const deleted_oper);
+    int         unset_oper(std::string const reporter,
+                           std::string const deleted_oper);
     int         is_oper(std::string nickname);
 
     int         user_join(std::string const joined_user);
     int         user_leave(std::string const leaved_user);
+    int         delete_user(std::string const reporter,
+                            std::string const deleted_user);
     int         get_users_capacity();
 };
 

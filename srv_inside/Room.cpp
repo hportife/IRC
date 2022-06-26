@@ -150,13 +150,37 @@ int Room::unset_oper(std::string const reporter,
     else if (is_oper(deleted_oper) == USER_IS_NOT_OPER){
         std::cout   << LogIdentifier::error()
                     << deleted_oper
-                    << " is not oper";
+                    << " is not oper"
+                    << std::endl;
         return (USER_IS_NOT_OPER);
     } else if (is_oper(reporter) == USER_IS_NOT_OPER){
         std::cout   << LogIdentifier::error()
                     << reporter
-                    << " is not oper";
+                    << " is not oper"
+                    << std::endl;
         return (USER_IS_NOT_OPER);
     }
     return (0);
+}
+
+int Room::delete_user(std::string const reporter,
+                        std::string const deleted_user){
+    if (is_oper(reporter) == USER_IS_OPER){
+        std::cout   << LogIdentifier::debug()
+                    << reporter
+                    << " kick "
+                    << deleted_user
+                    << " from "
+                    << this->room_name
+                    << std::endl;
+        return (user_leave(deleted_user));
+    }
+    std::cout   << LogIdentifier::error()
+                << "user "
+                << reporter
+                << " not oper in room "
+                << this->room_name
+                << " for delete users"
+                << std::endl;
+    return (USER_IS_NOT_OPER);
 }
