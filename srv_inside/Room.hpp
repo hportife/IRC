@@ -24,9 +24,11 @@ private:
     NicknameStorage             *oper_nicknames;
     int                         mode;
 
-public:
+    Room();
     Room(std::string creator);
     Room(std::string creator, int selected_mode);
+
+public:
     Room(std::string creator, int selected_mode, std::string set_room_name);
     ~Room();
 
