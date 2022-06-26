@@ -27,6 +27,7 @@ private:
 
 public:
 //    Room(std::string creator, std::string joiner);
+    Room(std::string creator);
     Room(std::string creator, int selected_mode);
     Room(std::string creator, int selected_mode, std::string set_room_name);
     ~Room();

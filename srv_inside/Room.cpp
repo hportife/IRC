@@ -14,6 +14,19 @@ Room::Room(std::string creator, int selected_mode/*, room_storage *general stora
                 << std::endl;
 }
 
+Room::Room(std::string creator/*, room_storage *general storage*/) {
+//    type = ROOM_TYPE_CHANNEL;
+    mode = ROOM_MODE_PRIVATE;
+//    name = room_storage->get_serial_name();
+    room_users->add_nickname(creator);
+    oper_nicknames->add_nickname(creator);
+    std::cout   << LogIdentifier::info
+                << "user "
+                << creator
+                << " create a new room"
+                << std::endl;
+}
+
 //Room::Room(std::string creator, std::string joiner) {
 //    type = ROOM_TYPE_CHAT;
 //    mode = ROOM_MODE_PRIVATE;
