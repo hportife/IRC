@@ -3,11 +3,11 @@
 
 Room::Room(std::string creator, int selected_mode/*, room_storage *general storage*/) {
 //    type = ROOM_TYPE_CHANNEL;
-    mode = selected_mode;
+    this->mode = selected_mode;
 //    name = room_storage->get_serial_name();
     room_users->add_nickname(creator);
     oper_nicknames->add_nickname(creator);
-    std::cout   << LogIdentifier::info
+    std::cout   << LogIdentifier::info()
                 << "user "
                 << creator
                 << " create a new room"
@@ -16,11 +16,11 @@ Room::Room(std::string creator, int selected_mode/*, room_storage *general stora
 
 Room::Room(std::string creator/*, room_storage *general storage*/) {
 //    type = ROOM_TYPE_CHANNEL;
-    mode = ROOM_MODE_PRIVATE;
+    this->mode = ROOM_MODE_PRIVATE;
 //    name = room_storage->get_serial_name();
     room_users->add_nickname(creator);
     oper_nicknames->add_nickname(creator);
-    std::cout   << LogIdentifier::info
+    std::cout   << LogIdentifier::info()
                 << "user "
                 << creator
                 << " create a new room"
@@ -46,10 +46,10 @@ Room::Room(std::string creator/*, room_storage *general storage*/) {
 
 Room::Room(std::string creator, int selected_mode, std::string set_room_name) {
 //    type = ROOM_TYPE_CHANNEL;
-    mode = selected_mode;
+    this->mode = selected_mode;
     room_name = set_room_name;
     room_users->add_nickname(creator);
-    std::cout   << LogIdentifier::info
+    std::cout   << LogIdentifier::info()
                 << "user "
                 << creator
                 << " create a new room with name: "
@@ -57,16 +57,17 @@ Room::Room(std::string creator, int selected_mode, std::string set_room_name) {
                 << std::endl;
 }
 
-std::string Room::get_room_name() {return (room_name);}
+std::string Room::get_room_name() const {return (this->room_name);}
+int         Room::get_room_mode() const {return (this->mode);}
 
 void Room::set_room_name(std::string new_name) {
     std::cout   << LogIdentifier::info()
                 << "room "
-                << room_name
+                << this->room_name
                 << " swap name to "
                 << new_name
                 << std::endl;
-    room_name = new_name;
+    this->room_name = new_name;
 }
 
 int Room::user_join(std::string joined_user) {
@@ -75,7 +76,7 @@ int Room::user_join(std::string joined_user) {
                     << "user "
                     << joined_user
                     << " is already in the channel "
-                    << room_name
+                    << this->room_name
                     << std::endl;
         return (USER_IN_ROOM);
     }
@@ -84,7 +85,7 @@ int Room::user_join(std::string joined_user) {
                 << "user "
                 << joined_user
                 << " join in the channel "
-                << room_name
+                << this->room_name
                 << std::endl;
     return (JOIN_COMPLETE);
 }
@@ -95,7 +96,7 @@ int Room::user_leave(std::string leaved_user) {
                     << "user "
                     << joined_user
                     << " not in the channel "
-                    << room_name
+                    << this->room_name
                     << std::endl;
         return (USER_NOT_IN_ROOM);
     }
@@ -104,16 +105,16 @@ int Room::user_leave(std::string leaved_user) {
                 << "user "
                 << joined_user
                 << " leave the channel "
-                << room_name
+                << this->room_name
                 << std::endl;
     return (LEAVE_COMPLETE);
 }
 
 int Room::set_mode(int selected_mode) {
-    mode = selected_mode;
+    this->mode = selected_mode;
     std::cout   << LogIdentifier::info()
                 << "room "
-                << room_name
+                << this->room_name
                 << " swap mode to "
                 << selected_mode
                 << std::endl;

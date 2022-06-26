@@ -32,7 +32,8 @@ public:
     Room(std::string creator, int selected_mode, std::string set_room_name);
     ~Room();
 
-    std::string get_room_name();
+    std::string get_room_name() const;
+    int         get_room_mode() const;
 //    int         get_room_type();
     void        set_room_name(std::string new_name);
     int         user_join(std::string joined_user);
