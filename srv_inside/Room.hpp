@@ -32,7 +32,7 @@ public:
     ~Room();
 
     std::string get_room_name();
-    int         get_room_type();
+//    int         get_room_type();
     void        set_room_name(std::string new_name);
     int         user_join(std::string joined_user);
     int         user_leave(std::string leaved_user);
