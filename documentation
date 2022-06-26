@@ -119,7 +119,7 @@ user_creator, room, nickname_storage.
                                       -ERR_NICKNAMEINUSE    - пользователю нужно ввести никнейм повторно
                                                               возвращает nullptr
                                       -INCORRPASS           - деструктит пользователя и возвращает nullptr
-Класс UserCreator на момент последнего коммита (7be151d8cd387b9dbc7bb18b7ddfd59cfa4fae75)
+Класс Room на момент последнего коммита (7be151d8cd387b9dbc7bb18b7ddfd59cfa4fae75)
   Имеет предопределённые возвращаемые значения:
     -ROOM_MODE_PRIVATE
     -ROOM_MODE_PUBLIC
@@ -146,10 +146,32 @@ user_creator, room, nickname_storage.
     -Дефолтный деструктор
     -Геттер для имени комнаты/режима комнаты
     -Сеттер для режима комнаты
+    ...........................NOT..COMPLETTE........................................
     
-    
-    
-    
+Класс RoomStorage на момент последнего коммита (c55fe1778aa47768226a1e78dc46ee5d4c2b6414)
+  Имеет предопределённые возвращаемые значения:
+    -ROOM_IN_STORAGE
+    -ROOM_NOT_IN_STORAGE
+    -DELETE_HAS_BEEN_COMPLETE
+  Внутренние поля:
+    -std::vector<Room> room_storage - хранилище комнат
+    -счётчик для серийного номера комнаты (используется при запросе серийного названия)
+  Реализованные методы:
+    -дефолтные констр/дестр
+    -add_room                       :  добавление комнат в вектор. Принимает ссылкну на комнату
+                                        для добавления. В случае если search_conflicts возвращает
+                                        ROOM_NOT_IN_STORAGE, делает push_back в room_storage.
+    -search_conflicts               :   поиск экземпляра комнаты в хранилище. ринимает ссылкну на комнату
+                                        для добавления. С помощью compare имени комнаты в цикле for
+                                        сравнивает имена комнат и в случае если комната в хранилище,
+                                        возвращет ROOM_IN_STORAGE, иначе ROOM_NOT_IN_STORAGE
+    -get_serial_name                :   использует serial_counter и возвращет строку по приципу:
+                                        "#channel+serial_counter"
+    -get_room_position_in_storage   :   возвращает int-позицию в хранилище, в случае отсутствия: -1
+    -delete_room_from_storage       :   удаляет комнату из хранилища и возвращет DELETE_HAS_BEEN_COMPLETE
+                                        в случае отсутствия комнаты, возвращает ROOM_NOT_IN_STORAGE, в
+                                        случае иной ошибки: -1
+    -display_room_storage           :   выводит список комнат
     
     
     

@@ -22,11 +22,9 @@ private:
     std::string                 room_name;
     NicknameStorage             *room_users;
     NicknameStorage             *oper_nicknames;
-//    int                         type;
     int                         mode;
 
 public:
-//    Room(std::string creator, std::string joiner);
     Room(std::string creator);
     Room(std::string creator, int selected_mode);
     Room(std::string creator, int selected_mode, std::string set_room_name);
@@ -34,13 +32,16 @@ public:
 
     std::string get_room_name() const;
     int         get_room_mode() const;
-//    int         get_room_type();
-    void        set_room_name(std::string new_name);
-    int         user_join(std::string joined_user);
-    int         user_leave(std::string leaved_user);
-    int         set_mode(int selected_mode);
-    int         is_oper(std::string nickname);
+
+    void        set_room_name(std::string const new_name);
+    int         set_mode(int const selected_mode);
+
     int         set_oper(std::string reporter, std::string new_oper);
+    int         unset_oper(std::string const reporter, std::string const deleted_oper);
+    int         is_oper(std::string nickname);
+
+    int         user_join(std::string const joined_user);
+    int         user_leave(std::string const leaved_user);
     int         get_users_capacity();
 };
 

@@ -1,5 +1,5 @@
-#include "RoomCreator.hpp"
 #include "../tools/LogIdentifier.hpp"
+#include "RoomCreator.hpp"
 
 RoomCreator::RoomCreator(Room *room_for_tmp_creator, RoomStorage *general_storage) {
     this->general_storage = general_storage;

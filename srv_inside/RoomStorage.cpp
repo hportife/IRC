@@ -13,9 +13,9 @@ RoomStorage::~RoomStorage() {
                 << std::endl;
 }
 
-int RoomStorage::search_conflicts(Room *inspected_room) {
+int RoomStorage::search_conflicts(Room const *inspected_room) {
     for (int i = 0; i < room_storage.size(); ++i) {
-        if (room_storage[i].get_room_name().compare(inspected_room) == 0){
+        if (room_storage[i]->get_room_name().compare(inspected_room) == 0){
             std::cout   << LogIdentifier::error()
                         << "when searching for a conflict, the room "
                         << inspected_room->get_room_name()
@@ -32,8 +32,8 @@ int RoomStorage::search_conflicts(Room *inspected_room) {
     return (ROOM_NOT_IN_STORAGE);
 }
 
-void RoomStorage::add_room(Room room_for_add) {
-    if (search_conflicts(&room_for_add) == ROOM_NOT_IN_STORAGE)
+void RoomStorage::add_room(Room const *room_for_add) {
+    if (search_conflicts(room_for_add) == ROOM_NOT_IN_STORAGE)
     {
         room_storage.push_back(room_for_add);
         std::cout   << LogIdentifier::info()
@@ -52,21 +52,14 @@ void RoomStorage::add_room(Room room_for_add) {
                <<  std::endl;
 }
 
-std::string RoomStorage::get_serial_name(Room *for_this_room) {
-    if (for_this_room->get_room_type() == ROOM_TYPE_CHAT){
+std::string RoomStorage::get_serial_name() const{
         std::cout   << LogIdentifier::debug()
-                    << "serial name get for chat"
+                    << "serial name get for channel"
                     << std::endl;
-        return ("#chat" + std::to_string(serial_counter++));
-    } else if (for_this_room->get_room_type() == ROOM_TYPE_CHANNEL){
-        std::cout   << LogIdentifier::debug()
-                   << "serial name get for channel"
-                   << std::endl;
         return ("#channel" + std::to_string(serial_counter++));
-    }
 }
 
-int RoomStorage::get_room_position_in_storage(Room *room) {
+int RoomStorage::get_room_position_in_storage(Room const *room) const {
     for (int i = 0; i < room_storage.size(); ++i) {
         if (room_storage[i] == room)
             return i;
@@ -74,7 +67,7 @@ int RoomStorage::get_room_position_in_storage(Room *room) {
     return (-1);
 }
 
-int RoomStorage::delete_room_from_storage(Room *room) {
+int RoomStorage::delete_room_from_storage(Room const *room) {
     if (search_conflicts(room) == ROOM_IN_STORAGE){
         room_storage.erase(get_room_position_in_storage(room));
         std::cout   << LogIdentifier::debug()
@@ -91,5 +84,14 @@ int RoomStorage::delete_room_from_storage(Room *room) {
                    << "unexpected error in method delete_room_from_storage"
                    << std::endl;
         return (-1);
+    }
+}
+
+void RoomStorage::display_room_storage() const{
+    std::cout       << "room number\t\t| room name"
+    for (int i = 0; i < this->room_storage.size(); ++i) {
+        std::cout   << i
+                    << "\t\t| "
+                    << this->room_storage[i]->get_room_name();
     }
 }

@@ -10,18 +10,22 @@
 class RoomStorage
 {
 private:
-    std::vector<Room>   room_storage;
+    std::vector<Room *>   room_storage;
     int                 serial_counter;
 
 public:
     RoomStorage();
     ~RoomStorage();
 
-    void        add_room(Room room_for_add);
-    int         search_conflicts(Room *inspected_room);
-    int         get_room_position_in_storage(Room *room);
-    int         delete_room_from_storage(Room *room);
-    void        display_room_storage();
-    std::string get_serial_name(Room *for_this_room);
+    int get_room_position_in_storage(Room const *room) const;
+    std::string get_serial_name() const;
+
+    void        add_room(Room const *room_for_add);
+    int         search_conflicts(Room const *inspected_room);
+    int         delete_room_from_storage(Room const *room);
+    void        display_room_storage() const;
+    //get_room_storage - нужен ли этот мето и что он должен возвращать,
+    //всё хранилище как вектор или чисто список названий комнат
+    // и нужно ли выводить приватные комнаты?
 };
 #endif
