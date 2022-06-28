@@ -15,24 +15,30 @@
 #include <string>
 #include "fcntl.h"
 #include "unistd.h"
+#include <strings.h>
+#include <cstring>
+
+#define GREY_COL "\033[37m"
+#define GREEN_COL "\033[32m"
+#define NO_COL "\033[0m"
 
 
 class Connect
 {
 private:
-	unsigned short			port;
-	int 					m_socket;
-	std::vector<pollfd>		polls_fd;
+	unsigned short			_port;
+	int 					_socket;
+	std::vector<pollfd>		_polls;
 
 public:
-	Connect(unsigned short port, int socket);
+	Connect(unsigned short port);
 	virtual ~Connect();
 	void	start();
 	void	stop();
 	int		add(); //возвращает fd соединения
 	void	remove(std::vector<pollfd>::iterator); // получает fd соединения и закрывает его
-	int		receive(int); // принимает сообщение по fd
-	int		send_msg(int); // отправляет сообщения по fd
+	const std::string& receive(int); // принимает сообщение по fd
+	int		send_msg(int, const std::string&); // отправляет сообщения по fd
 
 protected:
 	void	init();

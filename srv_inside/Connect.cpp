@@ -7,8 +7,7 @@
 const int buffSize = 128;
 const int maxConnections = 1024;
 
-Connect::Connect(unsigned short port, int socket) : port(port),
-														m_socket(socket)
+Connect::Connect(unsigned short port) : _port(port)
 {}
 
 Connect::~Connect() { stop(); }
@@ -16,8 +15,9 @@ Connect::~Connect() { stop(); }
 void Connect::stop()
 {
 	std::vector<pollfd>::iterator iter;
-	for (iter = polls_fd.begin(); iter != polls_fd.end(); ++iter)
+	for (iter = _polls.begin(); iter != _polls.end(); ++iter)
 	{
+        close(iter->fd);
 		remove(iter);
 	}
 }
@@ -26,6 +26,36 @@ void Connect::start()
 {
 	init();
 
+    _polls.push_back((pollfd){_socket, POLLIN, 0});
+    std::vector<pollfd>::iterator iter;
+    for (;;)
+    {
+        if (poll(_polls.data(), _polls.size(), -1) == -1) {
+            std::cerr << "poll failure" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+
+        if (_polls[0].revents & POLLIN)
+            add();
+
+        for (iter = _polls.begin() + 1; iter != _polls.end(); ++iter) {
+            if (iter->revents & POLLHUP) {
+                remove(iter);
+                break;
+            }
+//            if (iter->revents & POLLOUT)
+//                send_msg(iter->fd);
+
+            if (iter->revents & POLLIN)
+                receive(iter->fd);
+
+//            if (!processed(iter->fd)) {
+//                remove(iter);
+//                break;
+//            }
+        }
+    }
+
 }
 
 void Connect::init()
@@ -33,13 +63,13 @@ void Connect::init()
 	char	buff[buffSize];
 	createSocket();
 	gethostname(&buff[0], buffSize);
-	std::cout << "server started as: " << buff << std::endl;
-	if (listen(m_socket, maxConnections) < 0)
+	std::cout << "Server started as: " << buff << std::endl;
+	if (listen(_socket, maxConnections) < 0)
 	{
 		std::cerr << "listen socket failure" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	if (fcntl(m_socket, F_SETFL, O_NONBLOCK) < 0)
+	if (fcntl(_socket, F_SETFL, O_NONBLOCK) < 0)
 	{
 		std::cerr << "fcntl nonblock failure" << std::endl;
 		exit(EXIT_FAILURE);
@@ -54,10 +84,10 @@ void Connect::createSocket()
 	bzero(&addr, sizeof addr);
 	addr.sin_family = AF_INET;
 	addr.sin_addr.s_addr = INADDR_ANY;
-	addr.sin_port = htons(port);
-	if ((m_socket = socket(addr.sin_family, SOCK_STREAM, 0)) == -1 ||
-	setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, &restrict, sizeof (int)) == -1 ||
-	bind(m_socket, (struct sockaddr*)&addr, sizeof (addr)) == -1)
+	addr.sin_port = htons(_port);
+	if ((_socket = socket(addr.sin_family, SOCK_STREAM, 0)) == -1 ||
+        setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &restrict, sizeof (int)) == -1 ||
+        bind(_socket, (struct sockaddr*)&addr, sizeof (addr)) == -1)
 	{
 		std::cerr << "socket created failed" << std::endl;
 		exit(EXIT_FAILURE);
@@ -68,21 +98,56 @@ void Connect::createSocket()
 
 int Connect::add()
 {
-	return 0;
+    struct sockaddr_in	clientaddr = {};
+    socklen_t			len = sizeof(clientaddr);
+
+    int client_socket = accept(_socket, (struct sockaddr *) &clientaddr, &len);
+
+    if (fcntl(client_socket, F_SETFL, O_NONBLOCK) < 0) {
+        std::cerr << "fcntl nonblock failure" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    _polls.push_back((pollfd){client_socket, POLLIN | POLLOUT | POLLHUP, 0});
+
+	return client_socket;
 }
 
 void Connect::remove(std::vector<pollfd>::iterator iter)
 {
 	close(iter->fd);
-	polls_fd.erase(iter);
+	_polls.erase(iter);
 }
 
-int Connect::receive(int)
+const std::string& Connect::receive(int client_socket)
 {
-	return 0;
+    char msg[buffSize];
+
+    bzero(&msg, sizeof(msg));
+    if (recv(client_socket, &msg, buffSize - 1, 0) < 0) {
+        std::cerr << "recv() failure" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+//    std::cout << "msg = " << msg << " " << strlen(msg) << std::endl;
+//
+//    if (strlen(msg) == 5)
+//    {
+//        std::cout << "send msg\n";
+//        send_msg(client_socket, "сообщение получено");
+//    }
+
+	return (msg);
 }
 
-int Connect::send_msg(int)
+int Connect::send_msg(int client_socket, const std::string& reply)
 {
+
+    if (send(client_socket, reply.c_str(), reply.size(), 0) == -1)
+    {
+        std::cerr << "send message to client failure\n";
+        exit(EXIT_FAILURE);
+    }
+    std::cout << GREY_COL << reply << NO_COL;
+
 	return 0;
 }
