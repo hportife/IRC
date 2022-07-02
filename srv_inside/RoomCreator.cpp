@@ -1,5 +1,6 @@
 #include "../tools/LogIdentifier.hpp"
 #include "RoomCreator.hpp"
+#include <cstddef>        // std::size_t
 
 //RoomCreator::RoomCreator(Room *room_for_tmp_creator, RoomStorage *general_storage) {
 //    this->general_storage = general_storage;
@@ -55,13 +56,16 @@ RoomCreator::~RoomCreator() {
 }
 
 int RoomCreator::room_name_validation() {
-    if (this->tmp_room_name.length() > 200){
+	if (this->tmp_room_name.length() > 200){
         std::cout   << LogIdentifier::error()
                     << "room_name_validation: ROOM_NAME_IS_TOO_LONG"
                     << std::endl;
         return (ROOM_NAME_IS_TOO_LONG);
     }
-    else if (/*проверка на запрещённые символы*/false){
+	char b = 7;
+	int found_b = int(tmp_room_name.find_first_of(b, 1));
+	int found = int(tmp_room_name.find_first_of(", #&", 1));
+	else if (!((tmp_room_name[0] == '#' || tmp_room_name[0] == '&') && (found_b == -1 && found == -1))){
         std::cout   << LogIdentifier::error()
                     << "room_name_validation: ROOM_NAME_IS_WRONG"
                     << std::endl;
