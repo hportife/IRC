@@ -2,13 +2,13 @@
 #include "NicknameStorage.hpp"
 
 NicknameStorage::NicknameStorage() {
-    std::cout   << LogIdentifier::info()
+    std::cout   << LogIdentifier::info("FROM_NICKNAMESTORAGE_")
                 << "Nickname storage has been created"
                 << std::endl;
 }
 
 NicknameStorage::~NicknameStorage() {
-    std::cout   << LogIdentifier::debug()
+    std::cout   << LogIdentifier::debug("FROM_NICKNAMESTORAGE_")
                 << "Nickname storage has been deleted"
                 << std::endl;
 }
@@ -24,7 +24,7 @@ void NicknameStorage::get_storage() {
 int NicknameStorage::check_size_added_nickname(std::string added_nickname) {
     if (added_nickname.length() > 9)
     {
-        std::cout   << LogIdentifier::error()
+        std::cout   << LogIdentifier::error("FROM_NICKNAMESTORAGE_")
                     << added_nickname
                     << " too long, and don't add"
                        "to nickname storage"
@@ -33,7 +33,7 @@ int NicknameStorage::check_size_added_nickname(std::string added_nickname) {
     }
     else if (added_nickname.empty())
     {
-        std::cout   << LogIdentifier::error()
+        std::cout   << LogIdentifier::error("FROM_NICKNAMESTORAGE_")
                     << "added_nickname is empty, "
                        "and don't add"
                        "to nickname storage"
@@ -47,7 +47,7 @@ void NicknameStorage::add_nickname(std::string added_nickname) {
     if (check_size_added_nickname(added_nickname) != ERR_NICKNAMEISTOOLONG &&
             check_size_added_nickname(added_nickname) != ERR_NICKNAMEISEMPTY)
     {
-        std::cout   << LogIdentifier::debug()
+        std::cout   << LogIdentifier::debug("FROM_NICKNAMESTORAGE_")
                 << added_nickname
                 << " add to nickname storage"
                 << std::endl;
@@ -58,7 +58,7 @@ void NicknameStorage::add_nickname(std::string added_nickname) {
 
 void NicknameStorage::sort_a_storage() {
     std::sort(storage.begin(), storage.end());
-    std::cout   << LogIdentifier::debug()
+    std::cout   << LogIdentifier::debug("FROM_NICKNAMESTORAGE_")
                 << "nickname storage has been sorted"
                 << std::endl;
 }
@@ -67,7 +67,7 @@ int NicknameStorage::delete_nickname(std::string deleted_nickname) {
     for (int i = 0; i < storage.size(); ++i) {
         if (storage[i].compare(deleted_nickname) == 0){
             storage.erase(storage.begin() + i);
-            std::cout   << LogIdentifier::debug()
+            std::cout   << LogIdentifier::debug("FROM_NICKNAMESTORAGE_")
                         << "nickname "
                         << deleted_nickname
                         << " has been deleted" << std::endl;
@@ -75,7 +75,7 @@ int NicknameStorage::delete_nickname(std::string deleted_nickname) {
             return (0);
         }
     }
-    std::cout   << LogIdentifier::error()
+    std::cout   << LogIdentifier::error("FROM_NICKNAMESTORAGE_")
                 << "When trying to delete, the nickname "
                 << deleted_nickname
                 << " was not found in the nickname storage"
@@ -87,7 +87,7 @@ int NicknameStorage::search_a_conflict(std::string searched_nickname) {
     for (int i = 0; i < storage.size(); ++i) {
         if (storage[i].compare(searched_nickname) == 0){
 //            storage.erase(storage.begin() + i);
-            std::cout   << LogIdentifier::error()
+            std::cout   << LogIdentifier::error("FROM_NICKNAMESTORAGE_")
                         << "nickname "
                         << searched_nickname
                         << " is available in the storage, "
@@ -96,7 +96,7 @@ int NicknameStorage::search_a_conflict(std::string searched_nickname) {
             return (ERR_NICKNAMEINUSE);
         }
     }
-    std::cout   << LogIdentifier::debug()
+    std::cout   << LogIdentifier::debug("FROM_NICKNAMESTORAGE_")
                 << "nickname "
                 << searched_nickname
                 << " is not in storage and may be taken"

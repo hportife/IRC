@@ -4,41 +4,41 @@ UserCreator::UserCreator(int tmp_id, NicknameStorage *tmp_storage, std::string s
     id = tmp_id;
     nickname_storage = tmp_storage;
     correct_password = server_password;
-    std::cout   << LogIdentifier::debug()
+    std::cout   << LogIdentifier::debug("FROM_USERCREATOR_")
                 << "called user creator CONSTR for id: "
                 << id << std::endl;
 }
 
 UserCreator::~UserCreator() {
-    std::cout   << LogIdentifier::debug()
+    std::cout   << LogIdentifier::debug("FROM_USERCREATOR_")
                 << "called user creator DESTR for id: "
                 << id << std::endl;
 }
 
 void UserCreator::set_password(std::string tmp_pass) {
     password = tmp_pass;
-    std::cout   << LogIdentifier::info()
+    std::cout   << LogIdentifier::info("FROM_USERCREATOR_")
                 << "user with id " << id
                 << "entered password" << std::endl;
 }
 
 void UserCreator::set_login(std::string tmp_login) {
     login = tmp_login;
-    std::cout   << LogIdentifier::info()
+    std::cout   << LogIdentifier::info("FROM_USERCREATOR_")
                 << "user with id " << id
                 << "entered login" << std::endl;
 }
 
 void UserCreator::set_nickname(std::string tmp_nickname) {
     nickname = tmp_nickname;
-    std::cout   << LogIdentifier::info()
+    std::cout   << LogIdentifier::info("FROM_USERCREATOR_")
                 << "user with id " << id
                 << "entered nickname" << std::endl;
 }
 
 void UserCreator::set_realname(std::string tmp_realname) {
     realname = tmp_realname;
-    std::cout   << LogIdentifier::info()
+    std::cout   << LogIdentifier::info("FROM_USERCREATOR_")
                 << "user with id " << id
                 << "entered realname" << std::endl;
 }
@@ -47,13 +47,13 @@ void UserCreator::set_realname(std::string tmp_realname) {
 int UserCreator::pass_validation(std::string correct_pass) {
     if (password.compare(correct_pass) != 0)
     {
-        std::cout   << LogIdentifier::error()
+        std::cout   << LogIdentifier::error("FROM_USERCREATOR_")
                     << "user with id " << id
                     << "entered incorrect password"
                     << std::endl;
         return (INCORRPASS);
     }
-    std::cout   << LogIdentifier::info()
+    std::cout   << LogIdentifier::info("FROM_USERCREATOR_")
                 << "user with id " << id
                 << "entered correct password"
                 << std::endl;
@@ -62,7 +62,7 @@ int UserCreator::pass_validation(std::string correct_pass) {
 
 int UserCreator::nickname_validation(std::string tested_nickname) {
     if (tested_nickname.size() > 9){
-        std::cout   << LogIdentifier::error()
+        std::cout   << LogIdentifier::error("FROM_USERCREATOR_")
                     << "login " << tested_nickname
                     << "is too long"
                     << std::endl;

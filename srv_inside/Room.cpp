@@ -2,6 +2,7 @@
 #include "Room.hpp"
 
 Room::Room(std::string creator, int selected_mode/*, room_storage *general storage*/) {
+    //DON'T USE THIS!!!
     this->mode = selected_mode;
 //    name = room_storage->get_serial_name();
     room_users->add_nickname(creator);
@@ -14,6 +15,7 @@ Room::Room(std::string creator, int selected_mode/*, room_storage *general stora
 }
 
 Room::Room(std::string creator/*, room_storage *general storage*/) {
+    //DON'T USE THIS!!!
     this->mode = ROOM_MODE_PRIVATE;
 //    name = room_storage->get_serial_name();
     room_users->add_nickname(creator);
@@ -30,11 +32,13 @@ Room::Room(std::string creator, int selected_mode,
     //так как комнаты будут создаваться с помощью
     //криейтора, то он должен будет следить за корректностью
     //передаваемых в конструктор параметров.
-    this->room_users = new NicknameStorage();
     set_mode(selected_mode);
     this->room_name = set_room_name;
+    this->room_users = new NicknameStorage();
+    this->oper_nicknames = new NicknameStorage();
     this->room_users->add_nickname(creator);
-    std::cout   << LogIdentifier::info()
+    this->oper_nicknames->add_nickname(creator);
+    std::cout   << LogIdentifier::info("FROM_ROOM_" + this->room_name)
                 << "user "
                 << creator
                 << " create a new room with name: "
@@ -46,7 +50,7 @@ std::string Room::get_room_name() const {return (this->room_name);}
 int         Room::get_room_mode() const {return (this->mode);}
 
 void Room::set_room_name(std::string const new_name) {
-    std::cout   << LogIdentifier::info()
+    std::cout   << LogIdentifier::info("FROM_ROOM_" + this->room_name)
                 << "room "
                 << this->room_name
                 << " swap name to "
@@ -58,7 +62,7 @@ void Room::set_room_name(std::string const new_name) {
 int Room::user_join(std::string const joined_user) {
     if (this->room_users->search_a_conflict(joined_user)
         == ERR_NICKNAMEINUSE){
-        std::cout   << LogIdentifier::error()
+        std::cout   << LogIdentifier::error("FROM_ROOM_" + this->room_name)
                     << "user "
                     << joined_user
                     << " is already in the channel "
@@ -67,7 +71,7 @@ int Room::user_join(std::string const joined_user) {
         return (USER_IN_ROOM);
     }
     this->room_users->add_nickname(joined_user);
-    std::cout   << LogIdentifier::debug()
+    std::cout   << LogIdentifier::debug("FROM_ROOM_" + this->room_name)
                 << "user "
                 << joined_user
                 << " join in the channel "
@@ -79,7 +83,7 @@ int Room::user_join(std::string const joined_user) {
 int Room::user_leave(std::string const leaved_user) {
     if (this->room_users->search_a_conflict(leaved_user)
         != ERR_NICKNAMEINUSE){
-        std::cout   << LogIdentifier::error()
+        std::cout   << LogIdentifier::error("FROM_ROOM_" + this->room_name)
                     << "user "
                     << leaved_user
                     << " not in the channel "
@@ -88,7 +92,7 @@ int Room::user_leave(std::string const leaved_user) {
         return (USER_NOT_IN_ROOM);
     }
     this->room_users->delete_nickname(leaved_user);
-    std::cout   << LogIdentifier::debug()
+    std::cout   << LogIdentifier::debug("FROM_ROOM_" + this->room_name)
                 << "user "
                 << leaved_user
                 << " leave the channel "
@@ -101,7 +105,7 @@ int Room::set_mode(int const selected_mode) {
     if (selected_mode == ROOM_MODE_PRIVATE ||
             selected_mode == ROOM_MODE_PUBLIC){
         this->mode = selected_mode;
-        std::cout   << LogIdentifier::info()
+        std::cout   << LogIdentifier::info("FROM_ROOM_" + this->room_name)
                     << "room "
                     << this->room_name
                     << " swap mode to "
@@ -109,7 +113,7 @@ int Room::set_mode(int const selected_mode) {
                     << std::endl;
         return (selected_mode);
     }
-    std::cout   << LogIdentifier::error()
+    std::cout   << LogIdentifier::error("FROM_ROOM_" + this->room_name)
                 << selected_mode
                 << " is not a room mode\n";
     return (-1);
@@ -129,7 +133,7 @@ int Room::set_oper(std::string reporter, std::string new_oper) {
         this->oper_nicknames->search_a_conflict(new_oper)
         != ERR_NICKNAMEINUSE){
         this->oper_nicknames->add_nickname(new_oper);
-        std::cout   << LogIdentifier::info()
+        std::cout   << LogIdentifier::info("FROM_ROOM_" + this->room_name)
                     << "oper "
                     << reporter
                     << " take a oper rights for user "
@@ -137,7 +141,7 @@ int Room::set_oper(std::string reporter, std::string new_oper) {
                     << std::endl;
         return (USER_IS_OPER);
     }
-    std::cout   << LogIdentifier::error()
+    std::cout   << LogIdentifier::error("FROM_ROOM_" + this->room_name)
                 << "failed to assign operator"
                 << std::endl;
     return (USER_IS_NOT_OPER);
@@ -152,21 +156,21 @@ int Room::unset_oper(std::string const reporter,
     if (is_oper(reporter) == USER_IS_OPER
         && is_oper(deleted_oper) == USER_IS_OPER){
         this->oper_nicknames->delete_nickname(deleted_oper);
-        std::cout   << LogIdentifier::debug()
+        std::cout   << LogIdentifier::debug("FROM_ROOM_" + this->room_name)
                     << "oper "
                     << reporter
-                    << "removed the oper rights from"
+                    << " removed the oper rights from "
                     << deleted_oper
                     << std::endl;
     }
     else if (is_oper(deleted_oper) == USER_IS_NOT_OPER){
-        std::cout   << LogIdentifier::error()
+        std::cout   << LogIdentifier::error("FROM_ROOM_" + this->room_name)
                     << deleted_oper
                     << " is not oper"
                     << std::endl;
         return (USER_IS_NOT_OPER);
     } else if (is_oper(reporter) == USER_IS_NOT_OPER){
-        std::cout   << LogIdentifier::error()
+        std::cout   << LogIdentifier::error("FROM_ROOM_" + this->room_name)
                     << reporter
                     << " is not oper"
                     << std::endl;
@@ -178,7 +182,7 @@ int Room::unset_oper(std::string const reporter,
 int Room::delete_user(std::string const reporter,
                         std::string const deleted_user){
     if (is_oper(reporter) == USER_IS_OPER){
-        std::cout   << LogIdentifier::debug()
+        std::cout   << LogIdentifier::debug("FROM_ROOM_" + this->room_name)
                     << reporter
                     << " kick "
                     << deleted_user
@@ -187,7 +191,7 @@ int Room::delete_user(std::string const reporter,
                     << std::endl;
         return (user_leave(deleted_user));
     }
-    std::cout   << LogIdentifier::error()
+    std::cout   << LogIdentifier::error("FROM_ROOM_" + this->room_name)
                 << "user "
                 << reporter
                 << " not oper in room "

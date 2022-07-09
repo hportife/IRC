@@ -6,7 +6,7 @@ User::User(std::string login, std::string nickname, int id, std::string realname
     user_nickname = nickname;
     user_id = id;
     user_realname = realname;
-    std::cout   << LogIdentifier::info()
+    std::cout   << LogIdentifier::info("FROM_USERCLASS_" + this->user_nickname + "_")
                 << "User: | nick: "
                 << nickname
                 << " | id: "
@@ -16,7 +16,7 @@ User::User(std::string login, std::string nickname, int id, std::string realname
 }
 
 void User::set_nickname(std::string new_nickname) {
-    std::cout   << LogIdentifier::debug()
+    std::cout   << LogIdentifier::debug("FROM_USERCLASS_" + this->user_nickname + "_")
                 << "user with id " << user_id
                 << " changed nickname ";
     if (user_nickname.empty())
