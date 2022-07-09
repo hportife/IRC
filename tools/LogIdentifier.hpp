@@ -18,6 +18,9 @@ public:
     static std::string debug();
     static std::string error();
     static std::string info();
+    static std::string debug(std::string from);
+    static std::string error(std::string from);
+    static std::string info(std::string from);
 };
 
 #endif
