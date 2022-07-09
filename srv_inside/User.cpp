@@ -6,7 +6,7 @@ User::User(std::string login, std::string nickname, int id, std::string realname
     user_nickname = nickname;
     user_id = id;
     user_realname = realname;
-    std::cout   << LogIdentifier::info
+    std::cout   << LogIdentifier::info()
                 << "User: | nick: "
                 << nickname
                 << " | id: "

@@ -27,14 +27,18 @@ Room::Room(std::string creator/*, room_storage *general storage*/) {
 
 Room::Room(std::string creator, int selected_mode,
            std::string set_room_name) {
-    this->mode = selected_mode;
+    //так как комнаты будут создаваться с помощью
+    //криейтора, то он должен будет следить за корректностью
+    //передаваемых в конструктор параметров.
+    this->room_users = new NicknameStorage();
+    set_mode(selected_mode);
     this->room_name = set_room_name;
     this->room_users->add_nickname(creator);
     std::cout   << LogIdentifier::info()
                 << "user "
                 << creator
                 << " create a new room with name: "
-                << set_room_name;
+                << set_room_name
                 << std::endl;
 }
 
@@ -94,14 +98,23 @@ int Room::user_leave(std::string const leaved_user) {
 }
 
 int Room::set_mode(int const selected_mode) {
-    this->mode = selected_mode;
-    std::cout   << LogIdentifier::info()
-                << "room "
-                << this->room_name
-                << " swap mode to "
+    if (selected_mode == ROOM_MODE_PRIVATE ||
+            selected_mode == ROOM_MODE_PUBLIC){
+        this->mode = selected_mode;
+        std::cout   << LogIdentifier::info()
+                    << "room "
+                    << this->room_name
+                    << " swap mode to "
+                    << selected_mode
+                    << std::endl;
+        return (selected_mode);
+    }
+    std::cout   << LogIdentifier::error()
                 << selected_mode
-                << std::endl;
+                << " is not a room mode\n";
+    return (-1);
 }
+
 
 int Room::is_oper(std::string nickname) {
     if (this->oper_nicknames->search_a_conflict(nickname)
@@ -123,12 +136,11 @@ int Room::set_oper(std::string reporter, std::string new_oper) {
                     << new_oper
                     << std::endl;
         return (USER_IS_OPER);
-    } else{
-        std::cout   << LogIdentifier::error()
-                    << "failed to assign operator"
-                    << std::endl;
-        return (USER_IS_NOT_OPER);
     }
+    std::cout   << LogIdentifier::error()
+                << "failed to assign operator"
+                << std::endl;
+    return (USER_IS_NOT_OPER);
 }
 
 int Room::get_users_capacity() {
