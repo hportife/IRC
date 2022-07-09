@@ -33,7 +33,7 @@ int main(void)
     std::cout   << "\n\n\n"
                 << LogIdentifier::info()
                 << "Test to get storage\n";
-    storage->get_storage();
+    storage->print_storage();
 
     std::cout   << "\n\n\n"
                 << LogIdentifier::info()
@@ -44,6 +44,6 @@ int main(void)
     std::cout   << "\n\n\n"
                 << LogIdentifier::info()
                 << "Test to get storage\n";
-    storage->get_storage();
+    storage->print_storage();
     std::cout << storage->get_capacity();
 }

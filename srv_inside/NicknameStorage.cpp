@@ -13,11 +13,15 @@ NicknameStorage::~NicknameStorage() {
                 << std::endl;
 }
 
-void NicknameStorage::get_storage() {
+void NicknameStorage::print_storage() {
+    std::vector<std::string> tmp = this->storage;
+    std::sort(tmp.begin(), tmp.end());
+    std::cout << LogIdentifier::debug("FROM_NICKNAME_STORAGE_")
+                << "Осторожно, функция вывода хранилища может течь!\n";
     for (int i = 0; i < storage.size(); i++)
         std::cout   << i + 1
                     << ": "
-                    << storage[i]
+                    << tmp[i]
                     << std::endl;
 }
 
@@ -52,7 +56,6 @@ void NicknameStorage::add_nickname(std::string added_nickname) {
                 << " add to nickname storage"
                 << std::endl;
         storage.push_back(added_nickname);
-        NicknameStorage::sort_a_storage();
     }
 }
 
@@ -71,7 +74,6 @@ int NicknameStorage::delete_nickname(std::string deleted_nickname) {
                         << "nickname "
                         << deleted_nickname
                         << " has been deleted" << std::endl;
-            NicknameStorage::sort_a_storage();
             return (0);
         }
     }

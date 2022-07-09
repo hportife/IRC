@@ -14,11 +14,12 @@ class NicknameStorage{
 private:
     std::vector<std::string>    storage;
 
+
 public:
     NicknameStorage();
     ~NicknameStorage();
 
-    void        get_storage();
+    void        print_storage();
 
     int         check_size_added_nickname(std::string added_nickname);
     void        add_nickname(std::string added_nickname);
