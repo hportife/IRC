@@ -3,7 +3,7 @@
 //
 
 #include "connectTest.hpp"
-#include "../srv_inside/Connect.hpp"
+#include "../srcs_connect/Connect.hpp"
 
 int main()
 {
