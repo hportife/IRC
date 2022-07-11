@@ -6,16 +6,14 @@
 #define ERR_NICKNAMEISTOOLONG   1012
 #define ERR_NICKNAMEISEMPTY     1013
 #define NICKNAMEHASBEENGIVEN    1014
-#define USER_IS_OPER            311
-#define USER_IS_NOT_OPER        312
 
 #include <vector>
 #include <algorithm>
-#include <map>
 
 class NicknameStorage{
 private:
-    std::map<std::string, int>  storage;
+    std::vector<std::string>    storage;
+
 
 public:
     NicknameStorage();

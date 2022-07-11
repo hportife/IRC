@@ -14,17 +14,15 @@ NicknameStorage::~NicknameStorage() {
 }
 
 void NicknameStorage::print_storage() {
-    std::map<std::string, int> tmp = this->storage;
+    std::vector<std::string> tmp = this->storage;
+    std::sort(tmp.begin(), tmp.end());
     std::cout << LogIdentifier::debug("FROM_NICKNAME_STORAGE_")
-              << "Осторожно, функция вывода хранилища может течь!\n";
-    for (auto it = tmp.begin(); it != tmp.end(); ++it) {
-        std::string msg;
-        if ((*it).second == 311)
-            msg = "USER_IS_OPER";
-        else
-            msg = "USER_IS_NOT_OPER";
-        std::cout << "{" << (*it).first << ": " << msg << "}\n";
-    }
+                << "Осторожно, функция вывода хранилища может течь!\n";
+    for (int i = 0; i < storage.size(); i++)
+        std::cout   << i + 1
+                    << ": "
+                    << tmp[i]
+                    << std::endl;
 }
 
 int NicknameStorage::check_size_added_nickname(std::string added_nickname) {
@@ -51,12 +49,12 @@ int NicknameStorage::check_size_added_nickname(std::string added_nickname) {
 
 void NicknameStorage::add_nickname(std::string added_nickname) {
     if (check_size_added_nickname(added_nickname) != ERR_NICKNAMEISTOOLONG &&
-        check_size_added_nickname(added_nickname) != ERR_NICKNAMEISEMPTY)
+            check_size_added_nickname(added_nickname) != ERR_NICKNAMEISEMPTY)
     {
         std::cout   << LogIdentifier::debug("FROM_NICKNAMESTORAGE_")
-                    << added_nickname
-                    << " add to nickname storage"
-                    << std::endl;
+                << added_nickname
+                << " add to nickname storage"
+                << std::endl;
         storage.push_back(added_nickname);
     }
 }
