@@ -37,7 +37,7 @@ public:
 	void	stop();
 	int		add(); //возвращает fd соединения
 	void	remove(std::vector<pollfd>::iterator); // получает fd соединения и закрывает его
-	const std::string& receive(int); // принимает сообщение по fd
+	const std::string receive(int); // принимает сообщение по fd
 	int		send_msg(int, const std::string&); // отправляет сообщения по fd
 
 protected:

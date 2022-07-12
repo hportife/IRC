@@ -119,7 +119,7 @@ void Connect::remove(std::vector<pollfd>::iterator iter)
 	_polls.erase(iter);
 }
 
-const std::string& Connect::receive(int client_socket)
+const std::string Connect::receive(int client_socket)
 {
     char msg[buffSize];
 
