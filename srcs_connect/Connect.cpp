@@ -128,7 +128,7 @@ const std::string Connect::receive(int client_socket)
         std::cerr << "recv() failure" << std::endl;
         exit(EXIT_FAILURE);
     }
-    std::cout << "msg = " << msg << " " << strlen(msg) << std::endl;
+    std::cout << "msg = [" << msg << "]" << strlen(msg) << std::endl;
 
     if (strlen(msg) == 5)
     {
