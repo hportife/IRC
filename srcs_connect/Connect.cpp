@@ -128,13 +128,34 @@ const std::string& Connect::receive(int client_socket)
         std::cerr << "recv() failure" << std::endl;
         exit(EXIT_FAILURE);
     }
-//    std::cout << "msg = " << msg << " " << strlen(msg) << std::endl;
-//
-//    if (strlen(msg) == 5)
-//    {
-//        std::cout << "send msg\n";
-//        send_msg(client_socket, "сообщение получено");
-//    }
+    std::cout << "msg = " << msg << " " << strlen(msg) << std::endl;
+
+    if (strlen(msg) == 5)
+    {
+        std::cout << "send msg\n";
+        send_msg(client_socket, "сообщение получено");
+    }
+    if (strlen(msg) == 13)
+    {
+        std::cout << "send msg\n";
+        send_msg(client_socket, ":IRCat 375 salyce :- IRCat Message of the day - \n"
+                                ":IRCat 372 salyce :- ⠀⠀⠀⠀ ⣴⠉⡙⠳⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⠤⣚⡯⠴⢬⣱⡀⠀\n"
+                                ":IRCat 372 salyce :- ⠀⠀⠀⠀⢰⡇⣷⡌⢲⣄⡑⢢⡀⠀⠀⠀⠀⠀⢠⠾⢋⠔⣨⣴⣿⣷⡌⠇⡇⠀\n"
+                                ":IRCat 372 salyce :- ⠀⠀⠀⠀⢸⢹⣿⣿⣄⢻⣿⣷⣝⠷⢤⣤⣤⡶⢋⣴⣑⠟⠿⠿⠿⣿⣿⡀⡇⠀\n"
+                                ":IRCat 372 salyce :- ⠀⠀⠀⠀⢸⢸⣿⡄⢁⣸⣿⣋⣥⣶⣶⣶⣶⣶⣶⣿⣿⣶⣟⡁⠚⣿⣿⡇⡇⠀\n"
+                                ":IRCat 372 salyce :- ⢀⣠⡤⠤⠾⡘⠋⢀⣘⠋⠉⠉⠉⠉⢭⣭⣭⣭⣍⠉⢩⣭⠉⠉⠂⠙⠛⠃⣇⡀\n"
+                                ":IRCat 372 salyce :- ⠏⠀⠀⢿⣿⣷⡀⠀⢿⡄⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⣆⠀⢿⣇⠀⠀⠀⠀⠀⠀⠈⢱\n"
+                                ":IRCat 372 salyce :- ⣦⠀⠀⠈⢿⣿⣧⠀⠘⣿⠀⠀⠀⡀⠀⠀⠘⣿⣿⣿⣿⡆⠀⢻⡆⠀⠀⠀⠀⠀⠀⢸\n"
+                                ":IRCat 372 salyce :- ⢻⡄⠀⠀⠘⠛⠉⠂⠀⠙⠁⠀⣼⣧⠀⠀⠀⠈⠀⠀⠈⠙⠀⠘⠓⠀⠀⠀⠀⠀⢀⡟\n"
+                                ":IRCat 372 salyce :- ⠀⢳⡀⠀⠀⠀⠀⠀⠀⠀⠀⠸⠿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⣏⠀\n"
+                                ":IRCat 372 salyce :- ⠀⠀⠛⢶⢰⣶⢢⣤⣤⣄⠲⣶⠖⠀⣙⣀⠀⠀⠀⠤⢤⣀⣀⡀⣀⣠⣾⠟⡌⠀\n"
+                                ":IRCat 372 salyce :- ⠀⠀⠀⠘⢄⠃⣿⣿⣿⣿⠗⠀⠾⢿⣿⣿⣿⣿⣿⣿⣶⣶⣶⣶⠸⠟⣡⣤⡳⢦\n"
+                                ":IRCat 372 salyce :- ⠀⠀⠀⠀⠀⢻⡆⣙⡿⢷⣾⣿⣶⣾⣿⣿⣿⣿⣿⣿⣿⡿⠟⢡⣴⣾⣿⣿⣿⣦\n"
+                                ":IRCat 372 salyce :- ⠀⠀⠀⠀⠀⡼⢁⡟⣫⣶⣍⡙⠛⠛⠛⠛⠛⣽⡖⣉⣠⣶⣶⣌⠛⢿⣿⣿⣿⣿\n"
+                                ":IRCat 372 salyce :- ⠀⠀⠀⢀⠔⢡⢎⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠹⣿⣿⣿\n"
+                                ":IRCat 372 salyce :- ⠀⢠⠖⢁⣴⡿⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⢹⣿⣿\n"
+                                ":IRCat 376 salyce :End of /MOTD command");
+    }
 
 	return (msg);
 }
