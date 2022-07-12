@@ -1,5 +1,5 @@
-#ifndef IRC_NICKNAMESTORAGE_HPP
-#define IRC_NICKNAMESTORAGE_HPP
+#ifndef IRC_NICKNAMESTORAGEOLD_HPP
+#define IRC_NICKNAMESTORAGEOLD_HPP
 
 #define NICKNAMEISMAYBEGIVEN    1010
 #define ERR_NICKNAMEINUSE       1011
@@ -10,14 +10,14 @@
 #include <vector>
 #include <algorithm>
 
-class NicknameStorage{
+class NicknameStorageOld{
 private:
     std::vector<std::string>    storage;
 
 
 public:
-    NicknameStorage();
-    ~NicknameStorage();
+    NicknameStorageOld();
+    ~NicknameStorageOld();
 
     void        print_storage();
 

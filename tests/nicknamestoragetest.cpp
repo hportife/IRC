@@ -1,6 +1,7 @@
 #include "../tools/LogIdentifier.hpp"
+#include "../srv_inside/NicknameStorageOld.hpp"
 #include "../srv_inside/NicknameStorage.hpp"
-//compile: c++ ./nicknamestoragetest.cpp ../tools/LogIdentifier.cpp ../srv_inside/NicknameStorage.cpp
+//compile: c++ -std=c++98 ./nicknamestoragetest.cpp ../tools/LogIdentifier.cpp ../srv_inside/NicknameStorage.cpp
 
 int main(void)
 {
@@ -45,5 +46,7 @@ int main(void)
                 << LogIdentifier::info()
                 << "Test to get storage\n";
     storage->print_storage();
-    std::cout << storage->get_capacity();
+    std::cout << "The size of storage = " << storage->get_capacity() << std::endl;
+
+    delete storage;
 }

@@ -14,16 +14,12 @@ NicknameStorage::~NicknameStorage() {
 }
 
 void NicknameStorage::print_storage() {
-    std::map<std::string, int> tmp = this->storage;
+    std::map<std::string, int>::iterator it;
     std::cout << LogIdentifier::debug("FROM_NICKNAME_STORAGE_")
               << "Осторожно, функция вывода хранилища может течь!\n";
-    for (auto it = tmp.begin(); it != tmp.end(); ++it) {
-        std::string msg;
-        if ((*it).second == 311)
-            msg = "USER_IS_OPER";
-        else
-            msg = "USER_IS_NOT_OPER";
-        std::cout << "{" << (*it).first << ": " << msg << "}\n";
+    int i = 1;
+    for (it = storage.begin(); it != storage.end(); ++it) {
+        std::cout << i++ << ": " << (*it).first << "\n";
     }
 }
 
@@ -50,34 +46,36 @@ int NicknameStorage::check_size_added_nickname(std::string added_nickname) {
 }
 
 void NicknameStorage::add_nickname(std::string added_nickname) {
-    if (check_size_added_nickname(added_nickname) != ERR_NICKNAMEISTOOLONG &&
-        check_size_added_nickname(added_nickname) != ERR_NICKNAMEISEMPTY)
+    int checked_size = check_size_added_nickname(added_nickname);
+
+    if (checked_size != ERR_NICKNAMEISTOOLONG &&
+        checked_size != ERR_NICKNAMEISEMPTY)
     {
         std::cout   << LogIdentifier::debug("FROM_NICKNAMESTORAGE_")
                     << added_nickname
                     << " add to nickname storage"
                     << std::endl;
-        storage.push_back(added_nickname);
+        storage[added_nickname] = USER_IS_NOT_OPER;
     }
 }
 
-void NicknameStorage::sort_a_storage() {
-    std::sort(storage.begin(), storage.end());
-    std::cout   << LogIdentifier::debug("FROM_NICKNAMESTORAGE_")
-                << "nickname storage has been sorted"
-                << std::endl;
-}
+/*
+ * мапа при создании сама сортируется если имеет ключ-строку
+ */
+//void NicknameStorage::sort_a_storage() {
+//    std::sort(storage.begin(), storage.end());
+//    std::cout   << LogIdentifier::debug("FROM_NICKNAMESTORAGE_")
+//                << "nickname storage has been sorted"
+//                << std::endl;
+//}
 
 int NicknameStorage::delete_nickname(std::string deleted_nickname) {
-    for (int i = 0; i < storage.size(); ++i) {
-        if (storage[i].compare(deleted_nickname) == 0){
-            storage.erase(storage.begin() + i);
-            std::cout   << LogIdentifier::debug("FROM_NICKNAMESTORAGE_")
-                        << "nickname "
-                        << deleted_nickname
-                        << " has been deleted" << std::endl;
-            return (0);
-        }
+    if (storage.erase(deleted_nickname) == 1) {
+        std::cout   << LogIdentifier::debug("FROM_NICKNAMESTORAGE_")
+                    << "nickname "
+                    << deleted_nickname
+                    << " has been deleted" << std::endl;
+        return (0);
     }
     std::cout   << LogIdentifier::error("FROM_NICKNAMESTORAGE_")
                 << "When trying to delete, the nickname "
@@ -88,17 +86,17 @@ int NicknameStorage::delete_nickname(std::string deleted_nickname) {
 }
 
 int NicknameStorage::search_a_conflict(std::string searched_nickname) {
-    for (int i = 0; i < storage.size(); ++i) {
-        if (storage[i].compare(searched_nickname) == 0){
-//            storage.erase(storage.begin() + i);
-            std::cout   << LogIdentifier::error("FROM_NICKNAMESTORAGE_")
-                        << "nickname "
-                        << searched_nickname
-                        << " is available in the storage, "
-                           "the user needs to choose another nickname"
-                        << std::endl;
-            return (ERR_NICKNAMEINUSE);
-        }
+    std::map<std::string, int>::iterator it;
+
+    it = storage.find(searched_nickname);
+    if (it != storage.end()) {
+        std::cout   << LogIdentifier::error("FROM_NICKNAMESTORAGE_")
+                    << "nickname "
+                    << searched_nickname
+                    << " is not available in the storage, "
+                       "the user needs to choose another nickname"
+                    << std::endl;
+        return (ERR_NICKNAMEINUSE);
     }
     std::cout   << LogIdentifier::debug("FROM_NICKNAMESTORAGE_")
                 << "nickname "
