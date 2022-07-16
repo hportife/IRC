@@ -59,16 +59,6 @@ void NicknameStorage::add_nickname(std::string added_nickname) {
     }
 }
 
-/*
- * мапа при создании сама сортируется если имеет ключ-строку
- */
-//void NicknameStorage::sort_a_storage() {
-//    std::sort(storage.begin(), storage.end());
-//    std::cout   << LogIdentifier::debug("FROM_NICKNAMESTORAGE_")
-//                << "nickname storage has been sorted"
-//                << std::endl;
-//}
-
 int NicknameStorage::delete_nickname(std::string deleted_nickname) {
     if (storage.erase(deleted_nickname) == 1) {
         std::cout   << LogIdentifier::debug("FROM_NICKNAMESTORAGE_")
@@ -108,4 +98,33 @@ int NicknameStorage::search_a_conflict(std::string searched_nickname) {
 
 int NicknameStorage::get_capacity() {
     return (storage.size());
+}
+
+int NicknameStorage::is_oper(std::string checked_nickname){
+    std::map<std::string, int>::iterator it = storage.find(checked_nickname);
+
+    if (it != storage.end()){
+        return (it->second);
+    }
+    return (-1);
+}
+
+int NicknameStorage::set_oper_rights(std::string nickname){
+    std::map<std::string, int>::iterator it = storage.find(nickname);
+
+    if (it != storage.end()){
+        it->second = USER_IS_OPER;
+        return (it->second);
+    }
+    return (-1);
+}
+
+int NicknameStorage::unset_oper_rights(std::string nickname){
+    std::map<std::string, int>::iterator it = storage.find(nickname);
+
+    if (it != storage.end()){
+        it->second = USER_IS_NOT_OPER;
+        return (it->second);
+    }
+    return (-1);
 }

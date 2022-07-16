@@ -7,7 +7,7 @@
 #include "srv_inside/User.hpp"
 #include "srv_inside/UserStorage.hpp"
 #include "srv_inside/NicknameStorage.hpp"
-#include "srv_inside/Message.hpp"
+#include "srv_inside/CommandLine.hpp"
 
 class slave_serv {
 private:
