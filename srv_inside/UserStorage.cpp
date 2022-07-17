@@ -1,6 +1,7 @@
 #include "UserStorage.hpp"
 
-UserStorage::UserStorage() {
+UserStorage::UserStorage(NicknameStorage *ptr_to_nickname_storage) {
+    this->ptr_to_nickname_storage = ptr_to_nickname_storage;
     std::cout   << LogIdentifier::info("FROM_USERSTORAGE_")
                 << "User storage has been created"
                 << std::endl;
@@ -12,16 +13,24 @@ UserStorage::~UserStorage() {
                 << std::endl;
 }
 
-void UserStorage::add_user(user user_for_add) {
-    user_storage.push_back(user_for_add);
+void UserStorage::add_user(User user_for_add) {
+    if (search_by_id(user_for_add.get_user_id()) == NULL) {
+        user_storage.push_back(user_for_add);
+        std::cout << LogIdentifier::debug("FROM_USERSTORAGE_")
+                  << "user ["
+                  << user_for_add.get_user_nickname()
+                  << "] has been added to user storage"
+                  << std::endl;
+        return;
+    }
     std::cout   << LogIdentifier::debug("FROM_USERSTORAGE_")
-                << "user "
+                << "the user ["
                 << user_for_add.get_user_nickname()
-                << " has been added to user storage"
+                << "] is already known"
                 << std::endl;
 }
 
-user *UserStorage::search_by_nickname(std::string searched_nickname) {
+User *UserStorage::search_by_nickname(std::string searched_nickname) {
     for (int i = 0; i < user_storage.size(); ++i){
         if (user_storage[i].get_user_nickname().compare(searched_nickname) == 0)
         {
@@ -41,29 +50,29 @@ user *UserStorage::search_by_nickname(std::string searched_nickname) {
     return (nullptr);
 }
 
-user *UserStorage::search_by_id(int searched_id) {
+User *UserStorage::search_by_id(int searched_id) {
     for (int i = 0; i < user_storage.size(); ++i){
         if (user_storage[i].get_user_id() == (searched_id))
         {
             std::cout   << LogIdentifier::debug("FROM_USERSTORAGE_")
                         << "UserStorage Searcher by id "
-                           "found a id "
+                           "found a id ["
                         << searched_id
-                        << std::endl;
+                        << "]" <<std::endl;
             return (&user_storage[i]);
         }
     }
     std::cout   << LogIdentifier::error("FROM_USERSTORAGE_")
                 << "UserStorage Searcher by id "
-                   "not found a id "
+                   "not found a id ["
                 << searched_id
-                << std::endl;
-    return (nullptr);
+                << "]" <<std::endl;
+    return (NULL);
 }
 
 int UserStorage::get_user_position_in_storage(User *user) {
     for (int i = 0; i < user_storage.size(); ++i) {
-        if (user_storage[i] == user)
+        if (user_storage[i].get_user_id() == user->get_user_id())
             return i;
     }
     return (-1);
@@ -80,7 +89,8 @@ int UserStorage::delete_user_from_storage(User *user) {
                     << user->get_user_nickname()
                     << " has been deleted"
                     << std::endl;
-        return (1)
+        this->ptr_to_nickname_storage->delete_nickname(user->get_user_nickname());
+        return (1);
     }
     else{
         std::cout   << LogIdentifier::error("FROM_USERSTORAGE_")

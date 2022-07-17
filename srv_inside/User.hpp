@@ -3,6 +3,7 @@
 
 #define CORRPASS                1000
 #define INCORRPASS              1001
+#define INCORRNICKNAME          1002
 #define NICKNAMEISMAYBEGIVEN    1010
 #define ERR_NICKNAMEINUSE       1011
 #define ERR_NICKNAMEISTOOLONG   1012
@@ -15,20 +16,19 @@
 
 class User {
 private:
-    std::string         user_login;
     std::string         user_nickname;
     std::string         user_realname;
     int                 user_id;
 public:
-    User(std::string login, std::string nickname, int id, std::string realname);
+    User(std::string nickname, int id, std::string realname);
     ~User();
 
     void set_nickname(std::string new_nickname);
 
-    std::string get_user_login();
     std::string get_user_realname();
     std::string get_user_nickname();
     int         get_user_id();
+    User        *clone() const;
 };
 
 class UserCreator
@@ -38,7 +38,6 @@ private:
     int                 id;
     std::string         password;
     std::string         correct_password;
-    std::string         login;
     std::string         nickname;
     std::string         realname;
     User                *tmp_user;
@@ -49,7 +48,6 @@ public:
 
 //    void    set_id(int tmp_id);
     void    set_password(std::string tmp_pass);
-    void    set_login(std::string tmp_login);
     void    set_nickname(std::string tmp_nickname);
     void    set_realname(std::string tmp_realname);
 

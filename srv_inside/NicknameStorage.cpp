@@ -37,7 +37,7 @@ int NicknameStorage::check_size_added_nickname(std::string added_nickname) {
     {
         std::cout   << LogIdentifier::error("FROM_NICKNAMESTORAGE_")
                     << "added_nickname is empty, "
-                       "and don't add"
+                       "and don't add "
                        "to nickname storage"
                     << std::endl;
         return(ERR_NICKNAMEISEMPTY);
@@ -52,8 +52,9 @@ void NicknameStorage::add_nickname(std::string added_nickname) {
         checked_size != ERR_NICKNAMEISEMPTY)
     {
         std::cout   << LogIdentifier::debug("FROM_NICKNAMESTORAGE_")
+                    << "["
                     << added_nickname
-                    << " add to nickname storage"
+                    << "] add to nickname storage"
                     << std::endl;
         storage[added_nickname] = USER_IS_NOT_OPER;
     }
@@ -83,7 +84,7 @@ int NicknameStorage::search_a_conflict(std::string searched_nickname) {
         std::cout   << LogIdentifier::error("FROM_NICKNAMESTORAGE_")
                     << "nickname "
                     << searched_nickname
-                    << " is not available in the storage, "
+                    << " is available in the storage, "
                        "the user needs to choose another nickname"
                     << std::endl;
         return (ERR_NICKNAMEINUSE);

@@ -2,14 +2,16 @@
 #define IRC_USERSTORAGE_HPP
 
 #include "User.hpp"
+#include "NicknameStorage.hpp"
 
 class UserStorage
 {
 private:
-    std::vector<User> user_storage;
+    std::vector<User>   user_storage;
+    NicknameStorage     *ptr_to_nickname_storage;
 
 public:
-    UserStorage();
+    UserStorage(NicknameStorage *ptr_to_nickname_storage);
     ~UserStorage();
 
     void    add_user(User user_for_add);
