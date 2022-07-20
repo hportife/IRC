@@ -1,0 +1,25 @@
+#include "../tools/LogIdentifier.hpp"
+#include "../srv_inside/Room.hpp"
+#include "../srv_inside/RoomStorage.hpp"
+
+//c++ -std=c++98 roomstoragetest.cpp ../tools/LogIdentifier.cpp ../srv_inside/Room.cpp ../srv_inside/User.cpp ../srv_inside/NicknameStorage.cpp
+
+int main(void){
+	Room *room1;
+	//, *room2, *room3, *room4;
+	std::cout << "_____________STAGE_1_CALL_CONSTRUCTOR____________________________________\n";
+	//так как комнаты будут создаваться с помощью
+	//криейтора, то он должен будет следить за корректностью
+	//передаваемых в конструктор параметров, поэтому условно
+	// параметры здесь уже завалидированы криейтором.
+	room1 = new Room("salaman", ROOM_MODE_PRIVATE, "salamander_room");//OK
+	//room2 = new Room("vik", ROOM_MODE_PRIVATE, "vikRoom");//OK
+	//room3 = new Room("yyyyyy", ROOM_MODE_PUBLIC, "1111122221231146134623462546235123462346134625734746");//OK
+	//room4 = new Room("121212", ROOM_MODE_PUBLIC, "ola");//OK
+
+	//Создание тестовой комнаты
+	RoomStorage *testRoomStorage = new RoomStorage();
+
+	//testRoomStorage->add_room(room1);
+	//testRoomStorage->display_room_storage();
+}
