@@ -13,15 +13,17 @@ private:
     std::vector<Room *>   room_storage;
     int                 serial_counter;
 
+    std::vector<Room *>::iterator get_position_iterator(Room const *room);
+    int get_room_position_in_storage(Room const *room) const;
+
 public:
     RoomStorage();
+
     ~RoomStorage();
 
-    int get_room_position_in_storage(Room const *room) const;
-    std::string get_serial_name() const;
-
-    void        add_room(Room const *room_for_add);
+    void        add_room(Room *room_for_add);
     int         search_conflicts(Room const *inspected_room);
+    int         search_conflicts_with_name(std::string const inspected_room_name);
     int         delete_room_from_storage(Room const *room);
     void        display_room_storage() const;
     //get_room_storage - нужен ли этот мето и что он должен возвращать,

@@ -2,22 +2,12 @@
 #include "RoomCreator.hpp"
 #include <cstddef>        // std::size_t
 
-//RoomCreator::RoomCreator(Room *room_for_tmp_creator, RoomStorage *general_storage) {
-//    this->general_storage = general_storage;
-//    tmp_room = room_for_tmp_creator;
-//    std::cout   << LogIdentifier::info()
-//                << "tmp room creator has been created"
-//                << std::endl;
-//}
-
-RoomCreator::RoomCreator(std::string creator_nickname, RoomStorage *general_storage) {
-    this->general_storage = general_storage;
+RoomCreator::RoomCreator(std::string creator_nickname, RoomStorage *general_storage){
     this->creator_nickname = creator_nickname;
-    this->tmp_room_name = general_storage->get_serial_name();
-    this->tmp_room_mode = ROOM_MODE_PRIVATE;
-    std::cout   << LogIdentifier::info()
+    this->general_storage = general_storage;
+    std::cout   << LogIdentifier::info("FROM_ROOMCREATOR_CLASS_")
                 << creator_nickname
-                << " start create a room"
+                << " start create a unnamed room"
                 << std::endl;
 }
 
@@ -65,7 +55,7 @@ int RoomCreator::room_name_validation() {
 	char b = 7;
 	int found_b = int(tmp_room_name.find_first_of(b, 1));
 	int found = int(tmp_room_name.find_first_of(", #&", 1));
-	else if (!((tmp_room_name[0] == '#' || tmp_room_name[0] == '&') && (found_b == -1 && found == -1))){
+	if (!((tmp_room_name[0] == '#' || tmp_room_name[0] == '&') && (found_b == -1 && found == -1))){
         std::cout   << LogIdentifier::error()
                     << "room_name_validation: ROOM_NAME_IS_WRONG"
                     << std::endl;

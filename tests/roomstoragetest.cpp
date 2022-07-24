@@ -1,6 +1,7 @@
 #include "../tools/LogIdentifier.hpp"
 #include "../srv_inside/Room.hpp"
 #include "../srv_inside/RoomStorage.hpp"
+#include "../srv_inside/NicknameStorage.hpp"
 
 //c++ -std=c++98 roomstoragetest.cpp ../tools/LogIdentifier.cpp ../srv_inside/Room.cpp ../srv_inside/User.cpp ../srv_inside/RoomStorage.cpp
 
@@ -30,5 +31,4 @@ int main(void){
 	std::cout << LogIdentifier::info() << "Search conflicts from an array of rooms\n";
 	testRoomStorage->search_conflicts(room3);
 	std::cout << LogIdentifier::info() << "Output serial_name\n";
-	std::cout << testRoomStorage->get_serial_name();
 }

@@ -28,7 +28,6 @@ public:
                 RoomStorage *general_storage,
                 std::string name_for_room,
                 int mode_for_room);
-//    RoomCreator(Room *room_for_tmp_creator, RoomStorage *general_storage);
     ~RoomCreator();
 
     int room_name_validation();
