@@ -59,7 +59,7 @@ void RoomStorage::add_room(Room *room_for_add) {
 std::vector<Room *>::iterator RoomStorage::get_position_iterator(Room const *room){
     std::vector<Room *>::iterator ite = this->room_storage.end();
     std::vector<Room *>::iterator it = this->room_storage.begin();
-    while (it != ite || (*it)->get_room_name() != room->get_room_name()) {
+    while (it != ite && (*it)->get_room_name() != room->get_room_name()) {
         it++;
     }
     return (it);
@@ -67,7 +67,7 @@ std::vector<Room *>::iterator RoomStorage::get_position_iterator(Room const *roo
 
 int RoomStorage::delete_room_from_storage(Room const *room) {
     if (search_conflicts(room) == ROOM_IN_STORAGE){
-
+        std::cout << "YP!\n";
         room_storage.erase(get_position_iterator(room));
         std::cout   << LogIdentifier::debug("FROM_ROOMSTORAGE_CLASS_")
                     << "room has been delete from storage"
@@ -87,10 +87,12 @@ int RoomStorage::delete_room_from_storage(Room const *room) {
 }
 
 void RoomStorage::display_room_storage() const{
-    std::cout       << "room number\t\t| room name";
+    std::cout       << "room number\t| room name"
+                    << std::endl;
     for (int i = 0; i < this->room_storage.size(); ++i) {
         std::cout   << i
                     << "\t\t| "
-                    << this->room_storage[i]->get_room_name();
+                    << this->room_storage[i]->get_room_name()
+                    << std::endl;
     }
 }

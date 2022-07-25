@@ -16,12 +16,14 @@
 #include "NicknameStorage.hpp"
 #include <vector>
 #include <algorithm>
-
+//Нужно инкапсулировать логику вычислени оператора.
+//Исполнитель должен будет перед исполнением проверять
+//права пользователя на исполнение оманд
 class Room {
 private:
     std::string                 room_name;
     NicknameStorage             *room_users;
-    NicknameStorage             *oper_nicknames;
+//    NicknameStorage             *oper_nicknames;
     int                         mode;
 
     Room();

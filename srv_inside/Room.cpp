@@ -91,7 +91,7 @@ int Room::set_oper(std::string reporter, std::string new_oper) {
         == ERR_NICKNAMEINUSE &&
         this->oper_nicknames->search_a_conflict(new_oper)
         != ERR_NICKNAMEINUSE){
-        this->oper_nicknames->add_nickname(new_oper);
+        this->room_users->add_nickname(new_oper);
         std::cout   << LogIdentifier::info("FROM_ROOM_" + this->room_name)
                     << "oper " << reporter
                     << " take a oper rights for user "

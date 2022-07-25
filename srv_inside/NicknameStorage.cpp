@@ -56,7 +56,7 @@ void NicknameStorage::add_nickname(std::string added_nickname) {
                     << added_nickname
                     << "] add to nickname storage"
                     << std::endl;
-        storage[added_nickname] = USER_IS_NOT_OPER;
+        storage[added_nickname] = SIMPLE_VALUE;
     }
 }
 
@@ -101,30 +101,18 @@ int NicknameStorage::get_capacity() {
     return (storage.size());
 }
 
-int NicknameStorage::is_oper(std::string checked_nickname){
+int NicknameStorage::get_value(std::string checked_nickname){
     std::map<std::string, int>::iterator it = storage.find(checked_nickname);
-
     if (it != storage.end()){
         return (it->second);
     }
     return (-1);
 }
 
-int NicknameStorage::set_oper_rights(std::string nickname){
+int NicknameStorage::set_value(std::string nickname, int value){
     std::map<std::string, int>::iterator it = storage.find(nickname);
-
     if (it != storage.end()){
-        it->second = USER_IS_OPER;
-        return (it->second);
-    }
-    return (-1);
-}
-
-int NicknameStorage::unset_oper_rights(std::string nickname){
-    std::map<std::string, int>::iterator it = storage.find(nickname);
-
-    if (it != storage.end()){
-        it->second = USER_IS_NOT_OPER;
+        it->second = value;
         return (it->second);
     }
     return (-1);

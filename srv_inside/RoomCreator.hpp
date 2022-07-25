@@ -30,6 +30,7 @@ public:
                 int mode_for_room);
     ~RoomCreator();
 
+
     int room_name_validation();
     int get_finished_room() const;
 };

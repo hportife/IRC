@@ -6,8 +6,7 @@
 #define ERR_NICKNAMEISTOOLONG   1012
 #define ERR_NICKNAMEISEMPTY     1013
 #define NICKNAMEHASBEENGIVEN    1014
-#define USER_IS_OPER            311
-#define USER_IS_NOT_OPER        312
+#define SIMPLE_VALUE            111
 
 #include <vector>
 #include <algorithm>
@@ -27,9 +26,8 @@ public:
     void        add_nickname(std::string added_nickname);
     int         delete_nickname(std::string deleted_nickname);
     int         search_a_conflict(std::string searched_nickname);
-    int         is_oper(std::string checked_nickname);
-    int         set_oper_rights(std::string nickname);
-    int         unset_oper_rights(std::string nickname);
+    int         get_value(std::string checked_nickname);
+    int         set_value(std::string nickname);
     int         get_capacity();
 };
 
