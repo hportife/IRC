@@ -17,9 +17,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
-//Нужно инкапсулировать логику вычислени оператора.
-//Исполнитель должен будет перед исполнением проверять
-//права пользователя на исполнение оманд
+
 class Room {
 private:
     std::string                 room_name;
@@ -31,14 +29,15 @@ private:
     Room();
     Room(std::string creator);
     Room(std::string creator, int selected_mode);
-    std::map<std::string, bool> initRoomParams();//OK
+    std::map<std::string, bool> initRoomParams();//реализованно
 public:
-    Room(std::string creator, int selected_mode, std::string set_room_name);
+    Room(std::string creator, std::string set_room_name);
     ~Room();
 
     std::string get_room_name() const;//реализовано
     int         get_users_capacity() const;//реализовано
     std::string get_room_password() const;//реализовано
+    bool        get_param_value(std::string param_name);//реализовано
 
     void        set_room_name(std::string const new_name);//реализовано
     void        set_room_password(std::string const password);//реализовано
@@ -47,12 +46,12 @@ public:
     void        set_oper(std::string const new_oper);//реализовано
     void        unset_oper(std::string const deleted_oper);//реализовано
 
-    int         is_oper(std::string nickname);
+    void        add_user(std::string const nickname);//реализованно
+    void        delete_user(std::string const nickname);//реализованно
+    void        add_to_invite_list(std::string const nickname);//реализовано
 
-    int         user_join(std::string const joined_user);
-    int         user_leave(std::string const leaved_user);
-    int         delete_user(std::string const reporter,
-                            std::string const deleted_user);
+    bool        is_oper(std::string nickname);//реализовано
+    bool        is_in_invite_list(std::string nickname);//реализовано
 };
 
 

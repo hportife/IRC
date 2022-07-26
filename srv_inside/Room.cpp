@@ -1,8 +1,7 @@
 #include "../tools/LogIdentifier.hpp"
 #include "Room.hpp"
 
-Room::Room(std::string creator, int selected_mode,
-           std::string set_room_name) {
+Room::Room(std::string creator, std::string set_room_name) {
     //так как комнаты будут создаваться с помощью
     //криейтора, то он должен будет следить за корректностью
     //передаваемых в конструктор параметров.
@@ -30,9 +29,15 @@ std::map<std::string, bool> Room::initRoomParams(){
 }
 //_____________________GETTERS__________________________________________
 std::string Room::get_room_name() const {return (this->room_name);}
+
 int         Room::get_users_capacity() const {return (this->room_users
                                                         ->get_capacity());}
-std::string Room::get_room_password() const { this->room_password;}
+
+std::string Room::get_room_password() const { return (this->room_password);}
+
+bool        Room::get_param_value(std::string param_name){
+    return (this->room_params[param_name])
+}
 
 //_____________________SETTERS__________________________________________
 void Room::set_room_name(std::string const new_name) {
@@ -64,61 +69,34 @@ void Room::unset_oper(std::string const deleted_oper){
 }
 
 //____________________METHODS___________________________________________
-int Room::user_join(std::string const joined_user) {
-    if (this->room_users->search_a_conflict(joined_user)
-        == ERR_NICKNAMEINUSE){
-        std::cout   << LogIdentifier::error("FROM_ROOM_" + this->room_name)
-                    << "user " << joined_user
-                    << " is already in the channel "
-                    << this->room_name << std::endl;
-        return (USER_IN_ROOM);
-    }
-    this->room_users->add_nickname(joined_user);
-    std::cout   << LogIdentifier::debug("FROM_ROOM_" + this->room_name)
-                << "user " << joined_user
-                << " join in the channel "
-                << this->room_name << std::endl;
-    return (JOIN_COMPLETE);
+
+void Room::add_user(std::string const nickname){
+    std::cout   << LogIdentifier::info("ROOMCLASS_" + this->room_name)
+                << "user " << nickname << " added to room"<< std::endl;
+    this->room_users->add_nickname(nickname);
 }
 
-int Room::user_leave(std::string const leaved_user) {
-    if (this->room_users->search_a_conflict(leaved_user)
-        != ERR_NICKNAMEINUSE){
-        std::cout   << LogIdentifier::error("FROM_ROOM_" + this->room_name)
-                    << "user " << leaved_user
-                    << " not in the channel "
-                    << this->room_name << std::endl;
-        return (USER_NOT_IN_ROOM);
-    }
-    this->room_users->delete_nickname(leaved_user);
-    std::cout   << LogIdentifier::debug("FROM_ROOM_" + this->room_name)
-                << "user " << leaved_user
-                << " leave the channel "
-                << this->room_name << std::endl;
-    return (LEAVE_COMPLETE);
+void Room::delete_user(std::string const nickname){
+    std::cout   << LogIdentifier::info("ROOMCLASS_" + this->room_name)
+                << "user " << nickname << " deleted from room"<< std::endl;
+    this->room_users->delete_nickname(nickname);
 }
 
-int Room::is_oper(std::string nickname) {
-    if (this->oper_nicknames->search_a_conflict(nickname)
-        == ERR_NICKNAMEINUSE)
-        return (USER_IS_OPER);
-    return (USER_IS_NOT_OPER);
+void Room::add_to_invite_list(std::string const nickname){
+    this->invite_list.push_back(nickname);
+}
+//___________________CHECKERS______________________________________________
+bool Room::is_oper(std::string nickname){
+    if (this->room_users->get_value(nickname)
+                                                == USER_IS_OPER)
+        return (true);
+    return (false);
 }
 
-int Room::delete_user(std::string const reporter,
-                        std::string const deleted_user){
-    if (is_oper(reporter) == USER_IS_OPER){
-        std::cout   << LogIdentifier::debug("FROM_ROOM_" + this->room_name)
-                    << reporter << " kick "
-                    << deleted_user << " from "
-                    << this->room_name << std::endl;
-        if (is_oper(deleted_user) == USER_IS_OPER)
-            this->oper_nicknames->delete_nickname(deleted_user);
-        return (user_leave(deleted_user));
-    }
-    std::cout   << LogIdentifier::error("FROM_ROOM_" + this->room_name)
-                << "user " << reporter << " not oper in room "
-                << this->room_name << " for delete users"
-                << std::endl;
-    return (USER_IS_NOT_OPER);
+bool Room::is_in_invite_list(std::string nickname){
+    if (std::find(this->invite_list.begin(),
+                  this->invite_list.end(), nickname)
+                  != this->invite_list.end())
+        return (true);
+    return (false);
 }
