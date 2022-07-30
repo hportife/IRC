@@ -15,8 +15,6 @@ NicknameStorage::~NicknameStorage() {
 
 void NicknameStorage::print_storage() {
     std::map<std::string, int>::iterator it;
-    std::cout << LogIdentifier::debug("FROM_NICKNAME_STORAGE_")
-              << "Осторожно, функция вывода хранилища может течь!\n";
     int i = 1;
     for (it = storage.begin(); it != storage.end(); ++it) {
         std::cout << i++ << ": " << (*it).first << "\n";
@@ -51,7 +49,7 @@ void NicknameStorage::add_nickname(std::string added_nickname) {
     if (checked_size != ERR_NICKNAMEISTOOLONG &&
         checked_size != ERR_NICKNAMEISEMPTY)
     {
-        std::cout   << LogIdentifier::debug("FROM_NICKNAMESTORAGE_")
+        std::cout   << LogIdentifier::info("FROM_NICKNAMESTORAGE_")
                     << "["
                     << added_nickname
                     << "] add to nickname storage"
@@ -62,7 +60,7 @@ void NicknameStorage::add_nickname(std::string added_nickname) {
 
 int NicknameStorage::delete_nickname(std::string deleted_nickname) {
     if (storage.erase(deleted_nickname) == 1) {
-        std::cout   << LogIdentifier::debug("FROM_NICKNAMESTORAGE_")
+        std::cout   << LogIdentifier::info("FROM_NICKNAMESTORAGE_")
                     << "nickname "
                     << deleted_nickname
                     << " has been deleted" << std::endl;
@@ -81,18 +79,17 @@ int NicknameStorage::search_a_conflict(std::string searched_nickname) {
 
     it = storage.find(searched_nickname);
     if (it != storage.end()) {
-        std::cout   << LogIdentifier::error("FROM_NICKNAMESTORAGE_")
+        std::cout   << LogIdentifier::debug("FROM_NICKNAMESTORAGE_")
                     << "nickname "
                     << searched_nickname
-                    << " is available in the storage, "
-                       "the user needs to choose another nickname"
+                    << " is available in the storage"
                     << std::endl;
         return (ERR_NICKNAMEINUSE);
     }
     std::cout   << LogIdentifier::debug("FROM_NICKNAMESTORAGE_")
                 << "nickname "
                 << searched_nickname
-                << " is not in storage and may be taken"
+                << " is not in storage"
                 << std::endl;
     return (NICKNAMEISMAYBEGIVEN);
 }

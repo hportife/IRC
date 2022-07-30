@@ -23,16 +23,16 @@ private:
 
 public:
     User(std::string nickname, int id,
-         std::string realname, std::string clientname);
-    ~User();
+         std::string realname, std::string clientname);//got
+    ~User();//got
 
-    void set_nickname(std::string new_nickname);
+    void set_nickname(std::string new_nickname);//got
 
-    std::string get_user_realname() const;
-    std::string get_user_nickname() const;
-    std::string get_client_name() const;
-    int         get_user_id() const;
-    User        *clone() const;
+    std::string get_user_realname() const;//got
+    std::string get_user_nickname() const;//got
+    std::string get_client_name() const;//got
+    int         get_user_id() const;//got
+    User        *clone() const;//got
 };
 
 #endif //IRC_USER_HPP

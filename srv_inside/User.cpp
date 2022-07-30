@@ -51,5 +51,5 @@ User *User::clone() const{
     return (new User(this->user_nickname,
                      this->user_id,
                      this->user_realname,
-                     this->client_name);
+                     this->client_name));
 }

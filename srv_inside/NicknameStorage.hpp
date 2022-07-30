@@ -27,7 +27,7 @@ public:
     int         delete_nickname(std::string deleted_nickname);
     int         search_a_conflict(std::string searched_nickname);
     int         get_value(std::string checked_nickname);
-    int         set_value(std::string nickname);
+    int         set_value(std::string nickname, int value);
     int         get_capacity();
 };
 
