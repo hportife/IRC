@@ -7,7 +7,7 @@
 const int buffSize = 128;
 const int maxConnections = 1024;
 
-Connect::Connect(unsigned short port) : _port(port)
+Connect::Connect(unsigned short port, std::vector<pollfd> * polls) : _port(port), _polls(polls)
 {}
 
 Connect::~Connect() { stop(); }
@@ -22,41 +22,45 @@ void Connect::stop()
 	}
 }
 
+void Connect::call_poll()
+{
+	if (poll(_polls.data(), _polls.size(), -1) == -1) {
+		std::cerr << "poll failure" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	if (_polls[0].revents & POLLIN)
+		add();
+}
+
 void Connect::start()
 {
 	init();
 
     _polls.push_back((pollfd){_socket, POLLIN, 0});
-    std::vector<pollfd>::iterator iter;
-    for (;;)
-    {
-        if (poll(_polls.data(), _polls.size(), -1) == -1) {
-            std::cerr << "poll failure" << std::endl;
-            exit(EXIT_FAILURE);
-        }
-
-        if (_polls[0].revents & POLLIN)
-            add();
-
-        for (iter = _polls.begin() + 1; iter != _polls.end(); ++iter) {
-            if (iter->revents & POLLHUP) {
-                remove(iter);
-                break;
-            }
-//            if (iter->revents & POLLOUT)
-//                send_msg(iter->fd);
-
-            if (iter->revents & POLLIN)
-                receive(iter->fd);
-
-//            if (!processed(iter->fd)) {
+//    std::vector<pollfd>::iterator iter;
+//    for (;;)
+//    {
+//        for (iter = _polls.begin() + 1; iter != _polls.end(); ++iter) {
+//            if (iter->revents & POLLHUP) {
 //                remove(iter);
 //                break;
 //            }
-        }
-    }
+////            if (iter->revents & POLLOUT)
+////                send_msg(iter->fd);
+//
+//            if (iter->revents & POLLIN)
+//                receive(iter->fd);
+//
+////            if (!processed(iter->fd)) {
+////                remove(iter);
+////                break;
+////            }
+//        }
+//    }
 
 }
+
+
 
 void Connect::init()
 {

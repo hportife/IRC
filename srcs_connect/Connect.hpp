@@ -39,6 +39,9 @@ public:
 	void	remove(std::vector<pollfd>::iterator); // получает fd соединения и закрывает его
 	const std::string receive(int); // принимает сообщение по fd
 	int		send_msg(int, const std::string&); // отправляет сообщения по fd
+	void	call_poll();
+	void	setPolls(pollfd);
+	pollfd	getPolls(std::vector<pollfd> iterator);
 
 protected:
 	void	init();
