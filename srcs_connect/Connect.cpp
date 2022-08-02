@@ -15,7 +15,7 @@ Connect::~Connect() { stop(); }
 void Connect::stop()
 {
 	std::vector<pollfd>::iterator iter;
-	for (iter = _polls.begin(); iter != _polls.end(); ++iter)
+	for (iter = _polls->begin(); iter != _polls->end(); ++iter)
 	{
         close(iter->fd);
 		remove(iter);
@@ -24,11 +24,11 @@ void Connect::stop()
 
 void Connect::call_poll()
 {
-	if (poll(_polls.data(), _polls.size(), -1) == -1) {
+	if (poll(_polls->data(), _polls->size(), -1) == -1) {
 		std::cerr << "poll failure" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	if (_polls[0].revents & POLLIN)
+	if (_polls[0].at(0).revents & POLLIN)
 		add();
 }
 
@@ -36,11 +36,11 @@ void Connect::start()
 {
 	init();
 
-    _polls.push_back((pollfd){_socket, POLLIN, 0});
+    _polls->push_back((pollfd){_socket, POLLIN, 0});
 //    std::vector<pollfd>::iterator iter;
 //    for (;;)
 //    {
-//        for (iter = _polls.begin() + 1; iter != _polls.end(); ++iter) {
+//        for (iter = _polls->begin() + 1; iter != _polls->end(); ++iter) {
 //            if (iter->revents & POLLHUP) {
 //                remove(iter);
 //                break;
@@ -112,7 +112,7 @@ int Connect::add()
         exit(EXIT_FAILURE);
     }
 
-    _polls.push_back((pollfd){client_socket, POLLIN | POLLOUT | POLLHUP, 0});
+    _polls->push_back((pollfd){client_socket, POLLIN | POLLOUT | POLLHUP, 0});
 
 	return client_socket;
 }
@@ -120,7 +120,7 @@ int Connect::add()
 void Connect::remove(std::vector<pollfd>::iterator iter)
 {
 	close(iter->fd);
-	_polls.erase(iter);
+	_polls->erase(iter);
 }
 
 const std::string Connect::receive(int client_socket)

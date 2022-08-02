@@ -2,6 +2,8 @@
 // Created by user1 on 26.06.2022.
 //
 
+//c++ -std=c++98 ../sr
+
 #include "connectTest.hpp"
 #include "../srcs_connect/Connect.hpp"
 
