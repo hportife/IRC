@@ -28,10 +28,10 @@ class Connect
 private:
 	unsigned short			_port;
 	int 					_socket;
-	std::vector<pollfd>		_polls;
+	std::vector<pollfd>	*	_polls;
 
 public:
-	Connect(unsigned short port);
+	Connect(unsigned short port, std::vector<pollfd> * polls);
 	virtual ~Connect();
 	void	start();
 	void	stop();
@@ -39,6 +39,9 @@ public:
 	void	remove(std::vector<pollfd>::iterator); // получает fd соединения и закрывает его
 	const std::string receive(int); // принимает сообщение по fd
 	int		send_msg(int, const std::string&); // отправляет сообщения по fd
+	void	call_poll();
+	void	setPolls(pollfd);
+	pollfd	getPolls(std::vector<pollfd> iterator);
 
 protected:
 	void	init();
