@@ -45,6 +45,19 @@ std::string User::get_user_realname() const {return (user_realname);}
 
 int User::get_user_id() const {return (user_id);}
 
+void User::setAwayMsg(std::string away_msg){
+    this->away_msg = away_msg;
+}
+void User::setAwayMsg(){
+    this->away_msg.clear();
+}
+bool User::isAwayMsg(){
+    return (this->away_msg.empty());
+}
+std::string User::getAwayMsg()const{
+    return (this->away_msg);
+}
+
 std::string User::get_client_name() const {return (this->client_name);}
 
 User *User::clone() const{

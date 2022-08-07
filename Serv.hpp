@@ -15,6 +15,7 @@
 #include "srv_inside/UserStorage.hpp"
 #include "srv_inside/NicknameStorage.hpp"
 #include "srv_inside/CommandLine.hpp"
+#include "Commando.hpp"
 
 class Serv {
 private:
@@ -24,6 +25,8 @@ private:
     std::queue<CommandLine *>   tasks;
     std::vector<pollfd>	        general_polls;
     int                         worked_flag;
+    std::vector<std::string>    irc_oper_nicknames;
+    Commando                    *general_comando;
 
 public:
     Serv();//ok
@@ -33,6 +36,7 @@ public:
     NicknameStorage             *getNicknameStorage()const;//ok
     std::queue<CommandLine *>   *GetTasks()const;//ok
     std::vector<pollfd>	        *GetPolls()const;//ok
+    Commando                    *getCommando()const;
     void                        shutDown();//ok
 };
 

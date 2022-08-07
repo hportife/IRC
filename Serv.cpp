@@ -7,7 +7,8 @@ Serv::Serv() {
     this->general_user_storage = new UserStorage(
             general_nickname_storage);
     this->worked_flag = FLG_SRV_WORK;
-    std::cout << LogIdentifier::info(SERVERCLASS_)
+    this->general_comando = new Commando(&this);
+    std::cout << LogIdentifier::info("SERVERCLASS_")
                 << "Server class is start" << std::endl;
 }
 Serv::~Serv(){//need to add clear
@@ -26,6 +27,9 @@ std::queue<CommandLine *>   *Serv::GetTasks()const{
 }
 std::vector<pollfd>	        *Serv::GetPolls()const{
     return (&this->general_polls);
+}
+Commando *Serv::getCommando() const {
+    return (this->general_comando);
 }
 void Serv::shutDown(){
     this->worked_flag = FLG_SRV_DOWN;

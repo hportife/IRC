@@ -20,6 +20,7 @@ private:
     std::string         user_realname;
     std::string         client_name;
     int                 user_id;
+    std::string         away_msg;
 
 public:
     User(std::string nickname, int id,
@@ -32,6 +33,10 @@ public:
     std::string get_user_nickname() const;//got
     std::string get_client_name() const;//got
     int         get_user_id() const;//got
+    void        setAwayMsg(std::string away_msg);//got
+    void        setAwayMsg();//got
+    bool        isAwayMsg();//got
+    std::string getAwayMsg()const;//got
     User        *clone() const;//got
 };
 
