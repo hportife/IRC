@@ -75,3 +75,19 @@ int Commando::nickname_validator(std::string nickname) {
     }
     return (NICKNAME_HAS_VALID);
 }
+
+int Commando::operLogin(std::string nickname, std::string password) {
+    if (!password.empty() && this->general_serv
+        ->getPassword().compare(password) != 0){
+        return (WRONGPASSWORD);
+    }
+    this->general_serv->getOpers()->push_back(nickname);
+    return (USER_IS_OPER);
+}
+
+void Commando::setRoomLimit(std::string room_name, int limit) {
+    this->general_serv
+        ->getRoomStorage()
+        ->getRoom(room_name)
+        ->set_user_limit(limit);
+}

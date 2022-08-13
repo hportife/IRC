@@ -5,6 +5,7 @@
 #define NICKNAME_IS_GIVEN   114
 #define NICKNAME_HAS_VALID  115
 #define NEW_USER_CREATE     116
+#define WRONGPASSWORD       117
 
 #include "srv_inside/CommandLine.hpp"
 #include "Serv.hpp"
@@ -15,7 +16,7 @@
 //NICK (1Arg)   -
 //NICK (2Arg)   - OK
 //USER          - OK
-//OPER          -
+//OPER          - OK
 //QUIT          -
 //PRIVMSG       -
 //AWAY(on/off)  - OK
@@ -60,10 +61,18 @@ public:
     int     userCommand(std::string nickname, int id,
                         std::string clientname,
                         std::string realname);                              //ok - USER
+    int     operLogin(std::string nickname, std::string password);          //ok - OPER
+    void    setRoomLimit(std::string room_name, int limit);
 
     //-----------------------------validators-----------------------------
     int     nickname_validator(std::string nickname);                       //ok
 };
 
+/*  ("p", false));
+    ("s", false));
+    ("t", false));
+    ("n", false));
+    ("m", false));
+    ("k", false));*/
 
 #endif //IRC_COMMANDO_HPP

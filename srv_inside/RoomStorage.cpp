@@ -96,3 +96,12 @@ void RoomStorage::display_room_storage() const{
                     << std::endl;
     }
 }
+
+Room *RoomStorage::getRoom(std::string room_name) const {
+    for (int i = 0; i < room_storage.size(); ++i) {
+        if (room_storage[i]->get_room_name().compare(room_name) == 0){
+            return (room_storage[i]);
+        }
+    }
+    return (NULL);
+}

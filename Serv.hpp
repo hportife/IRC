@@ -27,16 +27,20 @@ private:
     int                         worked_flag;
     std::vector<std::string>    irc_oper_nicknames;
     Commando                    *general_comando;
+    std::string                 password;
 
 public:
-    Serv();//ok
+    Serv(std::string password);//ok
     ~Serv();
     RoomStorage                 *getRoomStorage()const;//ok
     UserStorage                 *getUserStorage()const;//ok
     NicknameStorage             *getNicknameStorage()const;//ok
-    std::queue<CommandLine *>   *GetTasks()const;//ok
-    std::vector<pollfd>	        *GetPolls()const;//ok
-    Commando                    *getCommando()const;
+    std::queue<CommandLine *>   *getTasks()const;//ok
+    std::vector<pollfd>	        *getPolls()const;//ok
+    srd::vector<std::string>    *getOpers();//
+    Commando                    *getCommando()const;//ok
+    std::string                 getPassword()const;//ok
+    void                        setPassword(std::string password);//
     void                        shutDown();//ok
 };
 

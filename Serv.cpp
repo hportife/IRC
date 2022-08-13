@@ -1,7 +1,8 @@
 #include "tools/LogIdentifier.hpp"
 #include "Serv.hpp"
 
-Serv::Serv() {
+Serv::Serv(std::string password) {
+    this->password = password;
     this->general_room_storage = new RoomStorage();
     this->general_nickname_storage = new NicknameStorage();
     this->general_user_storage = new UserStorage(
@@ -31,6 +32,15 @@ std::vector<pollfd>	        *Serv::GetPolls()const{
 Commando *Serv::getCommando() const {
     return (this->general_comando);
 }
+std::string Serv::getPassword() const {
+    return (this->password);
+}
+void Serv::setPassword(std::string password) {
+    this->password = password;
+}
 void Serv::shutDown(){
     this->worked_flag = FLG_SRV_DOWN;
+}
+std::vector <std::string> *Serv::getOpers() {
+    return (&this->irc_oper_nicknames);
 }

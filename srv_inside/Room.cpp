@@ -68,6 +68,10 @@ void Room::unset_oper(std::string const deleted_oper){
     room_users->set_value(deleted_oper) = USER_IS_NOT_OPER;
 }
 
+void Room::set_user_limit(int limit) {
+    this->users_limit = limit;
+}
+
 //____________________METHODS___________________________________________
 
 void Room::add_user(std::string const nickname){

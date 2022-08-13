@@ -25,6 +25,7 @@ private:
     std::vector<std::string>    invite_list;
     std::map<std::string, bool> room_params;
     std::string                 room_password;
+    int                         users_limit;
 
     Room();
     Room(std::string creator);
@@ -45,6 +46,7 @@ public:
     void        unset_room_parameter(std::string const parameter);//реализовано
     void        set_oper(std::string const new_oper);//реализовано
     void        unset_oper(std::string const deleted_oper);//реализовано
+    void        set_user_limit(int limit);
 
     void        add_user(std::string const nickname);//реализованно
     void        delete_user(std::string const nickname);//реализованно
