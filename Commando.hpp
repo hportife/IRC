@@ -25,6 +25,10 @@
 //WHOIS         -
 //WHOWAS        -
 //MODE          -
+//  room
+//      i       - OK//если лимит 0 - то ограничения нет
+//      o       -
+//  user        - OK
 //TOPIC         -
 //JOIN          -
 //INVITE        -
@@ -62,7 +66,11 @@ public:
                         std::string clientname,
                         std::string realname);                              //ok - USER
     int     operLogin(std::string nickname, std::string password);          //ok - OPER
-    void    setRoomLimit(std::string room_name, int limit);
+    void    setRoomLimit(std::string room_name, int limit);                 //ok - MODE l
+    void    setRoomOperRights(std::string room_name, std::string nickname,
+                              bool rights);                                 //ok - MODE 0
+    void    setUserParam(std::string nickname, std::string param,
+                         bool value);                                       //ok - MODE user
 
     //-----------------------------validators-----------------------------
     int     nickname_validator(std::string nickname);                       //ok

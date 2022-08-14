@@ -91,3 +91,27 @@ void Commando::setRoomLimit(std::string room_name, int limit) {
         ->getRoom(room_name)
         ->set_user_limit(limit);
 }
+
+void Commando::setRoomOperRights(std::string room_name, std::string nickname,
+                                 bool rights) {
+    if (this->general_serv
+            ->getRoomStorage()
+            ->getRoom(room_name) != NULL){
+        if (rights)
+            this->general_serv
+                ->getRoomStorage()
+                ->getRoom(room_name)->set_oper(nickname);
+        else
+            this->general_serv
+                ->getRoomStorage()
+                ->getRoom(room_name)->unset_oper(nickname);
+    }
+}
+
+void Commando::setUserParam(std::string nickname, std::string param,
+                            bool value) {
+    this->general_serv
+        ->getUserStorage()
+        ->search_by_nickname(nickname)
+        ->setUserParamValue(param, value);
+}

@@ -16,11 +16,14 @@
 
 class User {
 private:
-    std::string         user_nickname;
-    std::string         user_realname;
-    std::string         client_name;
-    int                 user_id;
-    std::string         away_msg;
+    std::string                 user_nickname;
+    std::string                 user_realname;
+    std::string                 client_name;
+    int                         user_id;
+    std::string                 away_msg;
+    std::map<std::string, bool> user_params;
+
+    std::map<std::string, bool> initUserParams();
 
 public:
     User(std::string nickname, int id,
@@ -33,6 +36,8 @@ public:
     std::string get_user_nickname() const;//got
     std::string get_client_name() const;//got
     int         get_user_id() const;//got
+    bool        getUserParamValue(std::string param);
+    void        setUserParamValue(std::string param, bool value);
     void        setAwayMsg(std::string away_msg);//got
     void        setAwayMsg();//got
     bool        isAwayMsg();//got

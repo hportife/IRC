@@ -23,8 +23,7 @@ std::map<std::string, bool> Room::initRoomParams(){
     tmp_room_params.insert(std::pair<std::string, bool>("t", false));
     tmp_room_params.insert(std::pair<std::string, bool>("n", false));
     tmp_room_params.insert(std::pair<std::string, bool>("m", false));
-    tmp_room_params.insert(std::pair<std::string, bool>("l", false));
-    tmp_room_params.insert(std::pair<std::string, bool>("k", false));
+    tmp_room_params.insert(std::pair<std::string, bool>("i", false));
     return (tmp_room_params);
 }
 //_____________________GETTERS__________________________________________
@@ -36,7 +35,7 @@ int         Room::get_users_capacity() const {return (this->room_users
 std::string Room::get_room_password() const { return (this->room_password);}
 
 bool        Room::get_param_value(std::string param_name){
-    return (this->room_params[param_name])
+    return (this->room_params[param_name]);
 }
 
 //_____________________SETTERS__________________________________________
@@ -48,24 +47,20 @@ void Room::set_room_name(std::string const new_name) {
 }
 
 void Room::set_room_password(std::string const password){
-    this->room_params["k"] = true;
     this->room_password = password;
 }
 
-void Room::set_room_parameter(std::string const parameter){
-    this->room_params[parameter] = true;
-}
-
-void Room::unset_room_parameter(std::string const parameter){
-    this->room_params[parameter] = false;
+void Room::set_room_parameter(std::string const parameter, bool value){
+    if (this->room_params.find(parameter) != this->room_params.end())
+        this->room_params.find(parameter)->second = value;
 }
 
 void Room::set_oper(std::string const new_oper) {
-    room_users->set_value(new_oper) = USER_IS_OPER;
+    room_users->set_value(new_oper, USER_IS_OPER);
 }
 
 void Room::unset_oper(std::string const deleted_oper){
-    room_users->set_value(deleted_oper) = USER_IS_NOT_OPER;
+    room_users->set_value(deleted_oper, USER_IS_NOT_OPER);
 }
 
 void Room::set_user_limit(int limit) {

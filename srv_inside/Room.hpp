@@ -42,8 +42,7 @@ public:
 
     void        set_room_name(std::string const new_name);//реализовано
     void        set_room_password(std::string const password);//реализовано
-    void        set_room_parameter(std::string const parameter);//реализовано
-    void        unset_room_parameter(std::string const parameter);//реализовано
+    void        set_room_parameter(std::string const parameter, bool value);//реализовано
     void        set_oper(std::string const new_oper);//реализовано
     void        unset_oper(std::string const deleted_oper);//реализовано
     void        set_user_limit(int limit);

@@ -7,6 +7,7 @@ User::User(std::string nickname, int id,
     this->user_id = id;
     this->user_realname = realname;
     this->client_name = clientname;
+    this->user_params = initUserParams();
     std::cout   << LogIdentifier::info("FROM_USERCLASS_" + this->user_nickname + "_")
                 << "User: \n\t\t\t  | nick:\t["
                 << nickname
@@ -14,6 +15,14 @@ User::User(std::string nickname, int id,
                 << id
                 << "]\t|\n \t\t\t  has been created"
                 << std::endl;
+}
+
+std::map<std::string, bool> User::initUserParams(){
+    std::map<std::string, bool> tmp_room_params;
+    tmp_room_params.insert(std::pair<std::string, bool>("i", false));
+    tmp_room_params.insert(std::pair<std::string, bool>("s", false));
+    tmp_room_params.insert(std::pair<std::string, bool>("w", false));
+    return (tmp_room_params);
 }
 
 User::~User() {
@@ -38,12 +47,22 @@ void User::set_nickname(std::string new_nickname) {
     user_nickname = new_nickname;
 }
 
+std::string User::get_user_nickname() const {return (this->user_nickname);}
 
-std::string User::get_user_nickname() const {return (user_nickname);}
+std::string User::get_user_realname() const {return (this->user_realname);}
 
-std::string User::get_user_realname() const {return (user_realname);}
+int User::get_user_id() const {return (this->user_id);}
 
-int User::get_user_id() const {return (user_id);}
+bool User::getUserParamValue(std::string param){
+    if (this->user_params.find(param) != this->user_params.end())
+        return (this->user_params.find(param)->second);
+    return (false);
+}
+
+void User::setUserParamValue(std::string param, bool value) {
+    if (this->user_params.find(param) != this->user_params.end())
+        this->user_params.find(param)->second = value;
+}
 
 void User::setAwayMsg(std::string away_msg){
     this->away_msg = away_msg;
