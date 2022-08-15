@@ -71,6 +71,8 @@ public:
                               bool rights);                                 //ok - MODE 0
     void    setUserParam(std::string nickname, std::string param,
                          bool value);                                       //ok - MODE user
+    void    setRoomParam(std::string room_name, std::string param,
+                         bool value);                                       //nok - MODE room
 
     //-----------------------------validators-----------------------------
     int     nickname_validator(std::string nickname);                       //ok

@@ -50,7 +50,7 @@ void Room::set_room_password(std::string const password){
     this->room_password = password;
 }
 
-void Room::set_room_parameter(std::string const parameter, bool value){
+void Room::setRoomParameter(std::string const parameter, bool value){
     if (this->room_params.find(parameter) != this->room_params.end())
         this->room_params.find(parameter)->second = value;
 }

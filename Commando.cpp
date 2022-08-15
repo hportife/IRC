@@ -115,3 +115,11 @@ void Commando::setUserParam(std::string nickname, std::string param,
         ->search_by_nickname(nickname)
         ->setUserParamValue(param, value);
 }
+
+void Commando::setRoomParam(std::string room_name, std::string param,
+                            bool value) {
+    this->general_serv
+        ->getRoomStorage()
+        ->getRoom(room_name)
+        ->setRoomParameter(param, value);
+}
