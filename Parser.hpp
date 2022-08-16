@@ -24,16 +24,15 @@ X(PART)
  */
 
 #include "srv_inside/CommandLine.hpp"
-//#include "vector"
 
 class Parser {
     CommandLine commandLine;
 
 public:
-    Parser();
+    Parser(std::string input_commandLine);
     ~Parser();
 
-    std::string getCommand();
+    CommandLine getCommandLine();
 };
 
 
