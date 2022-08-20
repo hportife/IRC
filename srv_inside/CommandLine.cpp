@@ -37,6 +37,6 @@ std::string CommandLine::getOneParameter(int position){
     return ("NULL");
 }
 
-std::string CommandLine::getParameter() const {
+std::string CommandLine::getParameters() const {
     return this->parameters;
 }

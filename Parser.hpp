@@ -46,7 +46,7 @@ class Parser {
     CommandEnum _type;
 
 public:
-    Parser(std::string input_commandLine);
+    Parser(const std::string& input_commandLine);
     ~Parser();
 
     CommandLine getCommandLine();

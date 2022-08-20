@@ -15,7 +15,7 @@ std::vector<std::string>    split(const std::string &s, char delim) {
 
     while (getline (ss, item, delim)) {
         if (!item.empty())
-            result.push_back("<" + item + ">");
+            result.push_back(item);
     }
 
     return result;
@@ -47,17 +47,10 @@ Parser::Parser(const std::string& input_commandLine) {
 		if (pos != -1) {
 			cmd = input_commandLine.substr(1, pos);
 			arg = input_commandLine.substr(pos + 2);
-//            std::stringstream sstream(cmd);
 
-//			while (std::getline(sstream, word, ' ')) {
-//				word.erase(std::remove_if(word.begin(), word.end(), ispunct), word.end());
-//				if (!word.empty())
-//                    command.push_back("<" + word + ">");
-//			}
             command = split(cmd, ' ');
             for (std::vector<std::string>::iterator it = command.begin(); it != command.end(); ++it) {
                 word = toUppercase(*it);
-                word = word.substr(1, word.size() - 2);
                 _type = verbToCommand(word);
                 if (_type != UNDEFINED) {
                     std::string tmp = *command.begin();
@@ -66,15 +59,16 @@ Parser::Parser(const std::string& input_commandLine) {
                     command[0] = command[i];
                     command[i] = tmp;
                 }
-			command.push_back("<" + arg + ">");
 		}
-		//else
+            command.push_back(arg);
+
+            //else
 		//std::string	cmd = input_commandLine.substr(1);
 
         }
         std::string str;
         for (std::vector<std::string>::iterator it = command.begin(); it != command.end(); ++it)
-            str += *it;
+            str += "<" + *it + ">";
         this->commandLine = CommandLine(str, (int)command.size());
 	}
 
