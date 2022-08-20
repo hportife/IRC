@@ -6,6 +6,12 @@
 #define MY_PART_PARSER_HPP
 
 #include "srv_inside/CommandLine.hpp"
+#include <iostream>
+#include <string>
+#include <sstream>
+
+#include <vector>
+#include <algorithm>
 
 #define COMMANDS(X) \
 X(PASS),\
@@ -34,12 +40,13 @@ enum CommandEnum { COMMANDS(X), UNDEFINED };
 static const std::string CommandNames[] = { COMMANDS(X) };
 #undef X
 
+
 class Parser {
-    CommandEnum _type;
     CommandLine commandLine;
+    CommandEnum _type;
 
 public:
-    Parser(const std::string& input_commandLine);
+    Parser(std::string input_commandLine);
     ~Parser();
 
     CommandLine getCommandLine();

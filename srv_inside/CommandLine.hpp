@@ -18,7 +18,7 @@ public:
 
     int         getNumberOfParameter() const;
     std::string getOneParameter(int position);
-    std::string getParameters();
+    std::string getParameters() const;
 };
 
 #endif

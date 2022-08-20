@@ -3,14 +3,7 @@
 //
 
 #include "Parser.hpp"
-
-#include <iostream>
-#include <string>
-#include <sstream>
 #include <iterator>
-#include <vector>
-#include <algorithm>
-
 // :Angel PRIVMSG Wiz :Hello are you receiving this message ?
 // То КоммандЛайн должен выглядеть как:
 // <PRIVMSG><Angel><Wiz><Hello are you receiving this message ?>
@@ -96,4 +89,3 @@ CommandLine Parser::getCommandLine() {
 Parser::~Parser() {
 
 }
-
