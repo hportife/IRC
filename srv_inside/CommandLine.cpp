@@ -34,3 +34,11 @@ std::string CommandLine::getOneParameter(int position){
     }
     return ("NULL");
 }
+
+CommandLine::CommandLine() {
+
+}
+
+std::string CommandLine::getParameters() {
+    return this->parameters;
+}

@@ -5,7 +5,9 @@
 #ifndef MY_PART_PARSER_HPP
 #define MY_PART_PARSER_HPP
 
-/*
+#include "srv_inside/CommandLine.hpp"
+
+#define COMMANDS(X) \
 X(PASS),\
 X(USER),\
 X(NICK),\
@@ -21,15 +23,23 @@ X(PING),\
 X(LIST),\
 X(WHO),\
 X(PART)
- */
 
-#include "srv_inside/CommandLine.hpp"
+//enum representation
+#define X(e) e
+enum CommandEnum { COMMANDS(X), UNDEFINED };
+#undef X
+
+//string representation
+#define X(s) #s
+static const std::string CommandNames[] = { COMMANDS(X) };
+#undef X
 
 class Parser {
+    CommandEnum _type;
     CommandLine commandLine;
 
 public:
-    Parser(std::string input_commandLine);
+    Parser(const std::string& input_commandLine);
     ~Parser();
 
     CommandLine getCommandLine();

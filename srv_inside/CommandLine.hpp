@@ -12,11 +12,13 @@ private:
     int         number_of_params;
 
 public:
+    CommandLine();
     CommandLine(std::string cmdln, int number_of_params);
     ~CommandLine();
 
     int         getNumberOfParameter() const;
     std::string getOneParameter(int position);
+    std::string getParameters();
 };
 
 #endif

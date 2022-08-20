@@ -15,50 +15,85 @@
 // То КоммандЛайн должен выглядеть как:
 // <PRIVMSG><Angel><Wiz><Hello are you receiving this message ?>
 
-Parser::Parser(std::string input_commandLine) {
-	std::string commands[] = {"PASS", "USER", "NICK", "PONG", "PRIVMSG", "NOTICE", "JOIN",
-							  "OPER", "QUIT", "KILL","KICK", "PING", "LIST", "WHO", "PART"};
+std::vector<std::string>    split(const std::string &s, char delim) {
+    std::vector<std::string> result;
+    std::stringstream ss (s);
+    std::string item;
+
+    while (getline (ss, item, delim)) {
+        if (!item.empty())
+            result.push_back("<" + item + ">");
+    }
+
+    return result;
+}
+
+CommandEnum verbToCommand(std::string &verb) {
+    return CommandEnum(std::find(CommandNames, CommandNames + UNDEFINED, verb) - CommandNames);
+}
+
+std::string toUppercase(std::string const &original) {
+    std::string uppercased;
+
+    for (std::vector<char const>::iterator it = original.begin(); it != original.end(); ++it) {
+        uppercased += std::toupper(*it);
+    }
+    return uppercased;
+}
+
+Parser::Parser(const std::string& input_commandLine) {
 	//input_commandLine
+    std::string	cmd;
+    std::string arg;
+    std::vector<std::string> command;
+
+    std::string word;
+
 	if (input_commandLine.find(':') == 0) {
 		int pos = (int)input_commandLine.substr(1).find(':');
 		if (pos != -1) {
-			std::string	cmd = input_commandLine.substr(1, pos);
-			std::string arg = input_commandLine.substr(20);
-			std::vector<std::string> command;
+			cmd = input_commandLine.substr(1, pos);
+			arg = input_commandLine.substr(pos + 2);
+//            std::stringstream sstream(cmd);
 
-			std::stringstream sstream(cmd);
-			std::string word;
-			while (std::getline(sstream, word, ' ')){
-				word.erase(std::remove_if(word.begin(), word.end(), ispunct), word.end());
-				command.push_back("<" + word + ">");
-			}
+//			while (std::getline(sstream, word, ' ')) {
+//				word.erase(std::remove_if(word.begin(), word.end(), ispunct), word.end());
+//				if (!word.empty())
+//                    command.push_back("<" + word + ">");
+//			}
+            command = split(cmd, ' ');
+            for (std::vector<std::string>::iterator it = command.begin(); it != command.end(); ++it) {
+                word = toUppercase(*it);
+                word = word.substr(1, word.size() - 2);
+                _type = verbToCommand(word);
+                if (_type != UNDEFINED) {
+                    std::string tmp = *command.begin();
+                    std::vector<std::string>::iterator itr = std::find(command.begin(), command.end(), word);
+                    int i = (int)std::distance(command.begin(), itr);
+                    command[0] = command[i];
+                    command[i] = tmp;
+                }
 			command.push_back("<" + arg + ">");
 		}
 		//else
 		//std::string	cmd = input_commandLine.substr(1);
 
-
-		this->commandLine();
+        }
+        std::string str;
+        for (std::vector<std::string>::iterator it = command.begin(); it != command.end(); ++it)
+            str += *it;
+        this->commandLine = CommandLine(str, (int)command.size());
 	}
 
 
 
 }
 
-//std::string Parser::getCommand() {
-//    std::string commands[] = {"PASS", "USER", "NICK", "PONG", "PRIVMSG", "NOTICE", "JOIN", "OPER", "QUIT", "KILL", "KICK", "PING", "LIST", "WHO", "PART"};
-//
-//    return std::string();
-//}
-
-
-
-
-
 CommandLine Parser::getCommandLine() {
-	return CommandLine(__cxx11::basic_string(), 0);
+	return this->commandLine;
 }
 
 Parser::~Parser() {
 
 }
+
