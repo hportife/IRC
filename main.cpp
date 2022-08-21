@@ -17,9 +17,11 @@ using std::stringstream;
 // <PRIVMSG><Angel><Wiz><Hello are you receiving this message ?>
 
 int main() {
-    string str = ":Angel PRIVMSG Wiz :Hello are you receiving this message ?";
+//    string str = ":Angel PRIVMSG Wiz :Hello are you receiving this message ?";
+    string str = "PasS sed00834r";
 
     Parser parser(str);
+//    std::cout << parser.getCommandLine().getParameters() << std::endl;
     std::cout << parser.getCommandLine().getParameters() << std::endl;
     std::cout << parser.getCommandLine().getNumberOfParameter() << std::endl;
     std::cout << parser.getCommandLine().getOneParameter(1) << std::endl;

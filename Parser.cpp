@@ -34,50 +34,48 @@ std::string toUppercase(std::string const &original) {
     return uppercased;
 }
 
-Parser::Parser(const std::string& input_commandLine) {
+Parser::Parser(std::string input_commandLine) {
 	//input_commandLine
     std::string	cmd;
-    std::string arg;
+    std::string msg;
     std::vector<std::string> command;
 
     std::string word;
 
-	if (input_commandLine.find(':') == 0) {
-		int pos = (int)input_commandLine.substr(1).find(':');
-		if (pos != -1) {
-			cmd = input_commandLine.substr(1, pos);
-			arg = input_commandLine.substr(pos + 2);
-
-            command = split(cmd, ' ');
-            for (std::vector<std::string>::iterator it = command.begin(); it != command.end(); ++it) {
-                word = toUppercase(*it);
-                _type = verbToCommand(word);
-                if (_type != UNDEFINED) {
-                    std::string tmp = *command.begin();
-                    std::vector<std::string>::iterator itr = std::find(command.begin(), command.end(), word);
-                    int i = (int)std::distance(command.begin(), itr);
-                    command[0] = command[i];
-                    command[i] = tmp;
-                }
-		}
-            command.push_back(arg);
-
-            //else
-		//std::string	cmd = input_commandLine.substr(1);
-
+	if (input_commandLine.find(':') == 0)
+        input_commandLine = input_commandLine.substr(1);
+    
+    int pos = (int)input_commandLine.find(':');
+    if (pos != -1) {
+        cmd = input_commandLine.substr(0, pos);
+        msg = input_commandLine.substr(pos + 1);
+        command = split(cmd, ' ');
+    } else
+        command = split(input_commandLine, ' ');
+    for (std::vector<std::string>::iterator it = command.begin(); it != command.end(); ++it)
+    {
+        word = toUppercase(*it);
+        _type = verbToCommand(word);
+        if (_type != UNDEFINED)
+        {
+            std::string tmp = *command.begin();
+            std::vector<std::string>::iterator itr = std::find(command.begin(), command.end(), word);
+            int i = (int)std::distance(command.begin(), itr);
+            command[0] = command[i];
+            command[i] = tmp;
         }
-        std::string str;
-        for (std::vector<std::string>::iterator it = command.begin(); it != command.end(); ++it)
-            str += "<" + *it + ">";
-        this->commandLine = CommandLine(str, (int)command.size());
-	}
-
-
-
+    }
+    if (pos != -1)
+        command.push_back(msg);
+    std::string str;
+    for (std::vector<std::string>::iterator it = command.begin(); it != command.end(); ++it)
+        str += "<" + *it + ">";
+    this->_commandLine = CommandLine(str, (int)command.size());
+    this->_tasks.push(_commandLine);
 }
 
 CommandLine Parser::getCommandLine() {
-	return this->commandLine;
+	return this->_tasks.front();
 }
 
 Parser::~Parser() {

@@ -9,7 +9,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-
+#include <queue>
 #include <vector>
 #include <algorithm>
 
@@ -42,11 +42,12 @@ static const std::string CommandNames[] = { COMMANDS(X) };
 
 
 class Parser {
-    CommandLine commandLine;
-    CommandEnum _type;
+    CommandLine             _commandLine;
+    CommandEnum             _type;
+    std::queue<CommandLine> _tasks;
 
 public:
-    Parser(const std::string& input_commandLine);
+    Parser(std::string input_commandLine);
     ~Parser();
 
     CommandLine getCommandLine();
