@@ -59,10 +59,11 @@ Parser::Parser(std::string input_commandLine) {
         if (_type != UNDEFINED)
         {
             std::string tmp = *command.begin();
-            std::vector<std::string>::iterator itr = std::find(command.begin(), command.end(), word);
-            int i = (int)std::distance(command.begin(), itr);
-            command[0] = command[i];
-            command[i] = tmp;
+            std::vector<std::string>::iterator itr = std::find(command.begin(), command.end(), *it);
+            int i = (int)std::distance(command.begin(), itr); //?
+            command[0] = word;
+            if (i != 0)
+                command[i] = tmp;
         }
     }
     if (pos != -1)

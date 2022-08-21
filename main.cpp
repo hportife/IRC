@@ -1,24 +1,16 @@
 #include <iostream>
-#include <string>
-#include <sstream>
+
 #include <iterator>
-#include <vector>
-#include <algorithm>
 
 #include "Parser.hpp"
-
-using std::cout; using std::cin;
-using std::endl; using std::string;
-using std::vector; using std::istringstream;
-using std::stringstream;
 
 // :Angel PRIVMSG Wiz :Hello are you receiving this message ?
 // То КоммандЛайн должен выглядеть как:
 // <PRIVMSG><Angel><Wiz><Hello are you receiving this message ?>
 
 int main() {
-//    string str = ":Angel PRIVMSG Wiz :Hello are you receiving this message ?";
-    string str = "PasS sed00834r";
+    std::string str = ":Angel PrIVMSg Wiz :Hello are you receiving this message ?";
+//    std::string str = "PAss sed00834r";
 
     Parser parser(str);
 //    std::cout << parser.getCommandLine().getParameters() << std::endl;
