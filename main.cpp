@@ -9,8 +9,8 @@
 // <PRIVMSG><Angel><Wiz><Hello are you receiving this message ?>
 
 int main() {
-    std::string str = ":Angel PrIVMSg Wiz :Hello are you receiving this message ?";
-//    std::string str = "PAss sed00834r";
+    std::string str = ":Angel PrIVMSg Wiz, Den,Jax :Hello are you receiving this message ?";
+//    std::string str = "QUIT :Gone to have lunch";
 
     Parser parser(str);
 //    std::cout << parser.getCommandLine().getParameters() << std::endl;

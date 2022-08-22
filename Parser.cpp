@@ -4,9 +4,25 @@
 
 #include "Parser.hpp"
 #include <iterator>
+
 // :Angel PRIVMSG Wiz :Hello are you receiving this message ?
 // То КоммандЛайн должен выглядеть как:
 // <PRIVMSG><Angel><Wiz><Hello are you receiving this message ?>
+
+std::string trim(const std::string &s)
+{
+    std::vector<char const>::iterator start = s.begin();
+    while (start != s.end() && std::isspace(*start)) {
+        start++;
+    }
+
+    std::vector<char const>::iterator end = s.end();
+    do {
+        end--;
+    } while (std::distance(start, end) > 0 && std::isspace(*end));
+
+    return std::string(start, end + 1);
+}
 
 std::vector<std::string>    split(const std::string &s, char delim) {
     std::vector<std::string> result;
@@ -14,8 +30,10 @@ std::vector<std::string>    split(const std::string &s, char delim) {
     std::string item;
 
     while (getline (ss, item, delim)) {
-        if (!item.empty())
+        if (!item.empty()) {
+            trim(item);
             result.push_back(item);
+        }
     }
 
     return result;
@@ -36,10 +54,11 @@ std::string toUppercase(std::string const &original) {
 
 Parser::Parser(std::string input_commandLine) {
 	//input_commandLine
+    // :Angel PrIVMSg Wiz, Den,Jax :Hello are you receiving this message ?
     std::string	cmd;
     std::string msg;
     std::vector<std::string> command;
-
+    std::vector<std::vector<std::string> > tasks;
     std::string word;
 
 	if (input_commandLine.find(':') == 0)
@@ -49,6 +68,10 @@ Parser::Parser(std::string input_commandLine) {
     if (pos != -1) {
         cmd = input_commandLine.substr(0, pos);
         msg = input_commandLine.substr(pos + 1);
+        int com = (int)cmd.find(',');
+        if (com != -1) {
+
+        }
         command = split(cmd, ' ');
     } else
         command = split(input_commandLine, ' ');
@@ -60,7 +83,7 @@ Parser::Parser(std::string input_commandLine) {
         {
             std::string tmp = *command.begin();
             std::vector<std::string>::iterator itr = std::find(command.begin(), command.end(), *it);
-            int i = (int)std::distance(command.begin(), itr); //?
+            int i = (int)std::distance(command.begin(), itr);
             command[0] = word;
             if (i != 0)
                 command[i] = tmp;
