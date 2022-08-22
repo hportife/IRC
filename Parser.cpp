@@ -60,7 +60,7 @@ Parser::Parser(std::string input_commandLine) {
     std::vector<std::string> command;
     std::vector<std::vector<std::string> > tasks;
     std::string word;
-
+    trim(input_commandLine);
 	if (input_commandLine.find(':') == 0)
         input_commandLine = input_commandLine.substr(1);
     
@@ -68,10 +68,10 @@ Parser::Parser(std::string input_commandLine) {
     if (pos != -1) {
         cmd = input_commandLine.substr(0, pos);
         msg = input_commandLine.substr(pos + 1);
-        int com = (int)cmd.find(',');
-        if (com != -1) {
-
-        }
+//        int com = (int)cmd.find(',');
+//        if (com != -1) {
+//
+//        }
         command = split(cmd, ' ');
     } else
         command = split(input_commandLine, ' ');

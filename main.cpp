@@ -8,9 +8,11 @@
 // То КоммандЛайн должен выглядеть как:
 // <PRIVMSG><Angel><Wiz><Hello are you receiving this message ?>
 
+
 int main() {
-    std::string str = ":Angel PrIVMSg Wiz, Den,Jax :Hello are you receiving this message ?";
+//    std::string str = ":Angel PrIVMSg Wiz, Den,Jax :Hello are you receiving this message ?";
 //    std::string str = "QUIT :Gone to have lunch";
+    std::string str = " :Angel PRIVMSG Wiz :Hello are you receiving this message ?";
 
     Parser parser(str);
 //    std::cout << parser.getCommandLine().getParameters() << std::endl;
@@ -25,3 +27,15 @@ int main() {
     std::cout << parser.getCommandLine().getOneParameter(7) << std::endl;
 	return EXIT_SUCCESS;
 }
+
+
+//
+//int main() {
+//    std::string str = ":Angel PrIVMSg Wiz, Den,Jax :Hello are you receiving this message ?";
+////    std::string str = "QUIT :Gone to have lunch";
+//
+//    int rfi = (int)str.find(':', 4);
+//    std::cout << rfi << std::endl;
+//    return 0;
+//}
+
