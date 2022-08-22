@@ -50,7 +50,9 @@ public:
     Parser(std::string input_commandLine);
     ~Parser();
 
-    CommandLine getCommandLine();
+    CommandLine getOneCommandLine();
+    std::queue<CommandLine> getAllCommandLine();
+    void    popOneCommandLine();
 };
 
 
