@@ -3,8 +3,9 @@
 //
 
 #include "Parser.hpp"
-//#include <iterator> ?
+//#include <iterator> //?
 #include "tools/LogIdentifier.hpp"
+#include <cstring>
 
 // :Angel PRIVMSG Wiz :Hello are you receiving this message ?
 // То КоммандЛайн должен выглядеть как:
@@ -79,12 +80,6 @@ Parser::Parser(std::string input_commandLine) {
     // :Angel PrIVMSg Wiz, Den,Jax :Hello are you receiving this message ?
     // :Angel PRIVMSG Wiz :Hello are you receiving this message ?
 
-//  JOIN #foobar                      // вход на канал #foobar.
-//  JOIN &foo fubar                   // вход на канал &foo, используя ключ "fubar".
-//  JOIN #foo,&bar fubar              // вход на канал #foo, используя ключ "fubar" и на канал &bar без использования ключа.
-//  JOIN #foo,#bar fubar,foobar       // вход на канал #foo, используя ключ "fubar" и на канал #bar, используя ключ "foobar".
-//  JOIN #foo,#bar
-
     std::string	cmd; //?
 
     std::string msg; //must have
@@ -122,7 +117,7 @@ Parser::Parser(std::string input_commandLine) {
                 keys_users = split(input_commandLine.substr(pos), ',');
             else
                 keys_users = split(input_commandLine.substr(pos), ',');
-            if (strchr(input_commandLine.c_str(), '&'))
+            if ((int)input_commandLine.find('#') > (int)input_commandLine.find('&') and (int)input_commandLine.find('&') != -1)
                 input_commandLine = input_commandLine.substr(0, input_commandLine.find('&'));
             else
                 input_commandLine = input_commandLine.substr(0, input_commandLine.find('#'));
@@ -157,19 +152,20 @@ Parser::Parser(std::string input_commandLine) {
 
     for (int i = 0; i < n; ++i) {
         std::vector<std::string> tmp = command;
-        if (!channels.empty())
+        if (!channels.empty() and i < channels.size())
             tmp.push_back(channels[i]);
-        if (!keys_users.empty())
+        if (!keys_users.empty() and i < keys_users.size())
             tmp.push_back(keys_users[i]);
         if (!msg.empty())
             tmp.push_back(msg);
         std::string str;
         for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); ++it) {
-            if (!(*it).empty())
-            str += "<" + *it + ">";
+                str += "<" + *it + ">";
         }
+
         this->_commandLine = CommandLine(str, (int)tmp.size());
         this->_tasks.push(_commandLine);
+
 //        tmp.clear(); //?
 //        str.clear();
     }
