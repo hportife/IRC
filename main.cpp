@@ -27,8 +27,8 @@ int main() {
 //    std::string str = "MODE #Finnish +im";
 // Делает канал #Finnish модерируемым и 'invite-only'.
 
-//    std::string str = "JOIN #foo,#bar fubar,foobar";
-    std::string str = "LIST #twilight_zone,  #42";
+//    std::string str = "JOIN #foo, &bar fubar,  foobar";
+    std::string str = "LIST #twilight_zone,  #42  foobar";
 //    std::string str = ":Angel PrIVMSg Wiz, Den,Jax :Hello are you receiving this message ?";
 //    std::string str = "QUIT :Gone to have lunch";
 //    std::string str = " :Angel PRIVMSG Wiz :Hello are you receiving this message ?";
