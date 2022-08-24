@@ -13,6 +13,10 @@
 #include <vector>
 #include <algorithm>
 
+#define ERR_UNKNOWNCOMMAND 421      // "<command> :Unknown command"
+#define ERR_NEEDMOREPARAMS 461      // "<command> :Not enough parameters"
+
+
 #define COMMANDS(X) \
 X(PASS),\
 X(USER),\
@@ -28,7 +32,23 @@ X(KICK),\
 X(PING),\
 X(LIST),\
 X(WHO),\
-X(PART)
+X(PART),\
+X(AWAY),\
+X(WHOIS),\
+X(WHOWAS),\
+X(MODE),\
+X(TOPIC),\
+X(INVITE),\
+X(NAMES),\
+X(WALLOPS),\
+X(ISON),\
+X(USERHOST),\
+X(VERSION),\
+X(INFO),\
+X(ADMIN),\
+X(TIME),\
+X(REHASH),\
+X(RESTART)
 
 //enum representation
 #define X(e) e
@@ -45,6 +65,8 @@ class Parser {
     CommandLine             _commandLine;
     CommandEnum             _type;
     std::queue<CommandLine> _tasks;
+    int                     _countCommand;
+    int                     _countParameters;
 
 public:
     Parser(std::string input_commandLine);
