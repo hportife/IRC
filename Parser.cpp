@@ -3,13 +3,7 @@
 //
 
 #include "Parser.hpp"
-//#include <iterator> //?
 #include "tools/LogIdentifier.hpp"
-#include <cstring>
-
-// :Angel PRIVMSG Wiz :Hello are you receiving this message ?
-// То КоммандЛайн должен выглядеть как:
-// <PRIVMSG><Angel><Wiz><Hello are you receiving this message ?>
 
 std::string trim(const std::string &s)
 {
@@ -55,7 +49,7 @@ std::string toUppercase(std::string const &original) {
 std::vector<std::string>    find_channel(std::string str, int *pos) {
     std::vector<std::string>    result;
 
-    for (int i = 0; i < str.size(); ++i) {
+    for (int i = 0; i < (int)str.size(); ++i) {
         std::string new_str;
         if ((str[i] == '#' or str[i] == '&')) {
             while (str[i] != ',' and str[i] != ' ' and str[i]) {
@@ -75,12 +69,22 @@ void    comma_find(std::string cmd, std::vector<std::string> *users, std::vector
     *command = split(cmd, ' ');
 }
 
-Parser::Parser(std::string input_commandLine) {
-	//input_commandLine
-    // :Angel PrIVMSg Wiz, Den,Jax :Hello are you receiving this message ?
-    // :Angel PRIVMSG Wiz :Hello are you receiving this message ?
+std::vector<std::string>    mode_find(std::string str, const std::string& sign) {
+    std::vector<std::string>    result;
 
-    std::string	cmd; //?
+    for (int i = 0; i < (int)str.size(); ++i) {
+        while (strchr("opsitnbvmlk", str[i]) and str[i]) {
+            std::string new_str;
+            new_str += sign + str[i++];
+            result.push_back(new_str);
+        }
+        break;
+    }
+    return result;
+}
+
+Parser::Parser(std::string input_commandLine) {
+    char const  *cmd;
 
     std::string msg; //must have
 
@@ -88,12 +92,11 @@ Parser::Parser(std::string input_commandLine) {
 
     std::vector<std::string> command;
 
-
     std::vector<std::vector<std::string> > tasks;
 
     std::string word;
 
-    std::vector<std::string> keys_users;
+    std::vector<std::string> keys_users_modes;
 
     this->_countCommand = 0;
 
@@ -114,18 +117,33 @@ Parser::Parser(std::string input_commandLine) {
         if ((int)input_commandLine.find('&') != -1 or (int)input_commandLine.find('#') != -1) {
             channels = find_channel(input_commandLine, &pos);
             if ((int)input_commandLine.find(',', pos) != -1)
-                keys_users = split(input_commandLine.substr(pos), ',');
+                keys_users_modes = split(input_commandLine.substr(pos), ',');
             else
-                keys_users = split(input_commandLine.substr(pos), ',');
+                keys_users_modes = split(input_commandLine.substr(pos), ',');
             if ((int)input_commandLine.find('#') > (int)input_commandLine.find('&') and (int)input_commandLine.find('&') != -1)
                 input_commandLine = input_commandLine.substr(0, input_commandLine.find('&'));
             else
                 input_commandLine = input_commandLine.substr(0, input_commandLine.find('#'));
             command = split(input_commandLine, ' ');
         } else
-            comma_find(input_commandLine, &keys_users, &command);
-    } else
+            comma_find(input_commandLine, &keys_users_modes, &command);
+    } else {
+        if ((int)input_commandLine.find(" +") != -1) {
+            pos = (int)input_commandLine.find(" +");
+            keys_users_modes = mode_find(input_commandLine.substr(pos + 2), "+");
+        }
+        if ((int)input_commandLine.find(" -") != -1) {
+            pos = (int)input_commandLine.find(" -");
+            keys_users_modes = mode_find(input_commandLine.substr(pos + 2), "-");
+        }
+        if ((int)input_commandLine.find(" -") != -1 or (int)input_commandLine.find(" +") != -1) {
+            cmd = input_commandLine.substr(pos + 2).c_str();
+            while (*cmd != ' ' and *cmd)
+                cmd++;
+            input_commandLine = input_commandLine.substr(0, pos) + cmd;
+        }
         command = split(input_commandLine, ' ');
+    }
 
     for (std::vector<std::string>::iterator it = command.begin(); it != command.end(); ++it)
     {
@@ -148,29 +166,25 @@ Parser::Parser(std::string input_commandLine) {
     if (!channels.empty())
         n = (int)channels.size();
     else
-        n = (int)keys_users.size();
+        n = (int)keys_users_modes.size();
 
     for (int i = 0; i < n; ++i) {
         std::vector<std::string> tmp = command;
-        if (!channels.empty() and i < channels.size())
+        if (!channels.empty() and i < (int)channels.size())
             tmp.push_back(channels[i]);
-        if (!keys_users.empty() and i < keys_users.size())
-            tmp.push_back(keys_users[i]);
+        if (!keys_users_modes.empty() and i < (int)keys_users_modes.size())
+            tmp.push_back(keys_users_modes[i]);
         if (!msg.empty())
             tmp.push_back(msg);
         std::string str;
         for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); ++it) {
                 str += "<" + *it + ">";
         }
-
         this->_commandLine = CommandLine(str, (int)tmp.size());
         this->_tasks.push(_commandLine);
-
-//        tmp.clear(); //?
-//        str.clear();
     }
 
-    if (channels.empty()) {
+    if (channels.empty() and keys_users_modes.empty()) {
         if (!msg.empty())
             command.push_back(msg);
         std::string str;
@@ -181,60 +195,6 @@ Parser::Parser(std::string input_commandLine) {
     }
     if (_countCommand < 1)
         std::cout << LogIdentifier::error("<command> :Unknown command") << std::endl;
-
-
-    /*
-    if (pos != -1) {
-        cmd = input_commandLine.substr(0, pos);
-        msg = input_commandLine.substr(pos + 1);
-//        int channel = (int)cmd.find("&#");
-        comma_find(cmd, &users, &command);
-    } else
-        comma_find(input_commandLine, &users, &command);
-
-    for (std::vector<std::string>::iterator it = command.begin(); it != command.end(); ++it)
-    {
-        word = toUppercase(*it);
-        _type = verbToCommand(word);
-        if (_type != UNDEFINED)
-        {
-            std::string tmp = *command.begin();
-            std::vector<std::string>::iterator itr = std::find(command.begin(), command.end(), *it);
-            int i = (int)std::distance(command.begin(), itr);
-            command[0] = word;
-            if (i != 0)
-                command[i] = tmp;
-            _countCommand++;
-        }
-    }
-
-    for (std::vector<std::string>::iterator it = users.begin(); it != users.end(); ++it) {
-        std::vector<std::string> tmp = command;
-        tmp.push_back(*it);
-        if (!msg.empty())
-            tmp.push_back(msg);
-        std::string str;
-        for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); ++it)
-            str += "<" + *it + ">";
-        this->_commandLine = CommandLine(str, (int)tmp.size());
-        this->_tasks.push(_commandLine);
-//        tmp.clear(); //?
-//        str.clear();
-    }
-
-    if (users.empty()) {
-        if (!msg.empty())
-            command.push_back(msg);
-        std::string str;
-        for (std::vector<std::string>::iterator it = command.begin(); it != command.end(); ++it)
-            str += "<" + *it + ">";
-        this->_commandLine = CommandLine(str, (int)command.size());
-        this->_tasks.push(_commandLine);
-    }
-    if (_countCommand < 1)
-        std::cout << LogIdentifier::error("<command> :Unknown command") << std::endl;
-*/
-
 }
 
 CommandLine Parser::getOneCommandLine() {

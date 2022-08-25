@@ -66,7 +66,6 @@ class Parser {
     CommandEnum             _type;
     std::queue<CommandLine> _tasks;
     int                     _countCommand;
-    int                     _countParameters;
 
 public:
     Parser(std::string input_commandLine);

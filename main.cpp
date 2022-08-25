@@ -12,32 +12,30 @@
 int main() {
 //all comands:
 
-//    std::string str = "PASS secretpassword";
-//    std::string str = "NICK Wiz";		// Вступление нового никнейма "Wiz".
-//    std::string str = ":WiZ NICK Kilroy"; // WiZ изменяет свой никнейм на Kilroy.
-
-//    std::string str = "USER guest tolmoon tolsun :Ronnie Reagan";
-// Пользователь зарегистрировал себя под именем "guest" и его реальное имя "Ronnie Reagan"
-
-//    std::string str = "OPER foo bar";
-// Попытка зарегистрироваться как IRC-оператор, используя имя пользователя "foo" и пароль "bar".
-
-//    std::string str = "WHO jto* o";
-// Список пользователей, соответствующие маске "jto*", если они являются операторами.
-//    std::string str = "MODE #Finnish +im";
-// Делает канал #Finnish модерируемым и 'invite-only'.
-
-//  JOIN #foobar                      // вход на канал #foobar.
-//  JOIN &foo fubar                   // вход на канал &foo, используя ключ "fubar".
-//  JOIN #foo,&bar fubar              // вход на канал #foo, используя ключ "fubar" и на канал &bar без использования ключа.
-//  JOIN #foo,#bar fubar,foobar       // вход на канал #foo, используя ключ "fubar" и на канал #bar, используя ключ "foobar".
+//  JOIN #foobar
+//  JOIN &foo fubar
+//  JOIN #foo,&bar fubar
+//  JOIN #foo,#bar fubar,foobar
 //  JOIN #foo,#bar
 
-    std::string str = "JOIN #foo,#bar";
+//    std::string str = "JOIN #foo,#bar";
 //    std::string str = "LIST #twilight_zone,  #42  foobar";
+//    std::string str = "PART #oz-ops,&group5";
 //    std::string str = ":Angel PrIVMSg Wiz, Den,Jax :Hello are you receiving this message ?";
 //    std::string str = "QUIT :Gone to have lunch";
 //    std::string str = " :Angel PRIVMSG Wiz :Hello are you receiving this message ?";
+
+//      std::string str = "MODE #Finnish +im";
+//      std::string str = "MODE #Finnish +o Kilroy";
+//      std::string str = "MODE #Finnish +v Wiz";
+    //  MODE #Fins -s
+//      std::string str = "MODE #42 +k";
+//    std::string str = "MODE #eu-opers +l 10";
+    //  MODE &oulu +b
+    //  MODE &oulu +b *!*@*
+      std::string str = "MODE &oulu +b *!*@*.edu";
+
+//      std::string str = "KICK #Finnish John :Speaking English";
 
     Parser parser(str);
 //    std::cout << parser.getCommandLine().getParameters() << std::endl;
