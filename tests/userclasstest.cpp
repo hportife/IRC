@@ -1,5 +1,5 @@
-#include "../tools/LogIdentifier.hpp"
-#include "../srv_inside/User.hpp"
+#include "../includes/LogIdentifier.hpp"
+#include "../includes/User.hpp"
 //c++ ./userclasstest.cpp ../tools/LogIdentifier.cpp ../srv_inside/NicknameStorage.cpp ../srv_inside/User.cpp ../srv_inside/UserCreator.cpp
 //PLEASE, WRITE THE DOC!!!!!!!!!!!!!!
 int main(void)

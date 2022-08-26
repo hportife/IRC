@@ -1,11 +1,8 @@
 #ifndef IRC_ROOMSTORAGE_HPP
 #define IRC_ROOMSTORAGE_HPP
 
-#define ROOM_IN_STORAGE             400
-#define ROOM_NOT_IN_STORAGE         401
-#define DELETE_HAS_BEEN_COMPLETE    402
-
 #include "Room.hpp"
+#include "defines.hpp"
 
 class RoomStorage
 {

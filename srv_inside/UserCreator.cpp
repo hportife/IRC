@@ -1,4 +1,4 @@
-#include "UserCreator.hpp"
+#include "../includes/UserCreator.hpp"
 
 UserCreator::UserCreator(int tmp_id, NicknameStorage *tmp_storage, std::string server_password) {
     id = tmp_id;

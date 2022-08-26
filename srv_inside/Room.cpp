@@ -1,5 +1,5 @@
-#include "../tools/LogIdentifier.hpp"
-#include "Room.hpp"
+#include "../includes/LogIdentifier.hpp"
+#include "../includes/Room.hpp"
 
 Room::Room(std::string creator, std::string set_room_name) {
     //так как комнаты будут создаваться с помощью

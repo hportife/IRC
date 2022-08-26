@@ -1,4 +1,4 @@
-#include "UserStorage.hpp"
+#include "../includes/UserStorage.hpp"
 
 UserStorage::UserStorage(NicknameStorage *ptr_to_nickname_storage) {
     this->ptr_to_nickname_storage = ptr_to_nickname_storage;

@@ -1,5 +1,5 @@
-#include "tools/LogIdentifier.hpp"
-#include "Serv.hpp"
+#include "includes/LogIdentifier.hpp"
+#include "includes/Serv.hpp"
 
 Serv::Serv(std::string password) {
     this->password = password;
@@ -8,12 +8,12 @@ Serv::Serv(std::string password) {
     this->general_user_storage = new UserStorage(
             general_nickname_storage);
     this->worked_flag = FLG_SRV_WORK;
-    this->general_comando = new Commando(&this);
+    this->general_comando = new Commando(this);
     std::cout << LogIdentifier::info("SERVERCLASS_")
                 << "Server class is start" << std::endl;
 }
 Serv::~Serv(){//need to add clear
-     }
+    }
 RoomStorage                 *Serv::getRoomStorage()const{
     return (this->general_room_storage);
 }
@@ -21,12 +21,12 @@ UserStorage                 *Serv::getUserStorage()const{
     return (this->general_user_storage);
 }
 NicknameStorage             *Serv::getNicknameStorage()const{
-    return
+    return (this->general_nickname_storage);
 }
-std::queue<CommandLine *>   *Serv::GetTasks()const{
+std::queue<CommandLine *>   *Serv::getTasks(){
     return (&this->tasks);
 }
-std::vector<pollfd>	        *Serv::GetPolls()const{
+std::vector<pollfd>	        *Serv::getPolls(){
     return (&this->general_polls);
 }
 Commando *Serv::getCommando() const {

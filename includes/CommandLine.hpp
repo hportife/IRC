@@ -1,10 +1,8 @@
 #ifndef IRC_COMMNADLINE_HPP
 #define IRC_COMMNADLINE_HPP
 
-#define ISNOCOMMANT 2000
-#define ISCOMMAND   2001
-
 #include <iostream>
+#include "defines.hpp"
 
 class CommandLine{
 private:

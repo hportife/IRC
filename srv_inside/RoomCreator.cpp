@@ -1,5 +1,5 @@
-#include "../tools/LogIdentifier.hpp"
-#include "RoomCreator.hpp"
+#include "../includes/LogIdentifier.hpp"
+#include "../includes/RoomCreator.hpp"
 #include <cstddef>        // std::size_t
 
 RoomCreator::RoomCreator(std::string creator_nickname, RoomStorage *general_storage){

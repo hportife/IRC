@@ -1,6 +1,6 @@
-#include "../tools/LogIdentifier.hpp"
-#include "../srv_inside/Room.hpp"
-#include "../srv_inside/RoomStorage.hpp"
+#include "../includes/LogIdentifier.hpp"
+#include "../includes/Room.hpp"
+#include "../includes/RoomStorage.hpp"
 
 //c++ -std=c++98 roomstoragetest.cpp ../tools/LogIdentifier.cpp ../srv_inside/Room.cpp ../srv_inside/User.cpp ../srv_inside/RoomStorage.cpp ../srv_inside/NicknameStorage.cpp
 

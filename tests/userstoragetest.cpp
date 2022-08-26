@@ -2,8 +2,8 @@
 // Created by grafsky on 7/30/22.
 // compile: c++ userstoragetest.cpp ../srv_inside/User.cpp ../srv_inside/UserStorage.cpp ../srv_inside/NicknameStorage.cpp ../tools/LogIdentifier.cpp
 
-#include "../srv_inside/UserStorage.hpp"
-#include "../tools/LogIdentifier.hpp"
+#include "../includes/UserStorage.hpp"
+#include "../includes/LogIdentifier.hpp"
 
 int main(){
     NicknameStorage *tmp_nickname_storage = new NicknameStorage();

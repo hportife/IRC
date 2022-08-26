@@ -1,5 +1,7 @@
-#include "tools/LogIdentifier.hpp"
-#include "Commando.hpp"
+#include "includes/LogIdentifier.hpp"
+#include "includes/Commando.hpp"
+
+Commando::Commando() {}
 
 Commando::Commando(Serv *server_class) {
     this->general_serv = server_class;
@@ -8,11 +10,18 @@ Commando::Commando(Serv *server_class) {
 }
 
 void Commando::getNextCommandLine() {
-    if (!this->general_serv->GetTasks()->empty()) {
-        this->commandLine = this->general_serv->GetTasks()->front();
-        this->general_serv->GetTasks()->pop();
+    if (!this->general_serv->getTasks()->empty()) {
+        this->commandLine = this->general_serv->getTasks()->front();
+        this->general_serv->getTasks()->pop();
     }
 }
+
+//int Commando::executeActualCommand() {
+//    switch (this->commandLine->getOneParameter(1)) {
+//        case "USER":
+//            userCommand();
+//    }
+//}
 
 int Commando::swapNickname(std::string old_nickname,
                            std::string new_nickname) {
@@ -33,16 +42,10 @@ int Commando::swapNickname(std::string old_nickname,
     return (NICKNAME_IS_GIVEN);
 }
 
-int Commando::setAwayMsg(std::string user_nickname, std::string message) {
+void Commando::setAwayMsg(std::string user_nickname, std::string message) {
     this->general_serv->getUserStorage()
                         ->search_by_nickname(user_nickname)
                         ->setAwayMsg(message);
-}
-
-int Commando::setAwayMsg(std::string user_nickname) {
-    this->general_serv->getUserStorage()
-            ->search_by_nickname(user_nickname)
-            ->setAwayMsg();
 }
 
 int Commando::userCommand(std::string nickname, int id,

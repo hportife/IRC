@@ -2,8 +2,8 @@
 // Created by Hoover Brent on 8/9/22.
 //
 
-#include "Parser.hpp"
-#include "tools/LogIdentifier.hpp"
+#include "includes/Parser.hpp"
+#include "includes/LogIdentifier.hpp"
 
 std::string trim(const std::string &s)
 {

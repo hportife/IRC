@@ -1,18 +1,10 @@
 #ifndef IRC_USER_HPP
 #define IRC_USER_HPP
 
-#define CORRPASS                1000
-#define INCORRPASS              1001
-#define INCORRNICKNAME          1002
-#define NICKNAMEISMAYBEGIVEN    1010
-#define ERR_NICKNAMEINUSE       1011
-#define ERR_NICKNAMEISTOOLONG   1012
-#define ERR_NICKNAMEISEMPTY     1013
-#define NICKNAMEHASBEENGIVEN    1014
-
-#include "../tools/LogIdentifier.hpp"
+#include "LogIdentifier.hpp"
 #include "NicknameStorage.hpp"
 #include <iostream>
+#include "defines.hpp"
 
 class User {
 private:

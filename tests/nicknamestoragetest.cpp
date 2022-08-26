@@ -1,6 +1,6 @@
-#include "../tools/LogIdentifier.hpp"
-#include "../srv_inside/NicknameStorageOld.hpp"
-#include "../srv_inside/NicknameStorage.hpp"
+#include "../includes/LogIdentifier.hpp"
+#include "../includes/NicknameStorageOld.hpp"
+#include "../includes/NicknameStorage.hpp"
 //compile: c++ -std=c++98 ./nicknamestoragetest.cpp ../tools/LogIdentifier.cpp ../srv_inside/NicknameStorage.cpp
 
 int main(void)

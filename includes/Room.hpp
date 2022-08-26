@@ -1,22 +1,12 @@
 #ifndef IRC_ROOM_HPP
 #define IRC_ROOM_HPP
 
-//#define ROOM_TYPE_CHAT          0
-//#define ROOM_TYPE_CHANNEL       1
-#define ROOM_MODE_PRIVATE       301
-#define ROOM_MODE_PUBLIC        302
-#define USER_IS_OPER            311
-#define USER_IS_NOT_OPER        312
-#define USER_IN_ROOM            321
-#define USER_NOT_IN_ROOM        322
-#define JOIN_COMPLETE           323
-#define LEAVE_COMPLETE          324
-
 #include "User.hpp"
 #include "NicknameStorage.hpp"
 #include <vector>
 #include <map>
 #include <algorithm>
+#include "defines.hpp"
 
 class Room {
 private:

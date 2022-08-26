@@ -1,5 +1,5 @@
-#include "../tools/LogIdentifier.hpp"
-#include "../srv_inside/Room.hpp"
+#include "../includes/LogIdentifier.hpp"
+#include "../includes/Room.hpp"
 
 //c++ roomclasstest.cpp ../tools/LogIdentifier.cpp ../srv_inside/Room.cpp ../srv_inside/User.cpp ../srv_inside/NicknameStorage.cpp
 

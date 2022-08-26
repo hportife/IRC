@@ -1,5 +1,5 @@
-#include "../tools/LogIdentifier.hpp"
-#include "RoomStorage.hpp"
+#include "../includes/LogIdentifier.hpp"
+#include "../includes/RoomStorage.hpp"
 
 RoomStorage::RoomStorage() {
     std::cout   << LogIdentifier::info("FROM_ROOMSTORAGE_CLASS_")

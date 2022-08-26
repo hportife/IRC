@@ -1,8 +1,9 @@
 #include <iostream>
 //#include "vector"
 //#include "algorithm"
-
-#include "Parser.hpp"
+//c++ Parser.cpp Parser_test.cpp Serv.cpp srv_inside/CommandLine.cpp srv_inside/NicknameStorage.cpp srv_inside/Room.cpp srv_inside/RoomStorage.cpp srv_inside/User.cpp tools/LogIdentifier.cpp srv_inside/UserStorage.cpp Commando.cpp
+#include "includes/Parser.hpp"
+#include "includes/Parser.hpp"
 
 // :Angel PRIVMSG Wiz :Hello are you receiving this message ?
 // То КоммандЛайн должен выглядеть как:
@@ -34,13 +35,13 @@ int main() {
     //  MODE &oulu +b
     //  MODE &oulu +b *!*@*
       std::string str = "MODE &oulu +b *!*@*.edu";
+      std::cout << str.
 
 //      std::string str = "KICK #Finnish John :Speaking English";
 
-    Parser parser(str);
+    Parser parser("MODE #Finnish +im");
 //    std::cout << parser.getCommandLine().getParameters() << std::endl;
-    int k = (int)parser.getAllCommandLine().size();
-    std::cout << "queue size = " << k << std::endl;
+    std::cout << "queue size = " << (int)parser.getAllCommandLine().size() << std::endl;
     while (!parser.getAllCommandLine().empty()) {
         std::cout << parser.getOneCommandLine().getParameters() << std::endl;
         std::cout << parser.getOneCommandLine().getNumberOfParameter() << std::endl;

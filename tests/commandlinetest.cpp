@@ -1,4 +1,4 @@
-#include "../srv_inside/CommandLine.hpp"
+#include "../includes/CommandLine.hpp"
 //c++ commandlinetest.cpp ../tools/LogIdentifier.cpp ../srv_inside/CommandLine.cpp
 int main(void){
     CommandLine *test = new CommandLine("<MSG> <Lala> <Keke> <MSGGG> <LalaAA> <Keeeee>", 6);

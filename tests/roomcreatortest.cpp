@@ -1,6 +1,6 @@
-#include "../tools/LogIdentifier.hpp"
-#include "../srv_inside/RoomCreator.hpp"
-#include "../srv_inside/RoomStorage.hpp"
+#include "../includes/LogIdentifier.hpp"
+#include "../includes/RoomCreator.hpp"
+#include "../includes/RoomStorage.hpp"
 
 int main(){
     RoomStorage *tmpRoomStorage = new RoomStorage();

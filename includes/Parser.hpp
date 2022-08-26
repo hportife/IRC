@@ -5,7 +5,7 @@
 #ifndef MY_PART_PARSER_HPP
 #define MY_PART_PARSER_HPP
 
-#include "srv_inside/CommandLine.hpp"
+#include "CommandLine.hpp"
 #include <iostream>
 #include <string>
 #include <sstream>

@@ -1,6 +1,6 @@
 
-#include "../tools/LogIdentifier.hpp"
-#include "CommandLine.hpp"
+#include "../includes/LogIdentifier.hpp"
+#include "../includes/CommandLine.hpp"
 
 CommandLine::CommandLine() {}
 

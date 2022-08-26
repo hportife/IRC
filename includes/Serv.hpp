@@ -1,21 +1,21 @@
 #ifndef IRC_SERV_HPP
 #define IRC_SERV_HPP
 
-#define FLG_SRV_WORK 2000
-#define FLG_SRV_DOWN 2010
-
 #include <queue>
 #include <iostream>
 #include <sys/poll.h>
 
-#include "srv_inside/Room.hpp"
-#include "srv_inside/RoomCreator.hpp"
-#include "srv_inside/RoomStorage.hpp"
-#include "srv_inside/User.hpp"
-#include "srv_inside/UserStorage.hpp"
-#include "srv_inside/NicknameStorage.hpp"
-#include "srv_inside/CommandLine.hpp"
+#include "Room.hpp"
+#include "RoomCreator.hpp"
+#include "RoomStorage.hpp"
+#include "User.hpp"
+#include "UserStorage.hpp"
+#include "NicknameStorage.hpp"
+#include "CommandLine.hpp"
+#include "defines.hpp"
 #include "Commando.hpp"
+
+class Commando;
 
 class Serv {
 private:
@@ -35,9 +35,9 @@ public:
     RoomStorage                 *getRoomStorage()const;//ok
     UserStorage                 *getUserStorage()const;//ok
     NicknameStorage             *getNicknameStorage()const;//ok
-    std::queue<CommandLine *>   *getTasks()const;//ok
-    std::vector<pollfd>	        *getPolls()const;//ok
-    srd::vector<std::string>    *getOpers();//
+    std::queue<CommandLine *>   *getTasks();//ok
+    std::vector<pollfd>	        *getPolls();//ok
+    std::vector<std::string>    *getOpers();//
     Commando                    *getCommando()const;//ok
     std::string                 getPassword()const;//ok
     void                        setPassword(std::string password);//

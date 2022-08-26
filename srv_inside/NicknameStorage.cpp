@@ -1,5 +1,5 @@
-#include "../tools/LogIdentifier.hpp"
-#include "NicknameStorage.hpp"
+#include "../includes/LogIdentifier.hpp"
+#include "../includes/NicknameStorage.hpp"
 
 NicknameStorage::NicknameStorage() {
     std::cout   << LogIdentifier::info("FROM_NICKNAMESTORAGE_")

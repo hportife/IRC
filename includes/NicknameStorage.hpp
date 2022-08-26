@@ -1,16 +1,10 @@
 #ifndef IRC_NICKNAMESTORAGE_HPP
 #define IRC_NICKNAMESTORAGE_HPP
 
-#define NICKNAMEISMAYBEGIVEN    1010
-#define ERR_NICKNAMEINUSE       1011
-#define ERR_NICKNAMEISTOOLONG   1012
-#define ERR_NICKNAMEISEMPTY     1013
-#define NICKNAMEHASBEENGIVEN    1014
-#define SIMPLE_VALUE            111
-
 #include <vector>
 #include <algorithm>
 #include <map>
+#include "defines.hpp"
 
 class NicknameStorage{
 private:

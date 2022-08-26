@@ -1,5 +1,5 @@
-#include "../srv_inside/User.hpp"
-#include "../srv_inside/UserStorage.hpp"
+#include "../includes/User.hpp"
+#include "../includes/UserStorage.hpp"
 //c++ usercreatortest.cpp ../tools/LogIdentifier.cpp ../srv_inside/User.cpp ../srv_inside/UserCreator.cpp ../srv_inside/NicknameStorage.cpp ../srv_inside/UserStorage.cpp
 int main() {
     //Pt1. Создание хранилища никнеймов
