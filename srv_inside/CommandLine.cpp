@@ -2,6 +2,8 @@
 #include "../tools/LogIdentifier.hpp"
 #include "CommandLine.hpp"
 
+CommandLine::CommandLine() {}
+
 CommandLine::CommandLine(std::string cmdln, int number_of_params){
     this->parameters = cmdln;
     this->number_of_params = number_of_params;
@@ -33,4 +35,8 @@ std::string CommandLine::getOneParameter(int position){
         }
     }
     return ("NULL");
+}
+
+std::string CommandLine::getParameters() const {
+    return this->parameters;
 }
