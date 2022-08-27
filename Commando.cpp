@@ -9,25 +9,18 @@ Commando::Commando(Serv *server_class) {
                 << "commando has run" << std::endl;
 }
 
-void Commando::getNextCommandLine() {
-    if (!this->general_serv->getTasks()->empty()) {
-        this->commandLine = this->general_serv->getTasks()->front();
-        this->general_serv->getTasks()->pop();
-    }
+void Commando::UserConnect(int id) {
+    this->general_serv
+        ->getUserStorage()
+        ->add_user(new User(id));
 }
 
-//int Commando::executeActualCommand() {
-//    switch (this->commandLine->getOneParameter(1)) {
-//        case "USER":
-//            userCommand();
-//    }
-//}
-
-int Commando::swapNickname(std::string old_nickname,
+int Commando::NickCmd(std::string old_nickname,
                            std::string new_nickname) {
     //ПРОВЕРКА ВАЛИДНОСТИ НИКА
     if (nickname_validator(new_nickname) != NICKNAME_HAS_VALID)
-        return (nickname_validator(new_nickname));
+        return (nickname_validator(new_nickname));//ОТПРАВИТЬ
+    //СООБЩЕНИЕ О НЕВАЛИДНОСТИ
     //ВЫДАЧА НИКНЕЙМА
     this->general_serv
             ->getNicknameStorage()
@@ -39,47 +32,62 @@ int Commando::swapNickname(std::string old_nickname,
     this->general_serv
             ->getNicknameStorage()
             ->delete_nickname(old_nickname);
-    return (NICKNAME_IS_GIVEN);
+    return (NICKNAME_IS_GIVEN);//ОТПРАВИТЬ
+    //СООБЩЕНИЕ ВЫДАЧЕ НОВОГО НИКА
 }
 
-void Commando::setAwayMsg(std::string user_nickname, std::string message) {
+int Commando::NickCmd(int id, std::string new_nickname) {
+    //ПРОВЕРКА ВАЛИДНОСТИ НИКА
+    if (nickname_validator(new_nickname) != NICKNAME_HAS_VALID)
+        return (nickname_validator(new_nickname));//ОТПРАВИТЬ
+        //СООБЩЕНИЕ О НЕВАЛИДНОСТИ
+    this->general_serv
+            ->getNicknameStorage()
+            ->add_nickname(new_nickname);
+    this->general_serv
+            ->getUserStorage()
+            ->search_by_id(id)
+            ->set_nickname(new_nickname);
+    if (!this->general_serv
+            ->getUserStorage()
+            ->search_by_id(id)->get_user_realname().empty())
+        this->general_serv
+                ->getUserStorage()
+                ->search_by_id(id)
+                ->setReadyness();
+    return (NICKNAME_IS_GIVEN);//ОТПРАВИТЬ MOTD?
+}
+
+void Commando::AwayCmd(std::string user_nickname, std::string message) {
     this->general_serv->getUserStorage()
                         ->search_by_nickname(user_nickname)
                         ->setAwayMsg(message);
 }
 
-int Commando::userCommand(std::string nickname, int id,
-                          std::string realname,
-                          std::string clientname){
-    if (nickname_validator(nickname) != NICKNAME_HAS_VALID)
-        return (nickname_validator(nickname));
+int Commando::UserCmd(int id, std::string clientname,
+                      std::string realname){
     this->general_serv
         ->getNicknameStorage()
         ->add_nickname(nickname);
-    User *new_user = new User(nickname, id, realname, clientname);
     this->general_serv
         ->getUserStorage()
-        ->add_user(new_user->clone());
-    delete new_user;
+        ->search_by_id(id)
+        ->setRealname(realname);
+    this->general_serv
+            ->getUserStorage()
+            ->search_by_id(id)
+            ->setClientname(clientname);
+    if (!this->general_serv
+            ->getUserStorage()
+            ->search_by_id(id)->get_user_nickname().empty())
+        this->general_serv
+                ->getUserStorage()
+                ->search_by_id(id)
+                ->setReadyness();
     return (NEW_USER_CREATE);
 }
 
-//-----------------------------validators---------------------------------------
-
-int Commando::nickname_validator(std::string nickname) {
-    if (nickname.length() > 9 || nickname.empty()) {
-        return (NICKNAME_IS_WRONG);
-    }
-    if (this->general_serv
-                ->getNicknameStorage()
-                ->search_a_conflict(nickname)
-        == ERR_NICKNAMEINUSE) {
-        return (ERR_NICKNAMEINUSE);
-    }
-    return (NICKNAME_HAS_VALID);
-}
-
-int Commando::operLogin(std::string nickname, std::string password) {
+int Commando::OperCmd(std::string nickname, std::string password) {
     if (!password.empty() && this->general_serv
         ->getPassword().compare(password) != 0){
         return (WRONGPASSWORD);
@@ -88,14 +96,14 @@ int Commando::operLogin(std::string nickname, std::string password) {
     return (USER_IS_OPER);
 }
 
-void Commando::setRoomLimit(std::string room_name, int limit) {
+void Commando::OperCmd(std::string room_name, int limit) {
     this->general_serv
         ->getRoomStorage()
         ->getRoom(room_name)
         ->set_user_limit(limit);
 }
 
-void Commando::setRoomOperRights(std::string room_name, std::string nickname,
+void Commando::ModeOCmd(std::string room_name, std::string nickname,
                                  bool rights) {
     if (this->general_serv
             ->getRoomStorage()
@@ -108,7 +116,7 @@ void Commando::setRoomOperRights(std::string room_name, std::string nickname,
             this->general_serv
                 ->getRoomStorage()
                 ->getRoom(room_name)->unset_oper(nickname);
-    }
+    } //else ОТПРАВИТЬ СООБЩЕНИЕ ОБ ОТСУТСТВИИ КОМНАТЫ
 }
 
 void Commando::setUserParam(std::string nickname, std::string param,
@@ -125,4 +133,19 @@ void Commando::setRoomParam(std::string room_name, std::string param,
         ->getRoomStorage()
         ->getRoom(room_name)
         ->setRoomParameter(param, value);
+}
+
+//-----------------------------validators-----------------------------------
+
+int Commando::nickname_validator(std::string nickname) {
+    if (nickname.length() > 9 || nickname.empty()) {
+        return (NICKNAME_IS_WRONG);
+    }
+    if (this->general_serv
+                ->getNicknameStorage()
+                ->search_a_conflict(nickname)
+        == ERR_NICKNAMEINUSE) {
+        return (ERR_NICKNAMEINUSE);
+    }
+    return (NICKNAME_HAS_VALID);
 }

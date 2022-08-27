@@ -17,6 +17,24 @@ User::User(std::string nickname, int id,
                 << std::endl;
 }
 
+User::User(int id) {
+    this->user_id = id;
+    this->user_params = initUserParams();
+    this->readyness = false;
+
+    this->user_nickname = "";
+    this->user_realname = "";
+    this->client_name = "";
+}
+
+void User::setClientname(std::string clientname) {
+    this->client_name = clientname;
+}
+
+void User::setRealname(std::string realname) {
+    this->user_realname = realname;
+}
+
 std::map<std::string, bool> User::initUserParams(){
     std::map<std::string, bool> tmp_room_params;
     tmp_room_params.insert(std::pair<std::string, bool>("i", false));
@@ -45,9 +63,17 @@ void User::set_nickname(std::string new_nickname) {
         std::cout   << user_nickname << " on "
                     << new_nickname << std::endl;
     user_nickname = new_nickname;
+    if (!this->readyness)
+        this->readyness = true;
+}
+
+void User::setReadyness(){
+    this->readyness = true;
 }
 
 std::string User::get_user_nickname() const {return (this->user_nickname);}
+
+bool User::getReadyness() const {return (this->readyness);}
 
 std::string User::get_user_realname() const {return (this->user_realname);}
 

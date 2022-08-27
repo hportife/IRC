@@ -58,6 +58,14 @@ void NicknameStorage::add_nickname(std::string added_nickname) {
     }
 }
 
+std::string NicknameStorage::getNicknameWithValue(int value) {
+    for(std::map<std::string, int>::iterator it = this->storage.begin();
+        it != this->storage.end(); ++it)
+        if (it->second == value)
+            return it->first;
+    return ("");
+}
+
 int NicknameStorage::delete_nickname(std::string deleted_nickname) {
     if (storage.erase(deleted_nickname) == 1) {
         std::cout   << LogIdentifier::info("FROM_NICKNAMESTORAGE_")

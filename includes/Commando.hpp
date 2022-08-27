@@ -9,7 +9,6 @@ class Serv;
 
 class Commando {
 private:
-    CommandLine *commandLine;
     Serv        *general_serv;
     Commando();
 
@@ -17,21 +16,28 @@ public:
     Commando(Serv *server_class);
     ~Commando();
 
-    void    getNextCommandLine();                                           //OK
-    int     executeActualCommand();                                         //NOK
-    int     swapNickname(std::string old_nickname, std::string new_nickname);//OK - NICK (2Arg)
-    void    setAwayMsg(std::string user_nickname, std::string message);     //ok - AWAY(on)
-    int     userCommand(std::string nickname, int id,
-                        std::string clientname,
+    int     NickCmd(std::string old_nickname, std::string new_nickname);//OK - NICK (2Arg)
+    int     NickCmd(int id, std::string new_nickname);                   //ok - NICK (1Arg)
+    void    AwayCmd(std::string user_nickname, std::string message);     //ok - AWAY(on)
+    void    UserConnect(int id);                                            //ok
+    int     UserCmd(int id, std::string clientname,
                         std::string realname);                              //ok - USER
-    int     operLogin(std::string nickname, std::string password);          //ok - OPER
-    void    setRoomLimit(std::string room_name, int limit);                 //ok - MODE l
-    void    setRoomOperRights(std::string room_name, std::string nickname,
-                              bool rights);                                 //ok - MODE 0
+    int     OperCmd(std::string nickname, std::string password);          //ok - OPER
+    void    ModeLCmd(std::string room_name, int limit);                 //ok - MODE l
+    void    ModeOCmd(std::string room_name, std::string nickname,
+                              bool rights); //нужно дописать                                //Nok - MODE 0
     void    setUserParam(std::string nickname, std::string param,
                          bool value);                                       //ok - MODE user
     void    setRoomParam(std::string room_name, std::string param,
                          bool value);                                       //nok - MODE room
+    void    QuitCmd(int id, std::string message);
+    void    QuitCmd(int id);
+    void    PrivmsgToUser(int id, std::string message);
+    void    PrivmsgToChannel(std::string channel_name,
+                             std::string message);
+    void    JoinCmd(int id, std::string channel_name);
+    void    InviteCmd(int id, std::string channel_name);
+    void    KickCmd(int kicker_id, int kickem_id);
 
     //-----------------------------validators-----------------------------
     int     nickname_validator(std::string nickname);                       //ok

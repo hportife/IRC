@@ -21,6 +21,7 @@ private:
     Room(std::string creator);
     Room(std::string creator, int selected_mode);
     std::map<std::string, bool> initRoomParams();//реализованно
+    bool haveOpers();
 public:
     Room(std::string creator, std::string set_room_name);
     ~Room();
