@@ -12,6 +12,9 @@ private:
     Serv        *general_serv;
     Commando();
 
+    std::string servToIrcErr(int eventId);//преобразовывает идентификатор эвента
+    //из серверного в ИРКовый
+
 public:
     Commando(Serv *server_class);
     ~Commando();
@@ -31,13 +34,14 @@ public:
     void    setRoomParam(std::string room_name, std::string param,
                          bool value);                                       //nok - MODE room
     void    QuitCmd(int id, std::string message);
-    void    QuitCmd(int id);
     void    PrivmsgToUser(int id, std::string message);
     void    PrivmsgToChannel(std::string channel_name,
                              std::string message);
     void    JoinCmd(int id, std::string channel_name);
     void    InviteCmd(int id, std::string channel_name);
     void    KickCmd(int kicker_id, int kickem_id);
+    void    WrongReqMessage(std::string user_nickname, int eventId,
+                            std::string command);
 
     //-----------------------------validators-----------------------------
     int     nickname_validator(std::string nickname);                       //ok

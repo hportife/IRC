@@ -19,8 +19,12 @@ int Commando::NickCmd(std::string old_nickname,
                            std::string new_nickname) {
     //ПРОВЕРКА ВАЛИДНОСТИ НИКА
     if (nickname_validator(new_nickname) != NICKNAME_HAS_VALID)
-        return (nickname_validator(new_nickname));//ОТПРАВИТЬ
-    //СООБЩЕНИЕ О НЕВАЛИДНОСТИ
+    {
+        return (nickname_validator(new_nickname));
+        //ОТПРАВИТЬ
+        //СООБЩЕНИЕ О НЕВАЛИДНОСТИ
+    }
+    //_____________________________
     //ВЫДАЧА НИКНЕЙМА
     this->general_serv
             ->getNicknameStorage()
@@ -66,9 +70,6 @@ void Commando::AwayCmd(std::string user_nickname, std::string message) {
 
 int Commando::UserCmd(int id, std::string clientname,
                       std::string realname){
-    this->general_serv
-        ->getNicknameStorage()
-        ->add_nickname(nickname);
     this->general_serv
         ->getUserStorage()
         ->search_by_id(id)
