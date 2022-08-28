@@ -150,3 +150,9 @@ int Commando::nickname_validator(std::string nickname) {
     }
     return (NICKNAME_HAS_VALID);
 }
+
+void Commando::WrongReqMessage(std::string user_nickname, int eventId, std::string command) {
+    //:My-IRC 421(eventId) nelson(user_nickname) #soskaTv(command) :Unknown command
+    std::cout << LogIdentifier::error(":My-IRC " + std::to_string(eventId) +
+    " " + user_nickname + " " + command + " :Unknown command") << std::endl;
+}

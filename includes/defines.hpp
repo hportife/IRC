@@ -44,4 +44,47 @@
 #define NEW_USER_CREATE             116
 #define WRONGPASSWORD               117
 
+#define COMMANDS(X) \
+X(PASS),\
+X(USER),\
+X(NICK),\
+X(PONG),\
+X(PRIVMSG),\
+X(NOTICE),\
+X(JOIN),\
+X(OPER),\
+X(QUIT),\
+X(KILL),\
+X(KICK),\
+X(PING),\
+X(LIST),\
+X(WHO),\
+X(PART),\
+X(AWAY),\
+X(WHOIS),\
+X(WHOWAS),\
+X(MODE),\
+X(TOPIC),\
+X(INVITE),\
+X(NAMES),\
+X(WALLOPS),\
+X(ISON),\
+X(USERHOST),\
+X(VERSION),\
+X(INFO),\
+X(ADMIN),\
+X(TIME),\
+X(REHASH),\
+X(RESTART)
+
+//enum representation
+#define X(e) e
+enum CommandEnum { COMMANDS(X), UNDEFINED };
+#undef X
+
+//string representation
+#define X(s) #s
+static const std::string CommandNames[] = { COMMANDS(X) };
+#undef X
+
 #endif //IRC_DEFINES_HPP
