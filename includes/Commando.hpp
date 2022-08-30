@@ -4,6 +4,7 @@
 #include "Serv.hpp"
 #include "CommandLine.hpp"
 #include "defines.hpp"
+#include "Parser.hpp"
 
 class Serv;
 
@@ -40,8 +41,13 @@ public:
     void    JoinCmd(int id, std::string channel_name);
     void    InviteCmd(int id, std::string channel_name);
     void    KickCmd(int kicker_id, int kickem_id);
-    void    WrongReqMessage(std::string user_nickname, int eventId,
-                            std::string command);
+
+
+    void    WrongReqMessage(const std::string& user_nickname, int eventId,
+                            const std::string& command);
+
+    void    AnswerMessage(const std::string& user_nickname, int eventId,
+                          const std::string& command);
 
     //-----------------------------validators-----------------------------
     int     nickname_validator(std::string nickname);                       //ok
