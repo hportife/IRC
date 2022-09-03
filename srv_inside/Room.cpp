@@ -105,3 +105,7 @@ bool Room::is_in_invite_list(std::string nickname){
         return (true);
     return (false);
 }
+
+bool Room::isInRoom(std::string nickname) {
+    return (this->room_users->search_a_conflict(nickname) == ERR_NICKNAMEINUSE);
+}

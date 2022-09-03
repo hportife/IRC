@@ -47,7 +47,7 @@ User *UserStorage::search_by_nickname(std::string searched_nickname) {
                       "not found a nickname "
                 << searched_nickname
                 << std::endl;
-    return (nullptr);
+    return (NULL);
 }
 
 User *UserStorage::search_by_id(int searched_id) {

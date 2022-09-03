@@ -42,6 +42,7 @@ public:
     void        delete_user(std::string const nickname);//реализованно
     void        add_to_invite_list(std::string const nickname);//реализовано
 
+    bool        isInRoom(std::string nickname);//реализовано
     bool        is_oper(std::string nickname);//реализовано
     bool        is_in_invite_list(std::string nickname);//реализовано
 };

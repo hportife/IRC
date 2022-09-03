@@ -16,10 +16,16 @@ private:
     std::string servToIrcErr(int eventId);//преобразовывает идентификатор эвента
     //из серверного в ИРКовый
 
+    bool    isNicknameInServ(std::string nickname);//ok
+    bool    isCannelInServ(std::string room_name);//ok
+    Room    *Channel(std::string room_name);//ok
+    std::string idToNick(int id);//ok
+
+
 public:
     Commando(Serv *server_class);
-    ~Commando();
 
+    ~Commando();
     int     NickCmd(std::string old_nickname, std::string new_nickname);//OK - NICK (2Arg)
     int     NickCmd(int id, std::string new_nickname);                   //ok - NICK (1Arg)
     void    AwayCmd(std::string user_nickname, std::string message);     //ok - AWAY(on)
@@ -28,21 +34,23 @@ public:
                         std::string realname);                              //ok - USER
     int     OperCmd(std::string nickname, std::string password);          //ok - OPER
     void    ModeLCmd(std::string room_name, int limit);                 //ok - MODE l
-    void    ModeOCmd(std::string room_name, std::string nickname,
-                              bool rights); //нужно дописать                                //Nok - MODE 0
+    void    ModeOCmd(std::string room_name, std::string oper_nick,
+                     std::string nickname, bool rights); //нужно дописать                                //Nok - MODE 0
     void    setUserParam(std::string nickname, std::string param,
                          bool value);                                       //ok - MODE user
     void    setRoomParam(std::string room_name, std::string param,
                          bool value);                                       //nok - MODE room
-    void    QuitCmd(int id, std::string message);
-    void    PrivmsgToUser(int id, std::string message);
+    void    PrivmsgToUser(int sender_id, int destination_id,
+                          std::string message);//ok
     void    PrivmsgToChannel(std::string channel_name,
-                             std::string message);
-    void    JoinCmd(int id, std::string channel_name);
-    void    InviteCmd(int id, std::string channel_name);
-    void    KickCmd(int kicker_id, int kickem_id);
+                             std::string message);//ok
+    void    JoinCmd(int id, std::string channel_name);//ok
+    void    InviteCmd(int id, std::string channel_name);//ok
+    void    NoticeCmd(int id, std::string message);//ok
+    void    KickCmd(int kicker_id, int kickem_id, std::string channel_name);//ok
+    void    QuitCmd(int id, std::string message);//
 
-
+//_______________________________________________________________________
     void    WrongReqMessage(const std::string& user_nickname, int eventId,
                             const std::string& command);
 

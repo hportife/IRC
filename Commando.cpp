@@ -22,15 +22,10 @@ void Commando::UserConnect(int id) {
 
 int Commando::NickCmd(std::string old_nickname,
                            std::string new_nickname) {
-    //ПРОВЕРКА ВАЛИДНОСТИ НИКА
     if (nickname_validator(new_nickname) != NICKNAME_HAS_VALID)
     {
-        return (nickname_validator(new_nickname));
-        //ОТПРАВИТЬ
-        //СООБЩЕНИЕ О НЕВАЛИДНОСТИ
+        return (NICKNAME_IS_WRONG);
     }
-    //_____________________________
-    //ВЫДАЧА НИКНЕЙМА
     this->general_serv
             ->getNicknameStorage()
             ->add_nickname(new_nickname);
@@ -41,15 +36,13 @@ int Commando::NickCmd(std::string old_nickname,
     this->general_serv
             ->getNicknameStorage()
             ->delete_nickname(old_nickname);
-    return (NICKNAME_IS_GIVEN);//ОТПРАВИТЬ
     //СООБЩЕНИЕ ВЫДАЧЕ НОВОГО НИКА
+    return (NICKNAME_IS_GIVEN);
 }
 
 int Commando::NickCmd(int id, std::string new_nickname) {
-    //ПРОВЕРКА ВАЛИДНОСТИ НИКА
     if (nickname_validator(new_nickname) != NICKNAME_HAS_VALID)
-        return (nickname_validator(new_nickname));//ОТПРАВИТЬ
-        //СООБЩЕНИЕ О НЕВАЛИДНОСТИ
+        return (nickname_validator(new_nickname));
     this->general_serv
             ->getNicknameStorage()
             ->add_nickname(new_nickname);
@@ -59,18 +52,21 @@ int Commando::NickCmd(int id, std::string new_nickname) {
             ->set_nickname(new_nickname);
     if (!this->general_serv
             ->getUserStorage()
-            ->search_by_id(id)->get_user_realname().empty())
+            ->search_by_id(id)->get_user_realname().empty()) {
         this->general_serv
                 ->getUserStorage()
                 ->search_by_id(id)
                 ->setReadyness();
-    return (NICKNAME_IS_GIVEN);//ОТПРАВИТЬ MOTD?
+        //ОТПРАВИТЬ MOTD
+    }
+    return (NICKNAME_IS_GIVEN);
 }
 
 void Commando::AwayCmd(std::string user_nickname, std::string message) {
     this->general_serv->getUserStorage()
                         ->search_by_nickname(user_nickname)
                         ->setAwayMsg(message);
+    //сообщение: эвэй установлен
 }
 
 int Commando::UserCmd(int id, std::string clientname,
@@ -83,9 +79,7 @@ int Commando::UserCmd(int id, std::string clientname,
             ->getUserStorage()
             ->search_by_id(id)
             ->setClientname(clientname);
-    if (!this->general_serv
-            ->getUserStorage()
-            ->search_by_id(id)->get_user_nickname().empty())
+    if (!idToNick(id).empty())
         this->general_serv
                 ->getUserStorage()
                 ->search_by_id(id)
@@ -102,27 +96,39 @@ int Commando::OperCmd(std::string nickname, std::string password) {
     return (USER_IS_OPER);
 }
 
-void Commando::OperCmd(std::string room_name, int limit) {
-    this->general_serv
-        ->getRoomStorage()
-        ->getRoom(room_name)
+void Commando::ModeLCmd(std::string room_name, int limit) {
+    Channel(room_name)
         ->set_user_limit(limit);
 }
 
-void Commando::ModeOCmd(std::string room_name, std::string nickname,
-                                 bool rights) {
-    if (this->general_serv
-            ->getRoomStorage()
-            ->getRoom(room_name) != NULL){
-        if (rights)
-            this->general_serv
-                ->getRoomStorage()
-                ->getRoom(room_name)->set_oper(nickname);
-        else
-            this->general_serv
-                ->getRoomStorage()
-                ->getRoom(room_name)->unset_oper(nickname);
-    } //else ОТПРАВИТЬ СООБЩЕНИЕ ОБ ОТСУТСТВИИ КОМНАТЫ
+void Commando::ModeOCmd(std::string room_name, std::string oper_nick,
+                        std::string nickname, bool rights) {
+    if (Channel(room_name) != NULL) {
+        if (!Channel(room_name)->is_oper(oper_nick)) {
+            //отправить сообщение что oper_nick
+            //не имеет права давать права оперов
+            return;
+        }
+        if (this->general_serv
+                ->getNicknameStorage()
+                ->search_a_conflict() != ERR_NICKNAMEINUSE){
+            //сообщение что не верно введён никнейм
+            return;
+        }
+        if (!Channel(room_name)
+                ->isInRoom(nickname)){
+            //сообщение что пользователя в комнате нет
+            return;
+        }
+        if (rights) {
+            Channel(room_name)->set_oper(nickname);
+            //отправить сообщение о выданных правах
+        } else {
+            Channel(room_name)->unset_oper(nickname);
+            //отправить сообщение о снятых правах
+        }
+    }
+    //else ОТПРАВИТЬ СООБЩЕНИЕ ОБ ОТСУТСТВИИ КОМНАТЫ
 }
 
 void Commando::setUserParam(std::string nickname, std::string param,
@@ -131,14 +137,13 @@ void Commando::setUserParam(std::string nickname, std::string param,
         ->getUserStorage()
         ->search_by_nickname(nickname)
         ->setUserParamValue(param, value);
+    //сообщение что парамерты установлены
 }
 
 void Commando::setRoomParam(std::string room_name, std::string param,
                             bool value) {
-    this->general_serv
-        ->getRoomStorage()
-        ->getRoom(room_name)
-        ->setRoomParameter(param, value);
+    Channel(room_name)->setRoomParameter(param, value);
+    //сообщение что параметры установлены
 }
 
 //-----------------------------validators-----------------------------------
@@ -146,12 +151,14 @@ void Commando::setRoomParam(std::string room_name, std::string param,
 int Commando::nickname_validator(std::string nickname) {
     if (nickname.length() > 9 || nickname.empty()) {
         return (NICKNAME_IS_WRONG);
+        //сообщение: корявый ник
     }
     if (this->general_serv
                 ->getNicknameStorage()
                 ->search_a_conflict(nickname)
         == ERR_NICKNAMEINUSE) {
         return (ERR_NICKNAMEINUSE);
+        //сообщение: ник занят
     }
     return (NICKNAME_HAS_VALID);
 }
@@ -401,4 +408,99 @@ void    Commando::AnswerMessage(const std::string& user_nickname, int eventId, c
 //    logger.logUserMessage(msg, user, OUT);
     send(this->general_serv->getUserStorage()->search_by_nickname(user_nickname)->get_user_id(),
          msg.c_str(), msg.size(), 0);
+}
+
+Room *Commando::Channel(std::string room_name) {
+    return (this->general_serv
+            ->getRoomStorage()
+            ->getRoom(room_name));
+}
+
+void Commando::PrivmsgToUser(int sender_id, int destination_id,
+                             std::string message) {
+    NoticeCmd(destination_id, message);
+    if (this->general_serv
+            ->getUserStorage()
+            ->search_by_id(destination_id)
+            ->isAwayMsg())
+        NoticeCmd(sender_id, this->general_serv
+                                ->getUserStorage()
+                                ->search_by_id(destination_id)
+                                ->getAwayMsg());
+}
+
+bool Commando::isCannelInServ(std::string room_name) {
+    return (Channel(room_name) != NULL);
+}
+
+bool Commando::isNicknameInServ(std::string nickname) {
+    return (this->general_serv
+                ->getNicknameStorage()
+            ->search_a_conflict(nickname) == ERR_NICKNAMEINUSE);
+}
+
+void Commando::NoticeCmd(int id, std::string message) {
+    //отправить сообщение
+}
+
+void Commando::PrivmsgToChannel(std::string channel_name, std::string message) {
+    if (!isCannelInServ(channel_name)){
+        //отправить сообщение о некорректном названии комнаты
+        }
+    //иначе отправить сообщение в комнату
+}
+
+void Commando::InviteCmd(int id, std::string channel_name) {
+    if (isCannelInServ(channel_name))
+        Channel(channel_name)
+            ->add_to_invite_list(idToNick());
+    //сообщение: некорректное название комнаты
+}
+
+void Commando::JoinCmd(int id, std::string channel_name) {
+    if (isCannelInServ(channel_name))
+    {
+        if(Channel(channel_name)
+                ->get_param_value("i")/*i==true*/ &&
+                !Channel(channel_name)
+                        ->is_in_invite_list(idToNick(id))/*invite==false*/){
+            //сообщение о том что пользователь не может войти в инвайт-онли комнату
+        }
+        Channel(channel_name)
+                ->add_user(idToNick(id));
+        //сообщение что пользователь вошёл в комнату
+        //Channel(channel_name) - убрать пользователя из инвайт листа
+
+    }
+    //сообщение о некорректном названии комнаты
+}
+
+std::string Commando::idToNick(int id) {
+    return (this->general_serv
+            ->getUserStorage()
+            ->search_by_id(id)
+            ->get_user_nickname())
+}
+
+void Commando::KickCmd(int kicker_id, int kickem_id, std::string channel_name) {
+    if (isCannelInServ(channel_name)){
+        if (Channel(channel_name)->is_oper(idToNick(kicker_id))){
+            Channel(channel_name)->delete_user(kickem_id);
+            //сообщение в канал что пользователя кикнули
+            //сообщение пользователю что его кикнули
+        }
+        //сообщение кикеру, что он не опер
+    }
+    //сообщение о неправильном имени комнаты
+}
+
+void Commando::QuitCmd(int id, std::string message) {
+    this->general_serv->getRoomStorage()->delete_user_from_rooms(idToNick(id), message);
+    //в методе выше реализовать отправку сообщения о выходе пользователя
+    this->general_serv->getNicknameStorage()->delete_nickname(idToNick());
+    this->general_serv->getUserStorage()->delete_user_from_storage(this->general_serv
+                                                                        ->getUserStorage()
+                                                                        ->search_by_id(id));
+    //УДАЛИТЬ ПОЛЬЗОВАТЕЛЯ ИЗ ПУЛА ФДШНИКОВ
+    //ЗАКРЫТЬ СОЕДИНЕНИЕ
 }

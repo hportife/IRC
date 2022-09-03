@@ -105,3 +105,12 @@ Room *RoomStorage::getRoom(std::string room_name) const {
     }
     return (NULL);
 }
+
+void RoomStorage::delete_user_from_rooms(std::string nickname, std::string message) {
+    for (int i = 0; i < room_storage.size(); ++i) {
+        if (room_storage[i]->isInRoom(nickname)){
+            room_storage[i]->delete_user(nickname);
+            //сообщение в комнату что юзер вышел
+        }
+    }
+}
