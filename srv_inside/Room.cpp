@@ -1,52 +1,111 @@
-#include "Room.hpp"
+#include "../includes/LogIdentifier.hpp"
+#include "../includes/Room.hpp"
 
-Room::Room()
-{
-    std::cout << "DBG: create empty room\n";
+Room::Room(std::string creator, std::string set_room_name) {
+    //так как комнаты будут создаваться с помощью
+    //криейтора, то он должен будет следить за корректностью
+    //передаваемых в конструктор параметров.
+//    set_mode(selected_mode);
+    this->room_name = set_room_name;
+    this->room_users = new NicknameStorage();
+    this->room_users->add_nickname(creator);
+    this->set_oper(creator);
+    this->room_params = initRoomParams();
+    std::cout   << LogIdentifier::info("FROM_ROOM_" + this->room_name)
+                << "user " << creator << " create a new room with name: "
+                << set_room_name << std::endl;
 }
 
-Room::Room(int chat_creator_id, int chat_joiner_id)
-{
-    std::cout   << "DBG: create chat "
-                << chat_creator_id << " & "
-                << chat_joiner_id << " ID's\n";
-    room_name = "chat";
-    room_type = ROOM_TYPE_CHAT;
-    //room_id = pool::get_room_id;
-    room_user_qt = 2;
-    room_users_id.push_back(chat_creator_id);
-    room_users_id.push_back(chat_joiner_id);
+std::map<std::string, bool> Room::initRoomParams(){
+    std::map<std::string, bool> tmp_room_params;
+    tmp_room_params.insert(std::pair<std::string, bool>("p", false));
+    tmp_room_params.insert(std::pair<std::string, bool>("s", false));
+    tmp_room_params.insert(std::pair<std::string, bool>("t", false));
+    tmp_room_params.insert(std::pair<std::string, bool>("n", false));
+    tmp_room_params.insert(std::pair<std::string, bool>("m", false));
+    tmp_room_params.insert(std::pair<std::string, bool>("i", false));
+    return (tmp_room_params);
+}
+//_____________________GETTERS__________________________________________
+std::string Room::get_room_name() const {return (this->room_name);}
+
+int         Room::get_users_capacity() const {return (this->room_users
+                                                        ->get_capacity());}
+
+std::string Room::get_room_password() const { return (this->room_password);}
+
+bool        Room::get_param_value(std::string param_name){
+    return (this->room_params[param_name]);
 }
 
-Room::Room(std::string name, int creator_id)
-{
-    std::cout   << "DBG: create "
-                << name << " channel\n";
-    room_name = name;
-    room_type = ROOM_TYPE_CHANNEL;
-    //room_id = pool::get_room_id;
-    room_user_qt = 1;
-    room_users_id.push_back(creator_id);
-    operator_id = creator_id;
+//_____________________SETTERS__________________________________________
+void Room::set_room_name(std::string const new_name) {
+    std::cout   << LogIdentifier::info("FROM_ROOM_" + this->room_name)
+                << "room " << this->room_name << " swap name to "
+                << new_name << std::endl;
+    this->room_name = new_name;
 }
 
-int Room::get_room_type() {return (room_type);}
-
-int Room::get_room_id() {return (room_id);}
-
-int Room::get_users_qt() {return (room_user_qt);}
-
-std::string Room::get_room_name() {return (room_name);}
-
-void Room::join_to_room(int joiner_id)
-{
-    std::cout << "DBG: id " <<  joiner_id << " join to "
-    room_user_qt++;
-    room_users_id.push_back(joiner_id);
-    std::sort(room_users_id.begin(), room_users_id.end());
+void Room::set_room_password(std::string const password){
+    this->room_password = password;
 }
 
-void Room::out_of_room(int user_id)
-{
-    std::find(room_users_id.begin(), room_users_id.end(), user_id);//////////
+void Room::setRoomParameter(std::string const parameter, bool value){
+    if (this->room_params.find(parameter) != this->room_params.end())
+        this->room_params.find(parameter)->second = value;
+}
+
+void Room::set_oper(std::string const new_oper) {
+    room_users->set_value(new_oper, USER_IS_OPER);
+}
+
+void Room::unset_oper(std::string const deleted_oper){
+    room_users->set_value(deleted_oper, USER_IS_NOT_OPER);
+}
+
+bool Room::haveOpers() {
+    return (this->room_users
+                ->getNicknameWithValue(USER_IS_OPER)
+                .empty());
+}
+
+void Room::set_user_limit(int limit) {
+    this->users_limit = limit;
+}
+
+//____________________METHODS___________________________________________
+
+void Room::add_user(std::string const nickname){
+    std::cout   << LogIdentifier::info("ROOMCLASS_" + this->room_name)
+                << "user " << nickname << " added to room"<< std::endl;
+    this->room_users->add_nickname(nickname);
+}
+
+void Room::delete_user(std::string const nickname){
+    std::cout   << LogIdentifier::info("ROOMCLASS_" + this->room_name)
+                << "user " << nickname << " deleted from room"<< std::endl;
+    this->room_users->delete_nickname(nickname);
+}
+
+void Room::add_to_invite_list(std::string const nickname){
+    this->invite_list.push_back(nickname);
+}
+//___________________CHECKERS______________________________________________
+bool Room::is_oper(std::string nickname){
+    if (this->room_users->get_value(nickname)
+                                                == USER_IS_OPER)
+        return (true);
+    return (false);
+}
+
+bool Room::is_in_invite_list(std::string nickname){
+    if (std::find(this->invite_list.begin(),
+                  this->invite_list.end(), nickname)
+                  != this->invite_list.end())
+        return (true);
+    return (false);
+}
+
+bool Room::isInRoom(std::string nickname) {
+    return (this->room_users->search_a_conflict(nickname) == ERR_NICKNAMEINUSE);
 }
