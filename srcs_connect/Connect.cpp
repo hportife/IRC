@@ -2,7 +2,7 @@
 // Created by Salena Alyce on 6/5/22.
 //
 
-#include "Connect.hpp"
+#include "../includes/Connect.hpp"
 
 const int buffSize = 128;
 const int maxConnections = 1024;

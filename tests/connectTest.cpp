@@ -5,7 +5,7 @@
 //c++ -std=c++98 ../sr
 
 #include "connectTest.hpp"
-#include "../srcs_connect/Connect.hpp"
+#include "../includes/Connect.hpp"
 
 int main()
 {
