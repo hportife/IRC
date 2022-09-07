@@ -45,6 +45,7 @@ public:
     std::string                 getPassword()const;//ok
     void                        setPassword(std::string password);//
     void                        shutDown();//ok
+    Connect                     *getConnect()const;
 };
 
 

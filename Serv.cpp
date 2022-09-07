@@ -46,3 +46,6 @@ void Serv::shutDown(){
 std::vector <std::string> *Serv::getOpers() {
     return (&this->irc_oper_nicknames);
 }
+Connect *Serv::getConnect()const{
+    return (this->connect);
+}

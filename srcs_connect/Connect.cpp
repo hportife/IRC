@@ -28,9 +28,21 @@ void Connect::call_poll()
 		std::cerr << "poll failure" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	if (_polls[0].at(0).revents & POLLIN)
-		add();
+//	if (_polls[0].at(0).revents & POLLIN)
+//		add();
 }
+
+void   Connect::remove_poolhup()
+{
+    for (iter = _polls->begin() + 1; iter != _polls->end(); ++iter) {
+        if (iter->revents & POLLHUP) {
+            //irc->remove(iter);
+            this->remove(iter);
+            break;
+        }
+    }
+}
+
 
 void Connect::start()
 {
@@ -114,6 +126,12 @@ int Connect::add()
 
     _polls->push_back((pollfd){client_socket, POLLIN | POLLOUT | POLLHUP, 0});
 
+//    char host[buffSize];
+//    if (getnameinfo((struct sockaddr *) &clientaddr, len, &host[0], buffSize, nullptr, 0, 0)) {
+//        std::cerr << "getnameinfo failure" << std::endl;
+//        exit(EXIT_FAILURE);
+//    }
+
 	return client_socket;
 }
 
@@ -176,3 +194,5 @@ int Connect::send_msg(int client_socket, const std::string& reply)
 
 	return 0;
 }
+
+
