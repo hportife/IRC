@@ -2,10 +2,10 @@
 // Created by user1 on 26.06.2022.
 //
 
-//c++ -std=c++98 ../sr
+//c++ -std=c++98 ../srcs_connect/*.cpp connectTest.cpp
 
 #include "connectTest.hpp"
-#include "../srcs_connect/Connect.hpp"
+#include "../includes/Connect.hpp"
 
 int main()
 {

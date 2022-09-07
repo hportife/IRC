@@ -29,6 +29,7 @@ private:
 	unsigned short			_port;
 	int 					_socket;
 	std::vector<pollfd>	*	_polls;
+    std::vector<pollfd>::iterator iter;
 
 public:
 	Connect(unsigned short port, std::vector<pollfd> * polls);
@@ -40,8 +41,8 @@ public:
 	const std::string receive(int); // принимает сообщение по fd
 	int		send_msg(int, const std::string&); // отправляет сообщения по fd
 	void	call_poll();
-	void	setPolls(pollfd);
-	pollfd	getPolls(std::vector<pollfd> iterator);
+    void    remove_poolhup();// удаляет отвалившихся клиентов
+
 
 protected:
 	void	init();
