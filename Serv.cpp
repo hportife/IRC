@@ -1,14 +1,16 @@
 #include "includes/LogIdentifier.hpp"
 #include "includes/Serv.hpp"
 
-Serv::Serv(std::string password) {
+Serv::Serv(std::string password, unsigned short port) {
     this->password = password;
+	this->port = port;
     this->general_room_storage = new RoomStorage();
     this->general_nickname_storage = new NicknameStorage();
     this->general_user_storage = new UserStorage(
             general_nickname_storage);
     this->worked_flag = FLG_SRV_WORK;
     this->general_comando = new Commando(this);
+	this->connect = new Connect(port, &general_polls);
     std::cout << LogIdentifier::info("SERVERCLASS_")
                 << "Server class is start" << std::endl;
 }
@@ -43,4 +45,7 @@ void Serv::shutDown(){
 }
 std::vector <std::string> *Serv::getOpers() {
     return (&this->irc_oper_nicknames);
+}
+Connect *Serv::getConnect()const{
+    return (this->connect);
 }
