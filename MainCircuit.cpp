@@ -1,8 +1,9 @@
 #include <iostream>
 #include "includes/Serv.hpp"
 #include "includes/Connect.hpp"
+#include "includes/Parser.hpp"
 
-//c++ -std=c++98 ./srcs_connect/*.cpp MainCircuit.cpp Serv.cpp ./srv_inside/RoomStorage.cpp ./srv_inside/Room.cpp ./srv_inside/User.cpp ./srv_inside/UserStorage.cpp
+//c++ -std=c++98 ./srcs_connect/Connect.cpp MainCircuit.cpp Serv.cpp ./srv_inside/*.cpp tools/LogIdentifier.cpp Commando.cpp Parser.cpp
 
 int main(int arc, char **arg){
     if (arc != 3) {
@@ -37,8 +38,28 @@ int main(int arc, char **arg){
                 IRC_server->getConnect()->remove(iter);
 				break;
 			}
-			if (iter->revents & POLLIN)
-                IRC_server->getConnect()->receive(iter->fd);
+			if (iter->revents & POLLIN) {
+                 //std::cout << IRC_server->getConnect()->receive(iter->fd) << std::endl;
+                std::string msg = IRC_server->getConnect()->receive(iter->fd); //данный метод получает сообщение от получателя
+
+                Parser parser(msg);
+//    std::cout << parser.getCommandLine().getParameters() << std::endl;
+                std::cout << "queue size = " << (int)parser.getAllCommandLine().size() << std::endl;
+                while (!parser.getAllCommandLine().empty()) {
+                    std::cout << parser.getOneCommandLine().getParameters() << std::endl;
+                    std::cout << parser.getOneCommandLine().getNumberOfParameter() << std::endl;
+                    std::cout << parser.getOneCommandLine().getOneParameter(1) << std::endl;
+                    std::cout << parser.getOneCommandLine().getOneParameter(2) << std::endl;
+                    std::cout << parser.getOneCommandLine().getOneParameter(3) << std::endl;
+                    std::cout << parser.getOneCommandLine().getOneParameter(4) << std::endl;
+                    std::cout << parser.getOneCommandLine().getOneParameter(5) << std::endl;
+                    std::cout << parser.getOneCommandLine().getOneParameter(6) << std::endl;
+                    parser.popOneCommandLine();
+//        parser._tasks.pop();
+                }
+
+
+            }
 
 //            if (!processed(iter->fd)) {
 //                remove(iter);

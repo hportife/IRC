@@ -8,12 +8,7 @@
 #define ISNOCOMMANT                 2030
 #define ISCOMMAND                   2040
 
-#define NICKNAMEISMAYBEGIVEN        1010
-#define ERR_NICKNAMEINUSE           1011
-#define ERR_NICKNAMEISTOOLONG       1012
-#define ERR_NICKNAMEISEMPTY         1013
-#define NICKNAMEHASBEENGIVEN        1014
-//#define SIMPLE_VALUE                111
+#define SIMPLE_VALUE                0
 
 #define ROOM_MODE_PRIVATE           301
 #define ROOM_MODE_PUBLIC            302
@@ -166,5 +161,6 @@
 #define RPL_ADMINLOC1			257
 #define RPL_ADMINLOC2			258
 #define RPL_ADMINEMAIL			259
+#define RPL_BREAKOPER           260
 
 #endif //IRC_DEFINES_HPP

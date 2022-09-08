@@ -6,7 +6,6 @@
 #include <sys/poll.h>
 
 #include "Room.hpp"
-#include "RoomCreator.hpp"
 #include "RoomStorage.hpp"
 #include "User.hpp"
 #include "UserStorage.hpp"
