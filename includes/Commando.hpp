@@ -5,6 +5,7 @@
 #include "CommandLine.hpp"
 #include "defines.hpp"
 #include "Parser.hpp"
+#include "Connect.hpp"
 
 class Serv;
 

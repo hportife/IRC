@@ -8,7 +8,7 @@
 #define ISNOCOMMANT                 2030
 #define ISCOMMAND                   2040
 
-//#define SIMPLE_VALUE                111
+#define SIMPLE_VALUE                0
 
 #define ROOM_MODE_PRIVATE           301
 #define ROOM_MODE_PUBLIC            302

@@ -2,7 +2,7 @@
 #include "includes/Serv.hpp"
 #include "includes/Connect.hpp"
 
-//c++ -std=c++98 ./srcs_connect/*.cpp MainCircuit.cpp Serv.cpp ./srv_inside/RoomStorage.cpp ./srv_inside/Room.cpp ./srv_inside/User.cpp ./srv_inside/UserStorage.cpp
+//c++ -std=c++98 ./srcs_connect/Connect.cpp MainCircuit.cpp Serv.cpp ./srv_inside/RoomStorage.cpp ./srv_inside/Room.cpp ./srv_inside/User.cpp ./srv_inside/UserStorage.cpp
 
 int main(int arc, char **arg){
     if (arc != 3) {
