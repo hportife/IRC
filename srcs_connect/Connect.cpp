@@ -126,6 +126,12 @@ int Connect::add()
 
     _polls->push_back((pollfd){client_socket, POLLIN | POLLOUT | POLLHUP, 0});
 
+	std::cout << LogIdentifier::info("FROM_CONNECT::ADD_")
+			  << "client_socket ["
+			  << client_socket
+			  << "] connected to the server"
+			  << std::endl;
+
 //    char host[buffSize];
 //    if (getnameinfo((struct sockaddr *) &clientaddr, len, &host[0], buffSize, nullptr, 0, 0)) {
 //        std::cerr << "getnameinfo failure" << std::endl;
