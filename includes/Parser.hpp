@@ -12,7 +12,7 @@
 #include <queue>
 #include <vector>
 #include <algorithm>
-
+#include "Serv.hpp"
 #define ERR_UNKNOWNCOMMAND 421      // "<command> :Unknown command"
 #define ERR_NEEDMOREPARAMS 461      // "<command> :Not enough parameters"
 
@@ -62,13 +62,16 @@ static const std::string CommandNames[] = { COMMANDS(X) };
 
 
 class Parser {
+
+private:
     CommandLine             _commandLine;
     CommandEnum             _type;
     std::queue<CommandLine> _tasks;
     int                     _countCommand;
+    Serv                    *serv;
 
 public:
-    Parser(std::string input_commandLine);
+    Parser(std::string input_commandLine, int id_user, Serv *serv);
     ~Parser();
 
     CommandLine getOneCommandLine();

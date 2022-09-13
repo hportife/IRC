@@ -83,7 +83,7 @@ std::vector<std::string>    mode_find(std::string str, const std::string& sign) 
     return result;
 }
 
-Parser::Parser(std::string input_commandLine) {
+Parser::Parser(std::string input_commandLine, int id_user, Serv *serv) : id_user(id_user), serv(serv) {
     char const  *cmd;
 
     std::string msg; //must have
@@ -188,8 +188,9 @@ Parser::Parser(std::string input_commandLine) {
         if (!msg.empty())
             command.push_back(msg);
         std::string str;
-        for (std::vector<std::string>::iterator it = command.begin(); it != command.end(); ++it)
+        for (std::vector<std::string>::iterator it = command.begin(); it != command.end(); ++it) {
             str += "<" + *it + ">";
+        }
         this->_commandLine = CommandLine(str, (int)command.size());
         this->_tasks.push(_commandLine);
     }
@@ -211,4 +212,11 @@ void    Parser::popOneCommandLine() {
 
 Parser::~Parser() {
 
+}
+
+void exec_certain_command(, std::string command, std::string arg1, std::string arg2, std::string arg2) {
+    switch (command) {
+        case expression:
+//add commanline
+    }
 }
