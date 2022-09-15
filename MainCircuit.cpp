@@ -42,7 +42,7 @@ int main(int arc, char **arg){
                  //std::cout << IRC_server->getConnect()->receive(iter->fd) << std::endl;
                 std::string msg = IRC_server->getConnect()->receive(iter->fd); //данный метод получает сообщение от получателя
 
-                Parser parser(msg);
+                Parser parser(msg, iter->fd, IRC_server);
 //    std::cout << parser.getCommandLine().getParameters() << std::endl;
                 std::cout << "queue size = " << (int)parser.getAllCommandLine().size() << std::endl;
                 while (!parser.getAllCommandLine().empty()) {

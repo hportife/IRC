@@ -5,6 +5,8 @@
 #include "includes/Parser.hpp"
 #include "includes/LogIdentifier.hpp"
 
+///////utils
+
 std::string trim(const std::string &s)
 {
     std::vector<char const>::iterator start = s.begin();
@@ -83,7 +85,11 @@ std::vector<std::string>    mode_find(std::string str, const std::string& sign) 
     return result;
 }
 
-Parser::Parser(std::string input_commandLine, int id_user, Serv *serv) : id_user(id_user), serv(serv) {
+///////-------------------------------------------------------------------------------------------------------
+
+Parser::Parser(std::string input_commandLine, int id_user, Serv *serv) {
+    this->id_user = id_user;
+    this->serv = serv;
     char const  *cmd;
 
     std::string msg; //must have
@@ -100,9 +106,10 @@ Parser::Parser(std::string input_commandLine, int id_user, Serv *serv) : id_user
 
     this->_countCommand = 0;
 
-
+    ///clear whitespaces
     input_commandLine = trim(input_commandLine); // must have
 
+    /// detect msg
     if (input_commandLine.find(':') == 0) // must have
         input_commandLine = input_commandLine.substr(1);
 
@@ -112,7 +119,9 @@ Parser::Parser(std::string input_commandLine, int id_user, Serv *serv) : id_user
         msg = input_commandLine.substr(pos + 1);
         input_commandLine = input_commandLine.substr(0, pos);
     }
+    /////-----------------
 
+    //// detect arguments and commands
     if ((int)input_commandLine.find(',') != -1) {
         if ((int)input_commandLine.find('&') != -1 or (int)input_commandLine.find('#') != -1) {
             channels = find_channel(input_commandLine, &pos);
@@ -144,7 +153,9 @@ Parser::Parser(std::string input_commandLine, int id_user, Serv *serv) : id_user
         }
         command = split(input_commandLine, ' ');
     }
+    //////////-------------------
 
+    ////define command
     for (std::vector<std::string>::iterator it = command.begin(); it != command.end(); ++it)
     {
         word = toUppercase(*it);
@@ -158,9 +169,12 @@ Parser::Parser(std::string input_commandLine, int id_user, Serv *serv) : id_user
             if (i != 0)
                 command[i] = tmp;
             _countCommand++;
-        }
+        } else
+            std::cout << LogIdentifier::error("<" + word + "> :Unknown command") << std::endl;
     }
+    ///----------------
 
+    ////build commandLine with args
     int n;
 
     if (!channels.empty())
@@ -183,7 +197,9 @@ Parser::Parser(std::string input_commandLine, int id_user, Serv *serv) : id_user
         this->_commandLine = CommandLine(str, (int)tmp.size());
         this->_tasks.push(_commandLine);
     }
+    ////---------------------------
 
+    ////build commandLine without args
     if (channels.empty() and keys_users_modes.empty()) {
         if (!msg.empty())
             command.push_back(msg);
@@ -194,9 +210,109 @@ Parser::Parser(std::string input_commandLine, int id_user, Serv *serv) : id_user
         this->_commandLine = CommandLine(str, (int)command.size());
         this->_tasks.push(_commandLine);
     }
+    ////-----------------------
+
+    //// command handler
     if (_countCommand < 1)
-        std::cout << LogIdentifier::error("<command> :Unknown command") << std::endl;
+        std::cout << LogIdentifier::error(":Unknown command") << std::endl;
+    else {
+        while (!this->getAllCommandLine().empty()) {
+            word = toUppercase(this->getOneCommandLine().getOneParameter(1));
+            switch (verbToCommand(word)) {
+                case INVITE:
+                    if (this->getOneCommandLine().getNumberOfParameter() == 3)
+                        this->serv->getCommando()->InviteCmd(id_user, this->getOneCommandLine().getOneParameter(3));
+                    else
+                        this->serv->getCommando()->InviteCmd(id_user, this->getOneCommandLine().getOneParameter(4));
+                    break;
+                case MODE:
+                    if (this->getOneCommandLine().getOneParameter(3)[1] == 'l')
+                        this->serv->getCommando()->ModeLCmd(this->getOneCommandLine().getOneParameter(2),
+                                                            std::atoi(this->getOneCommandLine().getOneParameter(4).c_str()));
+                    else if (this->getOneCommandLine().getOneParameter(3)[1] == 'o')
+                        this->serv->getCommando()->ModeOCmd(this->getOneCommandLine().getOneParameter(2), this->serv->getOpers()->front(),
+                                                            this->getOneCommandLine().getOneParameter(4), true); ////rewrite!!!!!
+                    break;
+                case AWAY:
+                    this->serv->getCommando()->AwayCmd(this->getOneCommandLine().getOneParameter(2), this->getOneCommandLine().getOneParameter(3));
+                    break;
+                case PASS:
+                    this->serv->setPassword(this->getOneCommandLine().getOneParameter(2)); //?
+                    break;
+                case USER:
+                    this->serv->getCommando()->UserCmd(id_user, this->getOneCommandLine().getOneParameter(2), this->getOneCommandLine().getOneParameter(3));
+                    break;
+                case NICK:
+                    if (this->getOneCommandLine().getNumberOfParameter() < 3)
+                        this->serv->getCommando()->NickCmd(id_user, this->getOneCommandLine().getOneParameter(2));
+                    else
+                        this->serv->getCommando()->NickCmd(this->getOneCommandLine().getOneParameter(2), this->getOneCommandLine().getOneParameter(2));
+                    break;
+                case PING:
+//                    handlePing(command);
+                    break;
+                case PONG:
+//                    handlePong(command);
+                    break;
+                case QUIT:
+                    this->serv->getCommando()->QuitCmd(id_user, this->getOneCommandLine().getOneParameter(2));
+                    break;
+                case PRIVMSG:
+                    this->serv->getCommando()->PrivmsgToChannel(this->getOneCommandLine().getOneParameter(2), this->getOneCommandLine().getOneParameter(3));
+                    break;
+                case NOTICE:
+                    this->serv->getCommando()->NoticeCmd(id_user, this->getOneCommandLine().getOneParameter(3));
+                    break;
+                case JOIN:
+                    this->serv->getCommando()->JoinCmd(id_user, this->getOneCommandLine().getOneParameter(2));
+                    break;
+                case OPER:
+                    this->serv->getCommando()->OperCmd(this->getOneCommandLine().getOneParameter(2), this->getOneCommandLine().getOneParameter(3));
+                    break;
+                case KILL:
+//                    handleKill(command);
+                    break;
+                case KICK:
+                    this->serv->getCommando()->KickCmd(id_user, id_user
+                                                       /* ???this->getOneCommandLine().getOneParameter(3) ???*/, this->getOneCommandLine().getOneParameter(2));
+                    break;
+                case LIST:
+//                    logStream << "LIST method is not implemented" << std::endl;
+//                    logger.logMessage(logStream, DEV);
+                    break;
+                case PART:
+//                    handlePart(command);
+                    break;
+                case WHO:
+//                    handleWho(command);
+                    break;
+                default:
+                    break;
+            }
+            this->popOneCommandLine();
+        }
+    }
+    //////----------------------
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 CommandLine Parser::getOneCommandLine() {
 	return getAllCommandLine().front();
@@ -214,9 +330,9 @@ Parser::~Parser() {
 
 }
 
-void exec_certain_command(, std::string command, std::string arg1, std::string arg2, std::string arg2) {
-    switch (command) {
-        case expression:
-//add commanline
-    }
-}
+//void exec_certain_command(, std::string command, std::string arg1, std::string arg2, std::string arg2) {
+//    switch (command) {
+//        case expression:
+////add commanline
+//    }
+//}

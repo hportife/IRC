@@ -35,11 +35,12 @@ int main() {
     //  MODE &oulu +b
     //  MODE &oulu +b *!*@*
       std::string str = "MODE &oulu +b *!*@*.edu";
-      std::cout << str.
+//      std::cout << str.
 
 //      std::string str = "KICK #Finnish John :Speaking English";
 
-    Parser parser("MODE #Finnish +im");
+    Serv *sss = new Serv("ert", 454);
+    Parser parser("MODEd#Finnish +im", 23, sss);
 //    std::cout << parser.getCommandLine().getParameters() << std::endl;
     std::cout << "queue size = " << (int)parser.getAllCommandLine().size() << std::endl;
     while (!parser.getAllCommandLine().empty()) {
