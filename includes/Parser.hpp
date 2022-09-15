@@ -80,6 +80,7 @@ public:
     CommandLine getOneCommandLine();
     std::queue<CommandLine> getAllCommandLine();
     void    popOneCommandLine();
+    void    commandHandler();
 };
 
 

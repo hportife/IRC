@@ -169,8 +169,7 @@ Parser::Parser(std::string input_commandLine, int id_user, Serv *serv) {
             if (i != 0)
                 command[i] = tmp;
             _countCommand++;
-        } else
-            std::cout << LogIdentifier::error("<" + word + "> :Unknown command") << std::endl;
+        }
     }
     ///----------------
 
@@ -211,8 +210,11 @@ Parser::Parser(std::string input_commandLine, int id_user, Serv *serv) {
         this->_tasks.push(_commandLine);
     }
     ////-----------------------
+}
 
-    //// command handler
+void Parser::commandHandler() {
+    std::string word;
+
     if (_countCommand < 1)
         std::cout << LogIdentifier::error(":Unknown command") << std::endl;
     else {
@@ -274,7 +276,7 @@ Parser::Parser(std::string input_commandLine, int id_user, Serv *serv) {
                     break;
                 case KICK:
                     this->serv->getCommando()->KickCmd(id_user, id_user
-                                                       /* ???this->getOneCommandLine().getOneParameter(3) ???*/, this->getOneCommandLine().getOneParameter(2));
+                            /* ???this->getOneCommandLine().getOneParameter(3) ???*/, this->getOneCommandLine().getOneParameter(2));
                     break;
                 case LIST:
 //                    logStream << "LIST method is not implemented" << std::endl;
@@ -292,11 +294,7 @@ Parser::Parser(std::string input_commandLine, int id_user, Serv *serv) {
             this->popOneCommandLine();
         }
     }
-    //////----------------------
-
 }
-
-
 
 
 
