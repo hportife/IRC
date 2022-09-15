@@ -12,6 +12,7 @@
 #include <queue>
 #include <vector>
 #include <algorithm>
+#include "Serv.hpp"
 
 #define ERR_UNKNOWNCOMMAND 421      // "<command> :Unknown command"
 #define ERR_NEEDMOREPARAMS 461      // "<command> :Not enough parameters"
@@ -60,20 +61,26 @@ enum CommandEnum { COMMANDS(X), UNDEFINED };
 static const std::string CommandNames[] = { COMMANDS(X) };
 #undef X
 
+class Serv;
 
 class Parser {
+
+private:
     CommandLine             _commandLine;
     CommandEnum             _type;
     std::queue<CommandLine> _tasks;
     int                     _countCommand;
+    Serv                    *serv;
+    int                     id_user;
 
 public:
-    Parser(std::string input_commandLine);
+    Parser(std::string input_commandLine, int id_user, Serv *serv);
     ~Parser();
 
     CommandLine getOneCommandLine();
     std::queue<CommandLine> getAllCommandLine();
     void    popOneCommandLine();
+    void    commandHandler();
 };
 
 

@@ -35,25 +35,27 @@ int main() {
     //  MODE &oulu +b
     //  MODE &oulu +b *!*@*
       std::string str = "MODE &oulu +b *!*@*.edu";
-      std::cout << str.
+//      std::cout << str.
 
 //      std::string str = "KICK #Finnish John :Speaking English";
 
-    Parser parser("MODE #Finnish +im");
+    Serv *sss = new Serv("ert", 454);
+    Parser parser("MODE #Finnish +im", 23, sss);
 //    std::cout << parser.getCommandLine().getParameters() << std::endl;
     std::cout << "queue size = " << (int)parser.getAllCommandLine().size() << std::endl;
-    while (!parser.getAllCommandLine().empty()) {
-        std::cout << parser.getOneCommandLine().getParameters() << std::endl;
-        std::cout << parser.getOneCommandLine().getNumberOfParameter() << std::endl;
-        std::cout << parser.getOneCommandLine().getOneParameter(1) << std::endl;
-        std::cout << parser.getOneCommandLine().getOneParameter(2) << std::endl;
-        std::cout << parser.getOneCommandLine().getOneParameter(3) << std::endl;
-        std::cout << parser.getOneCommandLine().getOneParameter(4) << std::endl;
-        std::cout << parser.getOneCommandLine().getOneParameter(5) << std::endl;
-        std::cout << parser.getOneCommandLine().getOneParameter(6) << std::endl;
-        parser.popOneCommandLine();
-//        parser._tasks.pop();
-    }
+    parser.commandHandler();
+//    while (!parser.getAllCommandLine().empty()) {
+//        std::cout << parser.getOneCommandLine().getParameters() << std::endl;
+//        std::cout << parser.getOneCommandLine().getNumberOfParameter() << std::endl;
+//        std::cout << parser.getOneCommandLine().getOneParameter(1) << std::endl;
+//        std::cout << parser.getOneCommandLine().getOneParameter(2) << std::endl;
+//        std::cout << parser.getOneCommandLine().getOneParameter(3) << std::endl;
+//        std::cout << parser.getOneCommandLine().getOneParameter(4) << std::endl;
+//        std::cout << parser.getOneCommandLine().getOneParameter(5) << std::endl;
+//        std::cout << parser.getOneCommandLine().getOneParameter(6) << std::endl;
+//        parser.popOneCommandLine();
+////        parser._tasks.pop();
+//    }
 
 	return EXIT_SUCCESS;
 }
