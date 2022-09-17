@@ -1,24 +1,48 @@
-NAME			=	ircserv
+.PHONY: all clean fclean re
 
-SRCS			=	srcs/main.cpp
+NAME			= ircserv
 
-OBJS			= $(SRCS:.cpp=.o)
+SOURCE			= srcs_connect/Connect.cpp \
+                  srv_inside/CommandLine.cpp srv_inside/NicknameStorage.cpp srv_inside/Room.cpp srv_inside/RoomStorage.cpp \
+                  srv_inside/User.cpp srv_inside/UserStorage.cpp \
+                  tools/LogIdentifier.cpp \
+                  Commando.cpp MainCircuit.cpp Parser.cpp Serv.cpp
+HEADERS			= includes/*.hpp
 
-CC				= c++
-RM				= rm -f
-FLG				= -Wall -Wextra -Werror
+OBJECT			=	$(SOURCE:.cpp=.o)
 
-all:			$(NAME)
+CXX				= 	c++
 
-$(NAME):		$(OBJS)
-				$(CC) $(FLG) $(OBJS) -o $(NAME)
+CXXFLAGS		= 	-std=c++98
+#-Wall -Wextra -Werror
+
+RESET			= 	\033[0m
+GREEN 			= 	\033[38;5;46m
+WHITE 			= 	\033[38;5;15m
+GREY 			= 	\033[38;5;8m
+ORANGE 			= 	\033[38;5;202m
+RED 			= 	\033[38;5;160m
+
+all: $(NAME)
+
+%.o: %.cpp $(HEADERS)
+	@echo "$(GREY)Compiling...				$(WHITE)$<"
+	@$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(NAME): $(OBJECT)
+	@echo "$(GREEN)----------------------------------------------------"
+	@$(CXX) $(CXXFLAGS) $(OBJECT) -o $(NAME)
+	@echo "Executable				./$(NAME) $(RESET)"
 
 clean:
-				$(RM) $(OBJS)
+	@echo "$(RED)----------------------------------------------------"
+	@/bin/rm -f $(OBJECT)
+	@echo "$(WHITE)REMOVED O-FILES $(RESET)"
 
-fclean:			clean
-				$(RM) $(NAME)
+fclean: clean
+	@echo "$(RED)----------------------------------------------------"
+	@/bin/rm -f $(NAME)
+	@echo "$(WHITE)REMOVED EXECUTABLE FILE $(RESET)"
 
-re:				fclean $(NAME)
+re: fclean all
 
-.PHONY:			all clean fclean re
