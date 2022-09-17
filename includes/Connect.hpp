@@ -17,6 +17,7 @@
 #include "unistd.h"
 #include <strings.h>
 #include <cstring>
+#include "LogIdentifier.hpp"
 
 #define GREY_COL "\033[37m"
 #define GREEN_COL "\033[32m"
