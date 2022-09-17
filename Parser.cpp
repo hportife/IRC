@@ -28,7 +28,7 @@ std::vector<std::string>    split(const std::string &s, char delim) {
     std::string item;
 
     while (getline (ss, item, delim)) {
-        if (!item.empty())
+        if (!trim(item).empty())
             result.push_back(trim(item));
     }
 
@@ -92,7 +92,7 @@ Parser::Parser(std::string input_commandLine, int id_user, Serv *serv) {
     this->serv = serv;
     char const  *cmd;
 
-    std::string msg; //must have
+    std::vector<std::string> input_commandLINES;
 
     std::vector<std::string> channels;
 
@@ -100,80 +100,115 @@ Parser::Parser(std::string input_commandLine, int id_user, Serv *serv) {
 
     std::vector<std::vector<std::string> > tasks;
 
-    std::string word;
-
     std::vector<std::string> keys_users_modes;
 
     this->_countCommand = 0;
 
-    ///clear whitespaces
-    input_commandLine = trim(input_commandLine); // must have
+    ///use this if find "\r\n";
+    input_commandLINES = split(input_commandLine, '\r');
 
-    /// detect msg
-    if (input_commandLine.find(':') == 0) // must have
-        input_commandLine = input_commandLine.substr(1);
+    for (std::vector<std::string>::iterator command_iter = input_commandLINES.begin(); command_iter != input_commandLINES.end(); ++command_iter) {
+        ///clear whitespaces
+        input_commandLine = trim(*command_iter); // must have
 
-    int pos = (int)input_commandLine.find(':'); // must have
+        /// detect msg
 
-    if (pos != -1) {
-        msg = input_commandLine.substr(pos + 1);
-        input_commandLine = input_commandLine.substr(0, pos);
+        std::string msg; //must have
+
+        int pos;
+
+        detect_msg(&input_commandLine, &msg, &pos);
+        /////-----------------
+
+        //// detect arguments and commands
+        detect_args_and_cmds(&input_commandLine, &pos, &channels, &keys_users_modes, &command, &cmd);
+        //////////-------------------
+
+        ////define command
+
+        define_command(&command);
+
+        ///----------------
+
+        ////build commandLine with args
+        build_commandLine_with_args(command, channels, keys_users_modes, msg);
+
+        ////---------------------------
+
+        ////build commandLine without args
+        if (channels.empty() and keys_users_modes.empty())
+            build_commandLine_no_args(command, channels, keys_users_modes, msg);
+        ////-----------------------
     }
-    /////-----------------
+}
 
-    //// detect arguments and commands
-    if ((int)input_commandLine.find(',') != -1) {
-        if ((int)input_commandLine.find('&') != -1 or (int)input_commandLine.find('#') != -1) {
-            channels = find_channel(input_commandLine, &pos);
-            if ((int)input_commandLine.find(',', pos) != -1)
-                keys_users_modes = split(input_commandLine.substr(pos), ',');
+void    Parser::detect_msg(std::string *input_commandLine, std::string *msg, int *pos) {
+    if (input_commandLine->find(':') == 0)
+        *input_commandLine = input_commandLine->substr(1);
+
+    *pos = (int)input_commandLine->find(':');
+
+    if (*pos != -1) {
+        *msg = input_commandLine->substr(*pos + 1);
+        *input_commandLine = input_commandLine->substr(0, *pos);
+    }
+}
+
+void    Parser::detect_args_and_cmds(std::string *input_commandLine, int *pos, std::vector<std::string> *channels,
+                                     std::vector<std::string> *keys_users_modes, std::vector<std::string> *command, char const **cmd) {
+    if ((int)input_commandLine->find(',') != -1) {
+        if ((int)input_commandLine->find('&') != -1 or (int)input_commandLine->find('#') != -1) {
+            *channels = find_channel(*input_commandLine, pos);
+            if ((int)input_commandLine->find(',', *pos) != -1)
+                *keys_users_modes = split(input_commandLine->substr(*pos), ',');
             else
-                keys_users_modes = split(input_commandLine.substr(pos), ',');
-            if ((int)input_commandLine.find('#') > (int)input_commandLine.find('&') and (int)input_commandLine.find('&') != -1)
-                input_commandLine = input_commandLine.substr(0, input_commandLine.find('&'));
+                *keys_users_modes = split(input_commandLine->substr(*pos), ',');
+            if ((int)input_commandLine->find('#') > (int)input_commandLine->find('&') and (int)input_commandLine->find('&') != -1)
+                *input_commandLine = input_commandLine->substr(0, input_commandLine->find('&'));
             else
-                input_commandLine = input_commandLine.substr(0, input_commandLine.find('#'));
-            command = split(input_commandLine, ' ');
+                *input_commandLine = input_commandLine->substr(0, input_commandLine->find('#'));
+            *command = split(*input_commandLine, ' ');
         } else
-            comma_find(input_commandLine, &keys_users_modes, &command);
+            comma_find(*input_commandLine, keys_users_modes, command);
     } else {
-        if ((int)input_commandLine.find(" +") != -1) {
-            pos = (int)input_commandLine.find(" +");
-            keys_users_modes = mode_find(input_commandLine.substr(pos + 2), "+");
+        if ((int)input_commandLine->find(" +") != -1) {
+            *pos = (int)input_commandLine->find(" +");
+            *keys_users_modes = mode_find(input_commandLine->substr(*pos + 2), "+");
         }
-        if ((int)input_commandLine.find(" -") != -1) {
-            pos = (int)input_commandLine.find(" -");
-            keys_users_modes = mode_find(input_commandLine.substr(pos + 2), "-");
+        if ((int)input_commandLine->find(" -") != -1) {
+            *pos = (int)input_commandLine->find(" -");
+            *keys_users_modes = mode_find(input_commandLine->substr(*pos + 2), "-");
         }
-        if ((int)input_commandLine.find(" -") != -1 or (int)input_commandLine.find(" +") != -1) {
-            cmd = input_commandLine.substr(pos + 2).c_str();
-            while (*cmd != ' ' and *cmd)
-                cmd++;
-            input_commandLine = input_commandLine.substr(0, pos) + cmd;
+        if ((int)input_commandLine->find(" -") != -1 or (int)input_commandLine->find(" +") != -1) {
+            *cmd = input_commandLine->substr(*pos + 2).c_str();
+            while (**cmd != ' ' and *cmd)
+                (*cmd)++;
+            *input_commandLine = input_commandLine->substr(0, *pos) + *cmd;
         }
-        command = split(input_commandLine, ' ');
+        *command = split(*input_commandLine, ' ');
     }
-    //////////-------------------
+}
 
-    ////define command
-    for (std::vector<std::string>::iterator it = command.begin(); it != command.end(); ++it)
+void    Parser::define_command(std::vector<std::string> *command) {
+    for (std::vector<std::string>::iterator it = command->begin(); it != command->end(); ++it)
     {
-        word = toUppercase(*it);
+        std::string word = toUppercase(*it);
         _type = verbToCommand(word);
         if (_type != UNDEFINED)
         {
-            std::string tmp = *command.begin();
-            std::vector<std::string>::iterator itr = std::find(command.begin(), command.end(), *it);
-            int i = (int)std::distance(command.begin(), itr);
-            command[0] = word;
+            std::string tmp = *command->begin();
+            std::vector<std::string>::iterator itr = std::find(command->begin(), command->end(), *it);
+            int i = (int)std::distance(command->begin(), itr);
+            (*command)[0] = word;
             if (i != 0)
-                command[i] = tmp;
+                (*command)[i] = tmp;
             _countCommand++;
         }
     }
-    ///----------------
+}
 
-    ////build commandLine with args
+void    Parser::build_commandLine_with_args(const std::vector<std::string>& command, const std::vector<std::string>& channels,
+                                  const std::vector<std::string>& keys_users_modes, const std::string& msg) {
     int n;
 
     if (!channels.empty())
@@ -191,25 +226,23 @@ Parser::Parser(std::string input_commandLine, int id_user, Serv *serv) {
             tmp.push_back(msg);
         std::string str;
         for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); ++it) {
-                str += "<" + *it + ">";
+            str += "<" + *it + ">";
         }
         this->_commandLine = CommandLine(str, (int)tmp.size());
         this->_tasks.push(_commandLine);
     }
-    ////---------------------------
+}
 
-    ////build commandLine without args
-    if (channels.empty() and keys_users_modes.empty()) {
-        if (!msg.empty())
-            command.push_back(msg);
-        std::string str;
-        for (std::vector<std::string>::iterator it = command.begin(); it != command.end(); ++it) {
-            str += "<" + *it + ">";
-        }
-        this->_commandLine = CommandLine(str, (int)command.size());
-        this->_tasks.push(_commandLine);
+void Parser::build_commandLine_no_args(std::vector<std::string> command, const std::vector<std::string>& channels,
+                                       const std::vector<std::string>& keys_users_modes, const std::string& msg) {
+    if (!msg.empty())
+        command.push_back(msg);
+    std::string str;
+    for (std::vector<std::string>::iterator it = command.begin(); it != command.end(); ++it) {
+        str += "<" + *it + ">";
     }
-    ////-----------------------
+    this->_commandLine = CommandLine(str, (int)command.size());
+    this->_tasks.push(_commandLine);
 }
 
 void Parser::commandHandler() {
@@ -311,7 +344,6 @@ void Parser::commandHandler() {
 
 
 
-
 CommandLine Parser::getOneCommandLine() {
 	return getAllCommandLine().front();
 }
@@ -327,6 +359,8 @@ void    Parser::popOneCommandLine() {
 Parser::~Parser() {
 
 }
+
+
 
 //void exec_certain_command(, std::string command, std::string arg1, std::string arg2, std::string arg2) {
 //    switch (command) {
