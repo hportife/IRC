@@ -2,6 +2,7 @@
 .DStore
 test.cpp
 a.out
+/objects/
 
 .DS_Store
 cmake-build-*
