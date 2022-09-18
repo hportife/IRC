@@ -5,6 +5,15 @@
 
 //c++ -std=c++98 ./srcs_connect/Connect.cpp MainCircuit.cpp Serv.cpp ./srv_inside/*.cpp tools/LogIdentifier.cpp Commando.cpp Parser.cpp
 
+bool work = true;
+
+void sigHandler(int signum)
+{
+    (void)signum;
+    work = false;
+    //std::cout << "test signal" << std::endl;
+}
+
 int main(int arc, char **arg){
     if (arc != 3) {
         std::cerr << "./ircserv <PORT> <PASSWORD>\n";
@@ -23,7 +32,8 @@ int main(int arc, char **arg){
 
 	std::vector<pollfd>::iterator iter;
     IRC_server->getConnect()->start();
-    while (true){
+    while (work){
+        signal(SIGINT, sigHandler);
         IRC_server->getConnect()->call_poll();
         if (IRC_server->getPolls()->at(0).revents & POLLIN)
             IRC_server->getCommando()->UserConnect(
@@ -45,6 +55,7 @@ int main(int arc, char **arg){
                 Parser parser(msg, iter->fd, IRC_server);
 
                 parser.commandHandler();
+                signal(SIGINT, sigHandler);
 //    std::cout << parser.getCommandLine().getParameters() << std::endl;
                 std::cout << "queue size = " << (int)parser.getAllCommandLine().size() << std::endl;
                 while (!parser.getAllCommandLine().empty()) {
