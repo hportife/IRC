@@ -82,8 +82,7 @@ private:
     void    build_commandLine_with_args(const std::vector<std::string>& command, const std::vector<std::string>& channels,
                                         const std::vector<std::string>& keys_users_modes, const std::string& msg);
 
-    void    build_commandLine_no_args(std::vector<std::string> command, const std::vector<std::string>& channels,
-                                      const std::vector<std::string>& keys_users_modes, const std::string& msg);
+    void    build_commandLine_no_args(std::vector<std::string> command, const std::string& msg);
 
 
 public:

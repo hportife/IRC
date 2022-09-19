@@ -11,7 +11,7 @@ private:
 
 public:
     CommandLine();
-    CommandLine(std::string cmdln, int number_of_params);
+    CommandLine(const std::string& cmdln, int number_of_params);
     ~CommandLine();
 
     int         getNumberOfParameter() const;

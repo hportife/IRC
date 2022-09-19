@@ -7,14 +7,14 @@
 
 ///////utils
 
-std::string trim(const std::string &s)
+std::string trim(std::string s)
 {
-    std::vector<char const>::iterator start = s.begin();
+    std::string::iterator start = s.begin();
     while (start != s.end() && std::isspace(*start)) {
         start++;
     }
 
-    std::vector<char const>::iterator end = s.end();
+    std::string ::iterator end = s.end();
     do {
         end--;
     } while (std::distance(start, end) > 0 && std::isspace(*end));
@@ -39,10 +39,10 @@ CommandEnum verbToCommand(std::string &verb) {
     return CommandEnum(std::find(CommandNames, CommandNames + UNDEFINED, verb) - CommandNames);
 }
 
-std::string toUppercase(std::string const &original) {
+std::string toUppercase(std::string original) {
     std::string uppercased;
 
-    for (std::vector<char const>::iterator it = original.begin(); it != original.end(); ++it) {
+    for (std::string::iterator it = original.begin(); it != original.end(); ++it) {
         uppercased += std::toupper(*it);
     }
     return uppercased;
@@ -137,7 +137,7 @@ Parser::Parser(std::string input_commandLine, int id_user, Serv *serv) {
 
         ////build commandLine without args
         if (channels.empty() and keys_users_modes.empty())
-            build_commandLine_no_args(command, channels, keys_users_modes, msg);
+            build_commandLine_no_args(command, msg);
         ////-----------------------
     }
 }
@@ -233,8 +233,7 @@ void    Parser::build_commandLine_with_args(const std::vector<std::string>& comm
     }
 }
 
-void Parser::build_commandLine_no_args(std::vector<std::string> command, const std::vector<std::string>& channels,
-                                       const std::vector<std::string>& keys_users_modes, const std::string& msg) {
+void Parser::build_commandLine_no_args(std::vector<std::string> command, const std::string& msg) {
     if (!msg.empty())
         command.push_back(msg);
     std::string str;

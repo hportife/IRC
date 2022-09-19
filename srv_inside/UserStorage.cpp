@@ -31,7 +31,7 @@ void UserStorage::add_user(User *user_for_add) {
 }
 
 User *UserStorage::search_by_nickname(std::string searched_nickname) {
-    for (int i = 0; i < user_storage.size(); ++i){
+    for (int i = 0; i < (int)user_storage.size(); ++i){
         if (user_storage[i]->get_user_nickname().compare(searched_nickname) == 0)
         {
             std::cout   << LogIdentifier::debug("FROM_USERSTORAGE_")
@@ -51,7 +51,7 @@ User *UserStorage::search_by_nickname(std::string searched_nickname) {
 }
 
 User *UserStorage::search_by_id(int searched_id) {
-    for (int i = 0; i < user_storage.size(); ++i){
+    for (int i = 0; i < (int)user_storage.size(); ++i){
         if (user_storage[i]->get_user_id() == (searched_id))
         {
             std::cout   << LogIdentifier::debug("FROM_USERSTORAGE_")
@@ -71,7 +71,7 @@ User *UserStorage::search_by_id(int searched_id) {
 }
 
 int UserStorage::get_user_position_in_storage(User *user) {
-    for (int i = 0; i < user_storage.size(); ++i) {
+    for (int i = 0; i < (int)user_storage.size(); ++i) {
         if (user_storage[i]->get_user_id() == user->get_user_id())
             return i;
     }
