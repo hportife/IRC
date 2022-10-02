@@ -98,15 +98,24 @@ void RoomStorage::display_room_storage() const{
 }
 
 Room *RoomStorage::getRoom(std::string room_name) const {
+    std::cout   << LogIdentifier::debug("FROM: RS::getRoom_")
+                << "Искомое имя комнаты: " << room_name << std::endl;
     for (int i = 0; i < (int)room_storage.size(); ++i) {
         if (room_storage[i]->get_room_name().compare(room_name) == 0){
+            std::cout   << LogIdentifier::info("FROM: RS::getRoom_")
+                        << "Комната найдена\n";
             return (room_storage[i]);
         }
     }
+    std::cout   << LogIdentifier::debug("FROM: RS::getRoom_")
+                << "Комната не найдена\n";
     return (NULL);
 }
 
 void RoomStorage::delete_user_from_rooms(std::string nickname, std::string message) {
+    std::cout   << LogIdentifier::debug("FROM: RS::getRoom_")
+                << "Удаление пользователя " << nickname
+                << " из всех комнат"<< std::endl;
     for (int i = 0; i < (int)room_storage.size(); ++i) {
         if (room_storage[i]->isInRoom(nickname)){
             room_storage[i]->delete_user(nickname);

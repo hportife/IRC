@@ -492,6 +492,8 @@ void Commando::InviteCmd(int id, std::string channel_name) {
 void Commando::JoinCmd(int id, std::string channel_name) {
     if (isCannelInServ(channel_name))
     {
+        std::cout   << LogIdentifier::info("FROM: Commando::Join_")
+                    << "Канал " << channel_name << " найден на сервере\n";
         if(Channel(channel_name)
                 ->get_param_value("i")/*i==true*/ &&
                 !Channel(channel_name)
@@ -505,8 +507,17 @@ void Commando::JoinCmd(int id, std::string channel_name) {
         AnswerMessage(channel_name, RPL_INVITING, idToNick(id));
         //Channel(channel_name) - убрать пользователя из инвайт листа ???
     } else {
-        //сообщение о некорректном названии комнаты
-        WrongReqMessage(channel_name, ERR_NOSUCHCHANNEL, "");
+        std::cout   << LogIdentifier::info("FROM: Commando::Join_")
+                    << "Канал " << channel_name << " не найден на сервере\n";
+        this->general_serv
+            ->getRoomStorage()
+            ->add_room(new Room(this->general_serv
+                                    ->getUserStorage()
+                                    ->search_by_id(id)
+                                    ->get_user_nickname(), channel_name));
+        std::cout   << LogIdentifier::info("FROM: Commando::Join_")
+                    << "Канал " << channel_name << " создан\n";
+        AnswerMessage(channel_name, RPL_INVITING, idToNick(id));
     }
 }
 
