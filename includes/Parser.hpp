@@ -14,8 +14,10 @@
 #include <algorithm>
 #include "Serv.hpp"
 
-#define ERR_UNKNOWNCOMMAND 421      // "<command> :Unknown command"
-#define ERR_NEEDMOREPARAMS 461      // "<command> :Not enough parameters"
+#define ERR_UNKNOWNCOMMAND	421      // "<command> :Unknown command"
+#define ERR_NEEDMOREPARAMS	461      // "<command> :Not enough parameters"
+
+#define RPL_RIGHTCMD		111
 
 
 #define COMMANDS(X) \
@@ -65,12 +67,13 @@ class Serv;
 
 class Parser {
 private:
-    CommandLine             _commandLine;
-    CommandEnum             _type;
-    std::queue<CommandLine> _tasks;
-    int                     _countCommand;
-    Serv                    *serv;
-    int                     id_user;
+    CommandLine             	_commandLine;
+    CommandEnum             	_type;
+    std::queue<CommandLine> 	_tasks;
+    int                     	_countCommand;
+	std::vector<std::string>	_input_commandLINES;
+    Serv                    	*serv;
+    int                     	id_user;
 
     void    detect_msg(std::string *input_commandLine, std::string *msg, int *pos);
 
@@ -86,9 +89,10 @@ private:
 
 
 public:
-    Parser(std::string input_commandLine, int id_user, Serv *serv);
+    Parser(const std::string& input_commandLine, int id_user, Serv *serv);
     ~Parser();
 
+	int	start_parser();
     CommandLine getOneCommandLine();
     std::queue<CommandLine> getAllCommandLine();
     void    popOneCommandLine();

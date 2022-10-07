@@ -44,20 +44,31 @@ int main(int arc, char **arg){
 
                 Parser parser(msg, iter->fd, IRC_server);
 
-                parser.commandHandler();
-//    std::cout << parser.getCommandLine().getParameters() << std::endl;
-//                std::cout << "queue size = " << (int)parser.getAllCommandLine().size() << std::endl;
-//                while (!parser.getAllCommandLine().empty()) {
-//                    std::cout << parser.getOneCommandLine().getParameters() << std::endl;
-//                    std::cout << parser.getOneCommandLine().getNumberOfParameter() << std::endl;
-//                    std::cout << parser.getOneCommandLine().getOneParameter(1) << std::endl;
-//                    std::cout << parser.getOneCommandLine().getOneParameter(2) << std::endl;
-//                    std::cout << parser.getOneCommandLine().getOneParameter(3) << std::endl;
-//                    std::cout << parser.getOneCommandLine().getOneParameter(4) << std::endl;
-//                    std::cout << parser.getOneCommandLine().getOneParameter(5) << std::endl;
-//                    std::cout << parser.getOneCommandLine().getOneParameter(6) << std::endl;
-//                    parser.popOneCommandLine();
-//                }
+//
+//				if (parser.start_parser() != ERR_UNKNOWNCOMMAND)
+//                	parser.commandHandler();
+//
+
+
+				/// этим блоком проверяешь правильно ли распарсил, сожержимое
+				/// таски-командлайна, если возникнут сомнения,
+				/// но тогда сверху в условии закоментируй parser.commandHandler();,
+				/// а так логи парса сделаны
+
+				parser.start_parser();
+
+                std::cout << "queue size = " << (int)parser.getAllCommandLine().size() << std::endl;
+                while (!parser.getAllCommandLine().empty()) {
+                    std::cout << parser.getOneCommandLine().getParameters() << std::endl;
+                    std::cout << parser.getOneCommandLine().getNumberOfParameter() << std::endl;
+                    std::cout << parser.getOneCommandLine().getOneParameter(1) << std::endl;
+                    std::cout << parser.getOneCommandLine().getOneParameter(2) << std::endl;
+                    std::cout << parser.getOneCommandLine().getOneParameter(3) << std::endl;
+                    std::cout << parser.getOneCommandLine().getOneParameter(4) << std::endl;
+                    std::cout << parser.getOneCommandLine().getOneParameter(5) << std::endl;
+                    std::cout << parser.getOneCommandLine().getOneParameter(6) << std::endl;
+                    parser.popOneCommandLine();
+                }
 
 
             }
