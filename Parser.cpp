@@ -158,7 +158,7 @@ void    Parser::detect_msg(std::string *input_commandLine, std::string *msg, int
     *pos = (int)input_commandLine->find(':');
 
     if (*pos != -1) {
-        *msg = input_commandLine->substr(*pos + 1);
+        *msg = input_commandLine->substr(*pos);
         *input_commandLine = input_commandLine->substr(0, *pos);
     }
 }
@@ -212,7 +212,6 @@ void    Parser::define_command(std::vector<std::string> *command) {
             if (i != 0)
                 (*command)[i] = tmp;
             _countCommand++;
-			std::cout << LogIdentifier::info("Была подана команда ") + word << std::endl;
 		}
     }
 }
@@ -228,23 +227,26 @@ void    Parser::build_commandLine_with_args(const std::vector<std::string>& comm
 
     for (int i = 0; i < n; ++i) {
         std::vector<std::string> tmp = command;
-        if (!channels.empty() and i < (int)channels.size()) {
-			std::cout << LogIdentifier::info("С названием комнаты ") + channels[i] << std::endl;
+		std::cout << LogIdentifier::info("Была подана команда ") + tmp[0] << std::endl;
+		if (!channels.empty() and i < (int)channels.size()) {
 			tmp.push_back(channels[i]);
 		}
         if (!keys_users_modes.empty() and i < (int)keys_users_modes.size()) {
-			std::cout << LogIdentifier::info("аргументом ") + keys_users_modes[i] << std::endl;
+			std::cout << LogIdentifier::info("С аргументом ") + keys_users_modes[i] << std::endl;
 			tmp.push_back(keys_users_modes[i]);
 		}
         if (!msg.empty()) {
-			std::cout << LogIdentifier::info("сообщением ") + msg << std::endl;
 			tmp.push_back(msg);
 		}
         std::string str;
-        for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); ++it) {
+		for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); ++it) {
+			if ((*it)[0] == ':') {
+				*it = (*it).substr(1);
+				std::cout << LogIdentifier::info("с сообщением ") + *it << std::endl;
+			}
 			if ((*it)[0] == '#' or (*it)[0] == '&')
 				std::cout << LogIdentifier::info("с названием комнаты ") + *it << std::endl;
-            str += "<" + *it + ">";
+			str += "<" + *it + ">";
         }
         this->_commandLine = CommandLine(str, (int)tmp.size());
         this->_tasks.push(_commandLine);
@@ -252,13 +254,18 @@ void    Parser::build_commandLine_with_args(const std::vector<std::string>& comm
 }
 
 void Parser::build_commandLine_no_args(std::vector<std::string> command, const std::string& msg) {
-    if (!msg.empty()) {
-		std::cout << LogIdentifier::info("С сообщением ") + msg << std::endl;
+	std::cout << LogIdentifier::info("Была подана команда ") + command[0] << std::endl;
+	if (!msg.empty())
 		command.push_back(msg);
-	}
     std::string str;
     for (std::vector<std::string>::iterator it = command.begin(); it != command.end(); ++it) {
-        if (it != command.begin() and it != --command.end())
+		if ((*it)[0] == ':') {
+			*it = (*it).substr(1);
+			std::cout << LogIdentifier::info("с сообщением ") + *it << std::endl;
+		}
+		else if ((*it)[0] == '#' or (*it)[0] == '&')
+			std::cout << LogIdentifier::info("с названием комнаты ") + *it << std::endl;
+		else if (it != command.begin() and *it != msg)
 			std::cout << LogIdentifier::info("с аргументом ") + *it << std::endl;
 		str += "<" + *it + ">";
     }
