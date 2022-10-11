@@ -228,24 +228,20 @@ void    Parser::build_commandLine_with_args(const std::vector<std::string>& comm
     for (int i = 0; i < n; ++i) {
         std::vector<std::string> tmp = command;
 		std::cout << LogIdentifier::info("Была подана команда ") + tmp[0] << std::endl;
-		if (!channels.empty() and i < (int)channels.size()) {
+		if (!channels.empty() and i < (int)channels.size())
 			tmp.push_back(channels[i]);
-		}
-        if (!keys_users_modes.empty() and i < (int)keys_users_modes.size()) {
-			std::cout << LogIdentifier::info("С аргументом ") + keys_users_modes[i] << std::endl;
+        if (!keys_users_modes.empty() and i < (int)keys_users_modes.size())
 			tmp.push_back(keys_users_modes[i]);
-		}
-        if (!msg.empty()) {
+        if (!msg.empty())
 			tmp.push_back(msg);
-		}
         std::string str;
 		for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); ++it) {
-			if ((*it)[0] == ':') {
-				*it = (*it).substr(1);
-				std::cout << LogIdentifier::info("с сообщением ") + *it << std::endl;
-			}
-			if ((*it)[0] == '#' or (*it)[0] == '&')
+			if ((*it)[0] == ':')
+				std::cout << LogIdentifier::info("с сообщением ") + (*it).substr(1) << std::endl;
+			else if ((*it)[0] == '#' or (*it)[0] == '&')
 				std::cout << LogIdentifier::info("с названием комнаты ") + *it << std::endl;
+			else if (it != tmp.begin())
+				std::cout << LogIdentifier::info("с аргументом ") + *it << std::endl;
 			str += "<" + *it + ">";
         }
         this->_commandLine = CommandLine(str, (int)tmp.size());
@@ -259,13 +255,11 @@ void Parser::build_commandLine_no_args(std::vector<std::string> command, const s
 		command.push_back(msg);
     std::string str;
     for (std::vector<std::string>::iterator it = command.begin(); it != command.end(); ++it) {
-		if ((*it)[0] == ':') {
-			*it = (*it).substr(1);
-			std::cout << LogIdentifier::info("с сообщением ") + *it << std::endl;
-		}
+		if ((*it)[0] == ':')
+			std::cout << LogIdentifier::info("с сообщением ") + (*it).substr(1) << std::endl;
 		else if ((*it)[0] == '#' or (*it)[0] == '&')
 			std::cout << LogIdentifier::info("с названием комнаты ") + *it << std::endl;
-		else if (it != command.begin() and *it != msg)
+		else if (it != command.begin())
 			std::cout << LogIdentifier::info("с аргументом ") + *it << std::endl;
 		str += "<" + *it + ">";
     }
