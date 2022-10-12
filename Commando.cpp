@@ -14,6 +14,8 @@ Commando::Commando(Serv *server_class) {
 }
 
 void Commando::UserConnect(int id) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "userConnect for id: " << id << std::endl;
     this->general_serv
         ->getUserStorage()
         ->add_user(new User(id));
@@ -21,6 +23,9 @@ void Commando::UserConnect(int id) {
 
 int Commando::NickCmd(std::string old_nickname,
                            std::string new_nickname) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "swap nickname: " << old_nickname << " >> "
+              << new_nickname << std::endl;
     if (nickname_validator(new_nickname) != NICKNAME_HAS_VALID)
     {
         this->WrongReqMessage(new_nickname, ERR_ERRONEUSNICKNAME, "");
@@ -36,14 +41,18 @@ int Commando::NickCmd(std::string old_nickname,
     this->general_serv
             ->getNicknameStorage()
             ->delete_nickname(old_nickname);
-    //СООБЩЕНИЕ ВЫДАЧЕ НОВОГО НИКА
     this->AnswerMessage(new_nickname, NICKNAME_IS_GIVEN, "NICK");
     return (NICKNAME_IS_GIVEN);
 }
 
 int Commando::NickCmd(int id, std::string new_nickname) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "first use nick for id: " << id << ": "
+              << new_nickname << std::endl;
     int rpl = nickname_validator(new_nickname);
     if (rpl != NICKNAME_HAS_VALID) {
+        std::cout << LogIdentifier::debug("COMMANDO_CLASS_")
+                  << "id: " << id << " enter not walid nickname" << std::endl;
         WrongReqMessage(new_nickname, rpl, "NICK");
         return (rpl);
     }
@@ -56,27 +65,33 @@ int Commando::NickCmd(int id, std::string new_nickname) {
             ->set_nickname(new_nickname);
     if (!this->general_serv
             ->getUserStorage()
-            ->search_by_id(id)->get_user_realname().empty()) {
+            ->search_by_id(id)
+            ->get_user_realname().empty()) {
         this->general_serv
                 ->getUserStorage()
                 ->search_by_id(id)
                 ->setReadyness();
-        //ОТПРАВИТЬ MOTD
+        std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+                  << "send MOTD from NickCmd" << std::endl;
+        //SEND_FROM_HERE: MOTD
     }
-    AnswerMessage(new_nickname, NICKNAME_IS_GIVEN, "NICK");
+    AnswerMessage(new_nickname, NICKNAME_IS_GIVEN, "NICK");// need delete this string!
     return (NICKNAME_IS_GIVEN);
 }
 
 void Commando::AwayCmd(std::string user_nickname, std::string message) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "AwayCmd" << std::endl;
     this->general_serv->getUserStorage()
                         ->search_by_nickname(user_nickname)
                         ->setAwayMsg(message);
-    //сообщение: эвэй установлен
     AnswerMessage(user_nickname, RPL_AWAY, message);
 }
 
 int Commando::UserCmd(int id, std::string clientname,
                       std::string realname){
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "UserCmd for id: " << id << std::endl;
     this->general_serv
         ->getUserStorage()
         ->search_by_id(id)
@@ -85,15 +100,21 @@ int Commando::UserCmd(int id, std::string clientname,
             ->getUserStorage()
             ->search_by_id(id)
             ->setClientname(clientname);
-    if (!idToNick(id).empty())
+    if (!idToNick(id).empty()){
         this->general_serv
                 ->getUserStorage()
                 ->search_by_id(id)
                 ->setReadyness();
+        std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+                  << "send MOTD from UserCmd" << std::endl;
+        //SEND_FROM_HERE: MOTD
+    }
     return (NEW_USER_CREATE);
 }
 
 int Commando::OperCmd(std::string nickname, std::string password) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "OperCmd: " << nickname << std::endl;
     if (!password.empty() && this->general_serv
         ->getPassword().compare(password) != 0) {
         WrongReqMessage(nickname, ERR_PASSWDMISMATCH, password);
@@ -104,66 +125,71 @@ int Commando::OperCmd(std::string nickname, std::string password) {
 }
 
 void Commando::ModeLCmd(std::string room_name, int limit) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "mode l - " << room_name << std::endl;
     Channel(room_name)
         ->set_user_limit(limit);
 }
 
 void Commando::ModeOCmd(std::string room_name, std::string oper_nick,
                         std::string nickname, bool rights) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "mode o - " << room_name << " oper: "
+              << oper_nick << " user: " << nickname
+              << std::endl;
     if (Channel(room_name) != NULL) {
         if (!Channel(room_name)->is_oper(oper_nick)) {
-            //отправить сообщение что oper_nick
-            //не имеет права давать права оперов
             WrongReqMessage(oper_nick, ERR_NOPRIVILEGES, "mode");
             return;
         }
         if (this->general_serv
                 ->getNicknameStorage()
                 ->search_a_conflict(nickname) != ERR_NICKNAMEINUSE) {
-            //сообщение что не верно введён никнейм
             WrongReqMessage(nickname, ERR_ERRONEUSNICKNAME, "");
             return;
         }
         if (!Channel(room_name)
                 ->isInRoom(nickname)){
-            //сообщение что пользователя в комнате нет
             WrongReqMessage(nickname, ERR_USERNOTINCHANNEL, room_name);
             return;
         }
         if (rights) {
             Channel(room_name)->set_oper(nickname);
-            //отправить сообщение о выданных правах
             AnswerMessage(nickname, RPL_YOUREOPER, "");
         } else {
             Channel(room_name)->unset_oper(nickname);
-            //отправить сообщение о снятых правах
             AnswerMessage(nickname, RPL_BREAKOPER, "");
         }
     }
-    else //ОТПРАВИТЬ СООБЩЕНИЕ ОБ ОТСУТСТВИИ КОМНАТЫ
+    else
         WrongReqMessage(room_name, ERR_NOSUCHCHANNEL, "");
 }
 
 void Commando::setUserParam(std::string nickname, std::string param,
                             bool value) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "setUserParam - " << nickname << " | " << param << std::endl;
     this->general_serv
         ->getUserStorage()
         ->search_by_nickname(nickname)
         ->setUserParamValue(param, value);
-    //сообщение что парамерты установлены
+    //SEND_FROM_HERE: сообщение что парамерты установлены
 }
 
 void Commando::setRoomParam(std::string room_name, std::string param,
                             bool value) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "setUserParam - " << room_name << " | " << param << std::endl;
     Channel(room_name)->setRoomParameter(param, value);
-    //сообщение что параметры установлены
+    //SEND_FROM_HERE: сообщение что параметры установлены
 }
 
 //-----------------------------validators-----------------------------------
 
 int Commando::nickname_validator(std::string nickname) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "nickname validator - " << nickname << std::endl;
     if (nickname.length() > 9 || nickname.empty()) {
-        //сообщение: корявый ник
         WrongReqMessage(nickname, ERR_ERRONEUSNICKNAME, "");
         return (NICKNAME_IS_WRONG);
     }
@@ -171,7 +197,6 @@ int Commando::nickname_validator(std::string nickname) {
                 ->getNicknameStorage()
                 ->search_a_conflict(nickname)
         == ERR_NICKNAMEINUSE) {
-        //сообщение: ник занят
         WrongReqMessage(nickname, ERR_NICKNAMEINUSE, "");
         return (ERR_NICKNAMEINUSE);
     }
@@ -469,15 +494,14 @@ bool Commando::isNicknameInServ(std::string nickname) {
 }
 
 void Commando::NoticeCmd(int id, std::string message) {
-    //отправить сообщение
+    //SEND_FROM_HERE: отправить сообщение - PRIVMSG
 }
 
 void Commando::PrivmsgToChannel(std::string channel_name, std::string message) {
     if (!isCannelInServ(channel_name)) {
-        //отправить сообщение о некорректном названии комнаты
         WrongReqMessage(channel_name, ERR_NOSUCHCHANNEL, "");
     }
-    //иначе отправить сообщение в комнату
+    //SEND_FROM_HERE: иначе PRIVMSG сообщение в комнату
     //AnswerMessage(); ?
 }
 
@@ -485,7 +509,6 @@ void Commando::InviteCmd(int id, std::string channel_name) {
     if (isCannelInServ(channel_name))
         Channel(channel_name)
             ->add_to_invite_list(idToNick(id));
-    //сообщение: некорректное название комнаты
     WrongReqMessage(channel_name, ERR_NOSUCHCHANNEL, "");
 }
 
@@ -498,12 +521,10 @@ void Commando::JoinCmd(int id, std::string channel_name) {
                 ->get_param_value("i")/*i==true*/ &&
                 !Channel(channel_name)
                         ->is_in_invite_list(idToNick(id))/*invite==false*/){
-            //сообщение о том что пользователь не может войти в инвайт-онли комнату
             WrongReqMessage(idToNick(id), ERR_INVITEONLYCHAN, channel_name);
         }
         Channel(channel_name)
                 ->add_user(idToNick(id));
-        //сообщение что пользователь вошёл в комнату
         AnswerMessage(channel_name, RPL_INVITING, idToNick(id));
         //Channel(channel_name) - убрать пользователя из инвайт листа ???
     } else {
@@ -522,6 +543,8 @@ void Commando::JoinCmd(int id, std::string channel_name) {
 }
 
 std::string Commando::idToNick(int id) {
+    std::cout   << LogIdentifier::info("FROM: Commando::idToNick_")
+                << "for id: " << id << std::endl;
     return (this->general_serv
             ->getUserStorage()
             ->search_by_id(id)
@@ -529,25 +552,28 @@ std::string Commando::idToNick(int id) {
 }
 
 void Commando::KickCmd(int kicker_id, int kickem_id, std::string channel_name) {
+    std::cout   << LogIdentifier::info("FROM: Commando::KickCmd_")
+                << "kicker: " << idToNick(kicker_id)
+                << " kickem: " << idToNick(kickem_id) << std::endl;
     if (isCannelInServ(channel_name)){
         if (Channel(channel_name)->is_oper(idToNick(kicker_id))){
             Channel(channel_name)->delete_user(idToNick(kickem_id));
-            //сообщение в канал что пользователя кикнули
-            //сообщение пользователю что его кикнули
+            //SEND_FROM_HERE: сообщение в канал что пользователя кикнули
+            //SEND_FROM_HERE: сообщение пользователю что его кикнули
         } else {
-            //сообщение кикеру, что он не опер
+            //SEND_FROM_HERE: сообщение кикеру, что он не опер
             WrongReqMessage(idToNick(kicker_id), ERR_CHANOPRIVSNEEDED, channel_name);
         }
     }
     else {
-        //сообщение о некорректном названии комнаты
+        //SEND_FROM_HERE: сообщение о некорректном названии комнаты
         WrongReqMessage(channel_name, ERR_NOSUCHCHANNEL, "");
     }
 }
 
 void Commando::QuitCmd(int id, std::string message) {
     this->general_serv->getRoomStorage()->delete_user_from_rooms(idToNick(id), message);
-    //в методе выше реализовать отправку сообщения о выходе пользователя
+    //SEND_FROM_HERE: в методе выше реализовать отправку сообщения о выходе пользователя
     this->general_serv->getNicknameStorage()->delete_nickname(idToNick(id));
     this->general_serv->getUserStorage()->delete_user_from_storage(this->general_serv
                                                                         ->getUserStorage()
