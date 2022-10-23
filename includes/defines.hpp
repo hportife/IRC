@@ -87,6 +87,11 @@
 
 //ANSWERS
 
+#define RPL_USERKICKED          337
+#define RPL_CHANNELKICK         336
+#define RPL_PRIVMSG             335
+#define RPL_SETUSRPARAM         333
+#define RPL_SETCHANPARAM        334
 #define RPL_NONE				300
 #define RPL_USERHOST			302
 #define RPL_ISON				303

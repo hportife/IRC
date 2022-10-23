@@ -1,3 +1,4 @@
+#include <sys/socket.h>
 #include "../includes/LogIdentifier.hpp"
 #include "../includes/RoomStorage.hpp"
 
@@ -112,7 +113,7 @@ Room *RoomStorage::getRoom(std::string room_name) const {
     return (NULL);
 }
 
-void RoomStorage::delete_user_from_rooms(std::string nickname, std::string message) {
+void RoomStorage::delete_user_from_rooms(std::string nickname, std::string message, int user_id) {
     std::cout   << LogIdentifier::debug("FROM: RS::getRoom_")
                 << "Удаление пользователя " << nickname
                 << " из всех комнат"<< std::endl;
@@ -120,6 +121,7 @@ void RoomStorage::delete_user_from_rooms(std::string nickname, std::string messa
         if (room_storage[i]->isInRoom(nickname)){
             room_storage[i]->delete_user(nickname);
             //сообщение в комнату что юзер вышел
+            send(user_id, message.c_str(), message.size(), 0); //check the last parameter !!!!!!
         }
     }
 }

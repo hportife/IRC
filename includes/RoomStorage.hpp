@@ -22,7 +22,7 @@ public:
     int         search_conflicts(Room const *inspected_room);
     int         search_conflicts_with_name(std::string const inspected_room_name);
     int         delete_room_from_storage(Room const *room);
-    void        delete_user_from_rooms(std::string nickname, std::string message);
+    void        delete_user_from_rooms(std::string nickname, std::string message, int user_id);
     void        display_room_storage() const;
     Room        *getRoom(std::string room_name) const;
     //get_room_storage - нужен ли этот мето и что он должен возвращать,
