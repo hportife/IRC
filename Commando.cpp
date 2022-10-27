@@ -14,6 +14,8 @@ Commando::Commando(Serv *server_class) {
 }
 
 void Commando::UserConnect(int id) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "userConnect for id: " << id << std::endl;
     this->general_serv
         ->getUserStorage()
         ->add_user(new User(id));
@@ -21,6 +23,9 @@ void Commando::UserConnect(int id) {
 
 int Commando::NickCmd(std::string old_nickname,
                            std::string new_nickname) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "swap nickname: " << old_nickname << " >> "
+              << new_nickname << std::endl;
     if (nickname_validator(new_nickname) != NICKNAME_HAS_VALID)
     {
         this->WrongReqMessage(new_nickname, ERR_ERRONEUSNICKNAME, "");
@@ -36,14 +41,18 @@ int Commando::NickCmd(std::string old_nickname,
     this->general_serv
             ->getNicknameStorage()
             ->delete_nickname(old_nickname);
-    //СООБЩЕНИЕ ВЫДАЧЕ НОВОГО НИКА
     this->AnswerMessage(new_nickname, NICKNAME_IS_GIVEN, "NICK");
     return (NICKNAME_IS_GIVEN);
 }
 
 int Commando::NickCmd(int id, std::string new_nickname) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "first use nick for id: " << id << ": "
+              << new_nickname << std::endl;
     int rpl = nickname_validator(new_nickname);
     if (rpl != NICKNAME_HAS_VALID) {
+        std::cout << LogIdentifier::debug("COMMANDO_CLASS_")
+                  << "id: " << id << " enter not walid nickname" << std::endl;
         WrongReqMessage(new_nickname, rpl, "NICK");
         return (rpl);
     }
@@ -56,27 +65,35 @@ int Commando::NickCmd(int id, std::string new_nickname) {
             ->set_nickname(new_nickname);
     if (!this->general_serv
             ->getUserStorage()
-            ->search_by_id(id)->get_user_realname().empty()) {
+            ->search_by_id(id)
+            ->get_user_realname().empty()) {
         this->general_serv
                 ->getUserStorage()
                 ->search_by_id(id)
                 ->setReadyness();
-        //ОТПРАВИТЬ MOTD
+        std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+                  << "send MOTD from NickCmd" << std::endl;
+        //SEND_FROM_HERE: MOTD
+        AnswerMessage(new_nickname, RPL_MOTDSTART, "");
+        AnswerMessage(new_nickname, RPL_MOTD, "");
+        AnswerMessage(new_nickname, RPL_ENDOFMOTD, "");
     }
-    AnswerMessage(new_nickname, NICKNAME_IS_GIVEN, "NICK");
     return (NICKNAME_IS_GIVEN);
 }
 
 void Commando::AwayCmd(std::string user_nickname, std::string message) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "AwayCmd" << std::endl;
     this->general_serv->getUserStorage()
                         ->search_by_nickname(user_nickname)
                         ->setAwayMsg(message);
-    //сообщение: эвэй установлен
     AnswerMessage(user_nickname, RPL_AWAY, message);
 }
 
 int Commando::UserCmd(int id, std::string clientname,
                       std::string realname){
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "UserCmd for id: " << id << std::endl;
     this->general_serv
         ->getUserStorage()
         ->search_by_id(id)
@@ -85,15 +102,24 @@ int Commando::UserCmd(int id, std::string clientname,
             ->getUserStorage()
             ->search_by_id(id)
             ->setClientname(clientname);
-    if (!idToNick(id).empty())
+    if (!idToNick(id).empty()){
         this->general_serv
                 ->getUserStorage()
                 ->search_by_id(id)
                 ->setReadyness();
+        std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+                  << "send MOTD from UserCmd" << std::endl;
+        //SEND_FROM_HERE: MOTD
+        AnswerMessage(clientname, RPL_MOTDSTART, "");
+        AnswerMessage(clientname, RPL_MOTD, "");
+        AnswerMessage(clientname, RPL_ENDOFMOTD, "");
+    }
     return (NEW_USER_CREATE);
 }
 
 int Commando::OperCmd(std::string nickname, std::string password) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "OperCmd: " << nickname << std::endl;
     if (!password.empty() && this->general_serv
         ->getPassword().compare(password) != 0) {
         WrongReqMessage(nickname, ERR_PASSWDMISMATCH, password);
@@ -104,66 +130,73 @@ int Commando::OperCmd(std::string nickname, std::string password) {
 }
 
 void Commando::ModeLCmd(std::string room_name, int limit) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "mode l - " << room_name << std::endl;
     Channel(room_name)
         ->set_user_limit(limit);
 }
 
 void Commando::ModeOCmd(std::string room_name, std::string oper_nick,
                         std::string nickname, bool rights) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "mode o - " << room_name << " oper: "
+              << oper_nick << " user: " << nickname
+              << std::endl;
     if (Channel(room_name) != NULL) {
         if (!Channel(room_name)->is_oper(oper_nick)) {
-            //отправить сообщение что oper_nick
-            //не имеет права давать права оперов
             WrongReqMessage(oper_nick, ERR_NOPRIVILEGES, "mode");
             return;
         }
         if (this->general_serv
                 ->getNicknameStorage()
                 ->search_a_conflict(nickname) != ERR_NICKNAMEINUSE) {
-            //сообщение что не верно введён никнейм
             WrongReqMessage(nickname, ERR_ERRONEUSNICKNAME, "");
             return;
         }
         if (!Channel(room_name)
                 ->isInRoom(nickname)){
-            //сообщение что пользователя в комнате нет
             WrongReqMessage(nickname, ERR_USERNOTINCHANNEL, room_name);
             return;
         }
         if (rights) {
             Channel(room_name)->set_oper(nickname);
-            //отправить сообщение о выданных правах
             AnswerMessage(nickname, RPL_YOUREOPER, "");
         } else {
             Channel(room_name)->unset_oper(nickname);
-            //отправить сообщение о снятых правах
             AnswerMessage(nickname, RPL_BREAKOPER, "");
         }
     }
-    else //ОТПРАВИТЬ СООБЩЕНИЕ ОБ ОТСУТСТВИИ КОМНАТЫ
+    else
         WrongReqMessage(room_name, ERR_NOSUCHCHANNEL, "");
 }
 
 void Commando::setUserParam(std::string nickname, std::string param,
                             bool value) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "setUserParam - " << nickname << " | " << param << std::endl;
     this->general_serv
         ->getUserStorage()
         ->search_by_nickname(nickname)
         ->setUserParamValue(param, value);
-    //сообщение что парамерты установлены
+    //SEND_FROM_HERE: сообщение что парамерты установлены
+    AnswerMessage(nickname, RPL_SETUSRPARAM, param);
 }
 
 void Commando::setRoomParam(std::string room_name, std::string param,
                             bool value) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "setUserParam - " << room_name << " | " << param << std::endl;
     Channel(room_name)->setRoomParameter(param, value);
-    //сообщение что параметры установлены
+    //SEND_FROM_HERE: сообщение что параметры установлены
+    AnswerMessage(room_name, RPL_SETCHANPARAM, param);
 }
 
 //-----------------------------validators-----------------------------------
 
 int Commando::nickname_validator(std::string nickname) {
+    std::cout << LogIdentifier::info("COMMANDO_CLASS_")
+              << "nickname validator - " << nickname << std::endl;
     if (nickname.length() > 9 || nickname.empty()) {
-        //сообщение: корявый ник
         WrongReqMessage(nickname, ERR_ERRONEUSNICKNAME, "");
         return (NICKNAME_IS_WRONG);
     }
@@ -171,7 +204,6 @@ int Commando::nickname_validator(std::string nickname) {
                 ->getNicknameStorage()
                 ->search_a_conflict(nickname)
         == ERR_NICKNAMEINUSE) {
-        //сообщение: ник занят
         WrongReqMessage(nickname, ERR_NICKNAMEINUSE, "");
         return (ERR_NICKNAMEINUSE);
     }
@@ -183,137 +215,137 @@ void Commando::WrongReqMessage(const std::string& user_nickname, int eventId, co
     std::stringstream	ss;
 
     ss << eventId;
-    msg += ss.str() + " " + user_nickname;
+    msg += ss.str() + " " + user_nickname + " :";
     switch (eventId)
     {
 //        case ERR_NOSUCHNICK:
 //            msg += ' ' + command.getArgument(0) + " :No such nick/channel\n";
 //            break;
         case ERR_NOSUCHSERVER:
-            msg += " :No such server\n";
+            msg += "No such server\n";
             break;
         case ERR_NOSUCHCHANNEL:
-            msg += " :No such channel\n";
+            msg += "No such channel\n";
             break;
         case ERR_CANNOTSENDTOCHAN:
-            msg += " :Cannot send to channel\n";
+            msg += "Cannot send to channel\n";
             break;
         case ERR_TOOMANYCHANNELS:
-            msg += " :You have joined too many channels\n";
+            msg += "You have joined too many channels\n";
             break;
         case ERR_WASNOSUCHNICK:
-            msg += " :There was no such nickname\n";
+            msg += "There was no such nickname\n";
             break;
         case ERR_TOOMANYTARGETS:
-            msg += " :Duplicate recipients delivered\n";
+            msg += "Duplicate recipients delivered\n";
             break;
         case ERR_NOORIGIN:
-            msg += " :No origin specified\n";
+            msg += "No origin specified\n";
             break;
         case ERR_NORECIPIENT:
-            msg += " :No recipient given (" + command + ")\n";
+            msg += "No recipient given (" + command + ")\n";
             break;
         case ERR_NOTEXTTOSEND:
-            msg += " :No text to send\n";
+            msg += "No text to send\n";
             break;
         case ERR_NOTOPLEVEL:
-            msg += " " + command + " :No toplevel domain specified\n";
+            msg +=  command + " :No toplevel domain specified\n";
             break;
         case ERR_WILDTOPLEVEL:
-            msg += " " + command + " :Wildcard in toplevel domain\n";
+            msg += command + " :Wildcard in toplevel domain\n";
             break;
         case ERR_UNKNOWNCOMMAND:
-            msg += " " + command + " :Unknown command\n";
+            msg += command + " :Unknown command\n";
             break;
         case ERR_NOMOTD:
-            msg += " :MOTD File is missing\n";
+            msg += "MOTD File is missing\n";
             break;
         case ERR_NOADMININFO:
-            msg += " " + command + " :No administrative info available\n";
+            msg += command + " :No administrative info available\n";
             break;
         case ERR_NONICKNAMEGIVEN:
-            msg += " :No nickname given\n";
+            msg += "No nickname given\n";
             break;
         case ERR_ERRONEUSNICKNAME:
-            msg += " :Erroneus nickname\n";
+            msg += "Erroneus nickname\n";
             break;
         case ERR_NICKNAMEINUSE:
-            msg += " * :Nickname is already in use.\n";
+            msg += "Nickname is already in use.\n";
             break;
         case ERR_NICKCOLLISION:
-            msg += " " + command + " :Nickname collision KILL\n";
+            msg += command + " :Nickname collision KILL\n";
             break;
         case ERR_USERNOTINCHANNEL:
-            msg += " " + command + " :They aren't on that channel\n";
+            msg += command + " :They aren't on that channel\n";
             break;
         case ERR_NOTONCHANNEL:
-            msg += " " + command + " :You're not on that channel\n";
+            msg += command + " :You're not on that channel\n";
             break;
         case ERR_USERONCHANNEL:
-            msg += " " + command + " :is already on channel\n";
+            msg += command + " :is already on channel\n";
             break;
         case ERR_NOLOGIN:
-            msg += " " + command + " :User not logged in\n";
+            msg += command + " :User not logged in\n";
             break;
         case ERR_SUMMONDISABLED:
-            msg += " :SUMMON has been disabled\n";
+            msg += "SUMMON has been disabled\n";
             break;
         case ERR_USERSDISABLED:
-            msg += " :USERS has been disabled\n";
+            msg += "USERS has been disabled\n";
             break;
         case ERR_NOTREGISTERED:
-            msg += " :You have not registered\n";
+            msg += "You have not registered\n";
             break;
         case ERR_NEEDMOREPARAMS:
-            msg += " " + command + " :Not enough parameters\n";
+            msg += command + " :Not enough parameters\n";
             break;
         case ERR_ALREADYREGISTRED:
-            msg += " :You may not reregister\n";
+            msg += "You may not reregister\n";
             break;
         case ERR_NOPERMFORHOST:
-            msg += " :Your host isn't among the privileged\n";
+            msg += "Your host isn't among the privileged\n";
             break;
         case ERR_PASSWDMISMATCH:
-            msg += " :Password incorrect\n";
+            msg += "Password incorrect\n";
             break;
         case ERR_YOUREBANNEDCREEP:
-            msg += " :You are banned from this server\n";
+            msg += "You are banned from this server\n";
             break;
         case ERR_KEYSET:
-            msg += " " + command + " :Channel key already set\n";
+            msg += command + " :Channel key already set\n";
             break;
         case ERR_CHANNELISFULL:
-            msg += " " + command + " :Cannot join channel (+l)\n";
+            msg += command + " :Cannot join channel (+l)\n";
             break;
         case ERR_UNKNOWNMODE:
-            msg += " :is unknown mode char to me\n";
+            msg += "is unknown mode char to me\n";
             break;
         case ERR_INVITEONLYCHAN:
-            msg += " " + command + " :Cannot join channel (+i)\n";
+            msg += command + " :Cannot join channel (+i)\n";
             break;
         case ERR_BANNEDFROMCHAN:
-            msg += " " + command + " :Cannot join channel (+b)\n";
+            msg += command + " :Cannot join channel (+b)\n";
             break;
         case ERR_BADCHANNELKEY:
-            msg += " " + command + " :Cannot join channel (+k)\n";
+            msg += command + " :Cannot join channel (+k)\n";
             break;
         case ERR_NOPRIVILEGES:
-            msg += " :Permission Denied- You do not have the correct IRC Operator privileges\n";
+            msg += "Permission Denied- You do not have the correct IRC Operator privileges\n";
             break;
         case ERR_CHANOPRIVSNEEDED:
-            msg += " " + command + " :You're not channel operator\n";
+            msg += command + " :You're not channel operator\n";
             break;
         case ERR_CANTKILLSERVER:
-            msg += " :You cant kill a server!\n";
+            msg += "You cant kill a server!\n";
             break;
         case ERR_NOOPERHOST:
-            msg += " :No O-lines for your host\n";
+            msg += "No O-lines for your host\n";
             break;
         case ERR_UMODEUNKNOWNFLAG:
-            msg += " :Unknown MODE flag\n";
+            msg += "Unknown MODE flag\n";
             break;
         case ERR_USERSDONTMATCH:
-            msg += " :Cant change mode for other users\n";
+            msg += "Cant change mode for other users\n";
             break;
         default:
             msg += "UNKNOWN ERROR\n";
@@ -329,106 +361,123 @@ void    Commando::AnswerMessage(const std::string& user_nickname, int eventId, c
     std::stringstream	ss;
 
     ss << eventId;
-    msg += ss.str() + " " + user_nickname;
+    msg += ss.str() + " " + user_nickname + " :";
     switch (eventId)
     {
+        case RPL_PRIVMSG:
+            msg += command;
+            break;
+        case RPL_USERKICKED:
+            msg += command + "\n";
+            break;
+        case RPL_CHANNELKICK:
+            msg += command + " was kicked!\n";
+            break;
+        case RPL_MOTD:
+            msg += "Welcome to Amateur42_IRC Server, " + user_nickname + "!\n";
+            break;
         case RPL_BREAKOPER:
-            msg += " :You are not an IRC operator anymore\n";
+            msg += "You are not an IRC operator anymore\n";
             break;
         case RPL_INVITING:
             msg += command + "\n";
             break;
+        case RPL_SETUSRPARAM:
+            msg += "There was set a user_parameter " + command + "\n";
+            break;
+        case RPL_SETCHANPARAM:
+            msg += "There was set a channel_parameter " + command + "\n";
         //"<channel> <mode> <mode params>"
         // channel user gets oper
         case RPL_CHANNELMODEIS:
             msg += "\n";
             break;
         case RPL_AWAY:
-            msg += " " + command + "\n";
+            msg += command + "\n";
             break;
         case RPL_NOWAWAY:
-            msg += " :You have been marked as being away\n";
+            msg += "You have been marked as being away\n";
             break;
         case RPL_WHOISOPERATOR:
-            msg += " :is an IRC operator\n";
+            msg += "is an IRC operator\n";
             break;
         case RPL_ENDOFWHOWAS:
-            msg += " :End of WHOWAS\n";
+            msg += "End of WHOWAS\n";
             break;
         case RPL_LISTSTART:
             msg += "Channel :Users  Name\n";
             break;
         case RPL_NOTOPIC:
-            msg += " :No topic is set\n";
+            msg += "No topic is set\n";
             break;
         case RPL_SUMMONING:
-            msg += " :Summoning user to IRC\n";
+            msg += "Summoning user to IRC\n";
             break;
 //        case RPL_ENDOFWHO:
 //            msg += " " + command.getArgument(0) + " :End of /WHO list\n";
 //            break;
         case RPL_ENDOFNAMES:
-            msg += " :End of /NAMES list\n";
+            msg += "End of /NAMES list\n";
             break;
         case RPL_ENDOFLINKS:
-            msg += " :End of /LINKS list\n";
+            msg += "End of /LINKS list\n";
             break;
         case RPL_ENDOFBANLIST:
-            msg += " :End of channel ban list\n";
+            msg += "End of channel ban list\n";
             break;
         case RPL_ENDOFINFO:
-            msg += " :End of /INFO list\n";
+            msg += "End of /INFO list\n";
             break;
         case RPL_MOTDSTART:
-            msg += " :- Message of the day - \n";
+            msg += "- Message of the day - \n";
             break;
         case RPL_ENDOFMOTD:
-            msg += " :End of /MOTD command\n";
+            msg += "End of /MOTD command\n";
             break;
         case RPL_YOUREOPER:
-            msg += " :You are now an IRC operator\n";
+            msg += "You are now an IRC operator\n";
             break;
         case RPL_REHASHING:
-            msg += " :Rehashing\n";
+            msg += "Rehashing\n";
             break;
         case RPL_USERSSTART:
-            msg += " :UserID   Terminal  Host\n";
+            msg += "UserID   Terminal  Host\n";
             break;
         case RPL_USERS:
-            msg += " :%-8s %-9s %-8s\n";
+            msg += "%-8s %-9s %-8s\n";
             break;
         case RPL_ENDOFUSERS:
-            msg += " :End of users\n";
+            msg += "End of users\n";
             break;
         case RPL_NOUSERS:
-            msg += " :Nobody logged in\n";
+            msg += "Nobody logged in\n";
             break;
         case RPL_ENDOFSTATS:
-            msg += " :End of /STATS report\n";
+            msg += "End of /STATS report\n";
             break;
         case RPL_STATSUPTIME:
-            msg += " :Server Up %d days %d:%02d:%02d\n";
+            msg += "Server Up %d days %d:%02d:%02d\n";
             break;
         case RPL_UMODEIS:
             msg += "\n";
             break;
         case RPL_LUSEROP:
-            msg += " :operator(s) online\n";
+            msg += "operator(s) online\n";
             break;
         case RPL_LUSERUNKNOWN:
-            msg += " :unknown connection(s)\n";
+            msg += "unknown connection(s)\n";
             break;
         case RPL_LUSERCHANNELS:
-            msg += " :channels formed\n";
+            msg += "channels formed\n";
             break;
         case RPL_LUSERME:
-            msg += " :I have clients and servers\n";
+            msg += "I have clients and servers\n";
             break;
         case RPL_ADMINME:
-            msg += " :Administrative info\n";
+            msg += "Administrative info\n";
             break;
         case NICKNAME_IS_GIVEN:
-            msg += " :nickname is given:\n";
+            msg += "nickname is given:\n";
             break;
         default:
             msg += "UNKNOWN REPLY\n";
@@ -436,7 +485,7 @@ void    Commando::AnswerMessage(const std::string& user_nickname, int eventId, c
     }
 //    logger.logUserMessage(msg, user, OUT);
     send(this->general_serv->getUserStorage()->search_by_nickname(user_nickname)->get_user_id(),
-         msg.c_str(), msg.size(), 0);
+         msg.c_str(), msg.size(), 0); //check the last parameter !!!!!!
 }
 
 Room *Commando::Channel(std::string room_name) {
@@ -469,48 +518,58 @@ bool Commando::isNicknameInServ(std::string nickname) {
 }
 
 void Commando::NoticeCmd(int id, std::string message) {
-    //отправить сообщение
+    //SEND_FROM_HERE: отправить сообщение - PRIVMSG
+    AnswerMessage(this->idToNick(id), RPL_PRIVMSG, message + "\n");
 }
 
 void Commando::PrivmsgToChannel(std::string channel_name, std::string message) {
     if (!isCannelInServ(channel_name)) {
-        //отправить сообщение о некорректном названии комнаты
         WrongReqMessage(channel_name, ERR_NOSUCHCHANNEL, "");
     }
-    //иначе отправить сообщение в комнату
-    //AnswerMessage(); ?
+    //SEND_FROM_HERE: иначе PRIVMSG сообщение в комнату
+    AnswerMessage(channel_name, RPL_PRIVMSG, message + "\n");
 }
 
 void Commando::InviteCmd(int id, std::string channel_name) {
     if (isCannelInServ(channel_name))
         Channel(channel_name)
             ->add_to_invite_list(idToNick(id));
-    //сообщение: некорректное название комнаты
     WrongReqMessage(channel_name, ERR_NOSUCHCHANNEL, "");
 }
 
 void Commando::JoinCmd(int id, std::string channel_name) {
     if (isCannelInServ(channel_name))
     {
+        std::cout   << LogIdentifier::info("FROM: Commando::Join_")
+                    << "Канал " << channel_name << " найден на сервере\n";
         if(Channel(channel_name)
                 ->get_param_value("i")/*i==true*/ &&
                 !Channel(channel_name)
                         ->is_in_invite_list(idToNick(id))/*invite==false*/){
-            //сообщение о том что пользователь не может войти в инвайт-онли комнату
             WrongReqMessage(idToNick(id), ERR_INVITEONLYCHAN, channel_name);
         }
         Channel(channel_name)
                 ->add_user(idToNick(id));
-        //сообщение что пользователь вошёл в комнату
         AnswerMessage(channel_name, RPL_INVITING, idToNick(id));
         //Channel(channel_name) - убрать пользователя из инвайт листа ???
     } else {
-        //сообщение о некорректном названии комнаты
-        WrongReqMessage(channel_name, ERR_NOSUCHCHANNEL, "");
+        std::cout   << LogIdentifier::info("FROM: Commando::Join_")
+                    << "Канал " << channel_name << " не найден на сервере\n";
+        this->general_serv
+            ->getRoomStorage()
+            ->add_room(new Room(this->general_serv
+                                    ->getUserStorage()
+                                    ->search_by_id(id)
+                                    ->get_user_nickname(), channel_name));
+        std::cout   << LogIdentifier::info("FROM: Commando::Join_")
+                    << "Канал " << channel_name << " создан\n";
+        AnswerMessage(idToNick(id), RPL_INVITING, channel_name);
     }
 }
 
 std::string Commando::idToNick(int id) {
+    std::cout   << LogIdentifier::info("FROM: Commando::idToNick_")
+                << "for id: " << id << std::endl;
     return (this->general_serv
             ->getUserStorage()
             ->search_by_id(id)
@@ -518,25 +577,30 @@ std::string Commando::idToNick(int id) {
 }
 
 void Commando::KickCmd(int kicker_id, int kickem_id, std::string channel_name) {
+    std::cout   << LogIdentifier::info("FROM: Commando::KickCmd_")
+                << "kicker: " << idToNick(kicker_id)
+                << " kickem: " << idToNick(kickem_id) << std::endl;
     if (isCannelInServ(channel_name)){
         if (Channel(channel_name)->is_oper(idToNick(kicker_id))){
             Channel(channel_name)->delete_user(idToNick(kickem_id));
-            //сообщение в канал что пользователя кикнули
-            //сообщение пользователю что его кикнули
+            //SEND_FROM_HERE: сообщение в канал что пользователя кикнули
+            AnswerMessage(channel_name, RPL_CHANNELKICK, this->idToNick(kickem_id));
+            //SEND_FROM_HERE: сообщение пользователю что его кикнули
+            AnswerMessage(this->idToNick(kickem_id), RPL_USERKICKED, "you were kicked!");
         } else {
-            //сообщение кикеру, что он не опер
+            //SEND_FROM_HERE: сообщение кикеру, что он не опер
             WrongReqMessage(idToNick(kicker_id), ERR_CHANOPRIVSNEEDED, channel_name);
         }
     }
     else {
-        //сообщение о некорректном названии комнаты
+        //SEND_FROM_HERE: сообщение о некорректном названии комнаты
         WrongReqMessage(channel_name, ERR_NOSUCHCHANNEL, "");
     }
 }
 
 void Commando::QuitCmd(int id, std::string message) {
-    this->general_serv->getRoomStorage()->delete_user_from_rooms(idToNick(id), message);
-    //в методе выше реализовать отправку сообщения о выходе пользователя
+    this->general_serv->getRoomStorage()->delete_user_from_rooms(idToNick(id), message, id);
+    //SEND_FROM_HERE: в методе выше реализовать отправку сообщения о выходе пользователя
     this->general_serv->getNicknameStorage()->delete_nickname(idToNick(id));
     this->general_serv->getUserStorage()->delete_user_from_storage(this->general_serv
                                                                         ->getUserStorage()

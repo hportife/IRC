@@ -18,6 +18,8 @@ User::User(std::string nickname, int id,
 }
 
 User::User(int id) {
+    std::cout   << LogIdentifier::debug("FROM_USERCLASS_")
+                << "create empty + id: " << id << " user\n";
     this->user_id = id;
     this->user_params = initUserParams();
     this->readyness = false;
@@ -28,10 +30,16 @@ User::User(int id) {
 }
 
 void User::setClientname(std::string clientname) {
+    std::cout   << LogIdentifier::debug("FROM_USERCLASS_")
+                << "set clientname: " << clientname << " for id: "
+                << this->user_id <<std::endl;
     this->client_name = clientname;
 }
 
 void User::setRealname(std::string realname) {
+    std::cout   << LogIdentifier::debug("FROM_USERCLASS_")
+                << "set realname: " << realname << " for id: "
+                << this->user_id <<std::endl;
     this->user_realname = realname;
 }
 
@@ -68,6 +76,9 @@ void User::set_nickname(std::string new_nickname) {
 }
 
 void User::setReadyness(){
+    std::cout   << LogIdentifier::debug("FROM_USERCLASS_")
+                << "set readyness for id: "
+                << this->user_id << std::endl;
     this->readyness = true;
 }
 
@@ -91,9 +102,15 @@ void User::setUserParamValue(std::string param, bool value) {
 }
 
 void User::setAwayMsg(std::string away_msg){
+    std::cout   << LogIdentifier::debug("FROM_USERCLASS_")
+                << "set AwayMsg for id: "
+                << this->user_id << std::endl;
     this->away_msg = away_msg;
 }
 void User::setAwayMsg(){
+    std::cout   << LogIdentifier::debug("FROM_USERCLASS_")
+                << "reset AwayMsg for id: "
+                << this->user_id << std::endl;
     this->away_msg.clear();
 }
 bool User::isAwayMsg(){

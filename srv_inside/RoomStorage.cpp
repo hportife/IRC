@@ -1,3 +1,4 @@
+#include <sys/socket.h>
 #include "../includes/LogIdentifier.hpp"
 #include "../includes/RoomStorage.hpp"
 
@@ -18,7 +19,7 @@ int RoomStorage::search_conflicts(Room const *inspected_room) {
 }
 
 int RoomStorage::search_conflicts_with_name(std::string const inspected_room_name){
-    for (int i = 0; i < room_storage.size(); ++i) {
+    for (int i = 0; i < (int)room_storage.size(); ++i) {
         if (room_storage[i]->get_room_name().compare(inspected_room_name) == 0){
             std::cout   << LogIdentifier::error("FROM_ROOMSTORAGE_CLASS_")
                         << "when searching for a conflict, the room "
@@ -89,7 +90,7 @@ int RoomStorage::delete_room_from_storage(Room const *room) {
 void RoomStorage::display_room_storage() const{
     std::cout       << "room number\t| room name"
                     << std::endl;
-    for (int i = 0; i < this->room_storage.size(); ++i) {
+    for (int i = 0; i < (int)this->room_storage.size(); ++i) {
         std::cout   << i
                     << "\t\t| "
                     << this->room_storage[i]->get_room_name()
@@ -98,19 +99,29 @@ void RoomStorage::display_room_storage() const{
 }
 
 Room *RoomStorage::getRoom(std::string room_name) const {
-    for (int i = 0; i < room_storage.size(); ++i) {
+    std::cout   << LogIdentifier::debug("FROM: RS::getRoom_")
+                << "Искомое имя комнаты: " << room_name << std::endl;
+    for (int i = 0; i < (int)room_storage.size(); ++i) {
         if (room_storage[i]->get_room_name().compare(room_name) == 0){
+            std::cout   << LogIdentifier::info("FROM: RS::getRoom_")
+                        << "Комната найдена\n";
             return (room_storage[i]);
         }
     }
+    std::cout   << LogIdentifier::debug("FROM: RS::getRoom_")
+                << "Комната не найдена\n";
     return (NULL);
 }
 
-void RoomStorage::delete_user_from_rooms(std::string nickname, std::string message) {
-    for (int i = 0; i < room_storage.size(); ++i) {
+void RoomStorage::delete_user_from_rooms(std::string nickname, std::string message, int user_id) {
+    std::cout   << LogIdentifier::debug("FROM: RS::getRoom_")
+                << "Удаление пользователя " << nickname
+                << " из всех комнат"<< std::endl;
+    for (int i = 0; i < (int)room_storage.size(); ++i) {
         if (room_storage[i]->isInRoom(nickname)){
             room_storage[i]->delete_user(nickname);
             //сообщение в комнату что юзер вышел
+            send(user_id, message.c_str(), message.size(), 0); //check the last parameter !!!!!!
         }
     }
 }

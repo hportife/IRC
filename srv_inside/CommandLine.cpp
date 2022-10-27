@@ -2,9 +2,9 @@
 #include "../includes/LogIdentifier.hpp"
 #include "../includes/CommandLine.hpp"
 
-CommandLine::CommandLine() {}
+CommandLine::CommandLine() : number_of_params() {}
 
-CommandLine::CommandLine(std::string cmdln, int number_of_params){
+CommandLine::CommandLine(const std::string& cmdln, int number_of_params){
     this->parameters = cmdln;
     this->number_of_params = number_of_params;
     std::cout   << LogIdentifier::info("FROM_COMMNADLINE_CLASS_")
@@ -12,6 +12,7 @@ CommandLine::CommandLine(std::string cmdln, int number_of_params){
                 << getOneParameter(1) << "\'s type"
                 << std::endl;
 }
+
 CommandLine::~CommandLine(){
 
 }
@@ -22,7 +23,7 @@ int CommandLine::getNumberOfParameter() const{
 
 std::string CommandLine::getOneParameter(int position){
     if (position > 0 && position <= this->number_of_params){
-        for (int i = 0; i < this->parameters.size(); ++i) {
+        for (int i = 0; i < (int)this->parameters.size(); ++i) {
             if (this->parameters[i] == '<'){
                 position--;
             }
