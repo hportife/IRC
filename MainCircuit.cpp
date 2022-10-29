@@ -36,8 +36,10 @@ int main(int arc, char **arg){
              iter != IRC_server->getPolls()->end(); ++iter) {
             //std::cout << "fd= " << iter->fd << " events= " << iter->events << " revents= " << iter->revents << std::endl;
             //sleep(1);
-            if ((iter->revents & POLLHUP) || (iter->revents & POLLRDHUP)
-            || (iter->revents & POLLNVAL) || (iter->revents & POLLERR)) {
+            if ((iter->revents & POLLHUP) || (iter->revents & POLLNVAL) || (iter->revents & POLLERR)
+            //)
+               || (iter->revents & POLLRDHUP))
+            {
                 IRC_server->getConnect()->remove(iter);
                 //std::cout << "----------11\n";
                 break;

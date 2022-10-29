@@ -38,8 +38,10 @@ void   Connect::remove_poolhup()
     for (iter = _polls->begin() + 1; iter != _polls->end(); ++iter) {
         //std::cout << "poolhup_fd= " << iter->fd << " events= " << iter->events << " revents= " << iter->revents << std::endl;
         //sleep(1);
-        if ((iter->revents & POLLHUP) || (iter->revents & POLLRDHUP)
-        || (iter->revents & POLLNVAL) || (iter->revents & POLLERR)) {
+        if ((iter->revents & POLLHUP) || (iter->revents & POLLNVAL) || (iter->revents & POLLERR)
+        //)
+        || (iter->revents & POLLRDHUP))
+        {
             //irc->remove(iter);
             this->remove(iter);
             //std::cout << "----------22\n";
@@ -130,7 +132,8 @@ int Connect::add()
 //    }
 
     _polls->push_back((pollfd){client_socket, POLLIN | POLLERR | POLLNVAL | POLLHUP | POLLOUT
-                               | POLLRDHUP | POLLREMOVE, 0});
+                               //, 0});
+                               | POLLRDHUP, 0});
 
 	std::cout << LogIdentifier::info("FROM_CONNECT::ADD_")
 			  << "client_socket ["
