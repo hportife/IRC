@@ -19,7 +19,7 @@ int main(int arc, char **arg){
 //                 "нужно ввести пароль, который будет"
 //                 "использоваться для сервера:\n";
     std::cout << "Сервер запускается...\n";
-    Serv *IRC_server = new Serv(arg[1], port);
+    Serv *IRC_server = new Serv(arg[2], port);
 
     std::vector<pollfd>::iterator iter;
     IRC_server->getConnect()->start();
@@ -34,8 +34,12 @@ int main(int arc, char **arg){
 
         for (iter = IRC_server->getPolls()->begin() + 1;
              iter != IRC_server->getPolls()->end(); ++iter) {
-            if (iter->revents & POLLHUP) {
+            //std::cout << "fd= " << iter->fd << " events= " << iter->events << " revents= " << iter->revents << std::endl;
+            //sleep(1);
+            if ((iter->revents & POLLHUP) || (iter->revents & POLLRDHUP)
+            || (iter->revents & POLLNVAL) || (iter->revents & POLLERR)) {
                 IRC_server->getConnect()->remove(iter);
+                //std::cout << "----------11\n";
                 break;
             }
             if (iter->revents & POLLIN) {

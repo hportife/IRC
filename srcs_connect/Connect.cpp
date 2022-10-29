@@ -28,6 +28,7 @@ void Connect::call_poll()
 		std::cerr << "poll failure" << std::endl;
 		exit(EXIT_FAILURE);
 	}
+
 //	if (_polls[0].at(0).revents & POLLIN)
 //		add();
 }
@@ -35,9 +36,13 @@ void Connect::call_poll()
 void   Connect::remove_poolhup()
 {
     for (iter = _polls->begin() + 1; iter != _polls->end(); ++iter) {
-        if (iter->revents & POLLHUP) {
+        //std::cout << "poolhup_fd= " << iter->fd << " events= " << iter->events << " revents= " << iter->revents << std::endl;
+        //sleep(1);
+        if ((iter->revents & POLLHUP) || (iter->revents & POLLRDHUP)
+        || (iter->revents & POLLNVAL) || (iter->revents & POLLERR)) {
             //irc->remove(iter);
             this->remove(iter);
+            //std::cout << "----------22\n";
             break;
         }
     }
@@ -119,12 +124,13 @@ int Connect::add()
 
     int client_socket = accept(_socket, (struct sockaddr *) &clientaddr, &len);
 
-    if (fcntl(client_socket, F_SETFL, O_NONBLOCK) < 0) {
-        std::cerr << "fcntl nonblock failure" << std::endl;
-        exit(EXIT_FAILURE);
-    }
+//    if (fcntl(client_socket, F_SETFL, O_NONBLOCK) < 0) {
+//        std::cerr << "fcntl nonblock failure" << std::endl;
+//        exit(EXIT_FAILURE);
+//    }
 
-    _polls->push_back((pollfd){client_socket, POLLIN | POLLOUT | POLLHUP, 0});
+    _polls->push_back((pollfd){client_socket, POLLIN | POLLERR | POLLNVAL | POLLHUP | POLLOUT
+                               | POLLRDHUP | POLLREMOVE, 0});
 
 	std::cout << LogIdentifier::info("FROM_CONNECT::ADD_")
 			  << "client_socket ["
