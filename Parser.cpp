@@ -270,80 +270,93 @@ void Parser::build_commandLine_no_args(std::vector<std::string> command, const s
 void Parser::commandHandler() {
     std::string word;
 
-	while (!this->getAllCommandLine().empty()) {
-		word = toUppercase(this->getOneCommandLine().getOneParameter(1));
-		switch (verbToCommand(word)) {
-			case INVITE:
-				if (this->getOneCommandLine().getNumberOfParameter() == 3)
-					this->serv->getCommando()->InviteCmd(id_user, this->getOneCommandLine().getOneParameter(3));
-				else
-					this->serv->getCommando()->InviteCmd(id_user, this->getOneCommandLine().getOneParameter(4));
-				break;
-			case MODE:
-				if (this->getOneCommandLine().getOneParameter(3)[1] == 'l')
-					this->serv->getCommando()->ModeLCmd(this->getOneCommandLine().getOneParameter(2),
-														std::atoi(this->getOneCommandLine().getOneParameter(4).c_str()));
-				else if (this->getOneCommandLine().getOneParameter(3)[1] == 'o')
-					this->serv->getCommando()->ModeOCmd(this->getOneCommandLine().getOneParameter(2), this->serv->getOpers()->front(),
-														this->getOneCommandLine().getOneParameter(4), true); ////rewrite!!!!!
-				break;
-			case AWAY:
-				this->serv->getCommando()->AwayCmd(this->getOneCommandLine().getOneParameter(2), this->getOneCommandLine().getOneParameter(3));
-				break;
-			case PASS:
-				this->serv->setPassword(this->getOneCommandLine().getOneParameter(2)); //?
-				break;
-			case USER:
-				this->serv->getCommando()->UserCmd(id_user, this->getOneCommandLine().getOneParameter(2), this->getOneCommandLine().getOneParameter(3));
-				break;
-			case NICK:
-				if (this->getOneCommandLine().getNumberOfParameter() < 3)
-					this->serv->getCommando()->NickCmd(id_user, this->getOneCommandLine().getOneParameter(2));
-				else
-					this->serv->getCommando()->NickCmd(this->getOneCommandLine().getOneParameter(2), this->getOneCommandLine().getOneParameter(2));
-				break;
-			case PING:
+    if (this->serv->getUserStorage()->search_by_id(id_user)->getReadyness()) {
+        while (!this->getAllCommandLine().empty()) {
+            word = toUppercase(this->getOneCommandLine().getOneParameter(1));
+            switch (verbToCommand(word)) {
+                case INVITE:
+                    if (this->getOneCommandLine().getNumberOfParameter() == 3)
+                        this->serv->getCommando()->InviteCmd(id_user, this->getOneCommandLine().getOneParameter(3));
+                    else
+                        this->serv->getCommando()->InviteCmd(id_user, this->getOneCommandLine().getOneParameter(4));
+                    break;
+                case MODE:
+                    if (this->getOneCommandLine().getOneParameter(3)[1] == 'l')
+                        this->serv->getCommando()->ModeLCmd(this->getOneCommandLine().getOneParameter(2),
+                                                            std::atoi(this->getOneCommandLine().getOneParameter(4).c_str()));
+                    else if (this->getOneCommandLine().getOneParameter(3)[1] == 'o')
+                        this->serv->getCommando()->ModeOCmd(this->getOneCommandLine().getOneParameter(2), this->serv->getOpers()->front(),
+                                                            this->getOneCommandLine().getOneParameter(4), true); ////rewrite!!!!!
+                    break;
+                case AWAY:
+                    this->serv->getCommando()->AwayCmd(this->getOneCommandLine().getOneParameter(2), this->getOneCommandLine().getOneParameter(3));
+                    break;
+                case NICK:
+                    if (this->getOneCommandLine().getNumberOfParameter() == 3)
+                        this->serv->getCommando()->NickCmd(this->getOneCommandLine().getOneParameter(2), this->getOneCommandLine().getOneParameter(2));
+                    break;
+                case PING:
 //                    handlePing(command);
-				break;
-			case PONG:
+                    break;
+                case PONG:
 //                    handlePong(command);
-				break;
-			case QUIT:
-				this->serv->getCommando()->QuitCmd(id_user, this->getOneCommandLine().getOneParameter(2));
-				break;
-			case PRIVMSG:
-				this->serv->getCommando()->PrivmsgToChannel(this->getOneCommandLine().getOneParameter(2), this->getOneCommandLine().getOneParameter(3));
-				break;
-			case NOTICE:
-				this->serv->getCommando()->NoticeCmd(id_user, this->getOneCommandLine().getOneParameter(3));
-				break;
-			case JOIN:
-				this->serv->getCommando()->JoinCmd(id_user, this->getOneCommandLine().getOneParameter(2));
-				break;
-			case OPER:
-				this->serv->getCommando()->OperCmd(this->getOneCommandLine().getOneParameter(2), this->getOneCommandLine().getOneParameter(3));
-				break;
-			case KILL:
+                    break;
+                case QUIT:
+                    this->serv->getCommando()->QuitCmd(id_user, this->getOneCommandLine().getOneParameter(2));
+                    break;
+                case PRIVMSG:
+                    this->serv->getCommando()->PrivmsgToChannel(this->getOneCommandLine().getOneParameter(2), this->getOneCommandLine().getOneParameter(3));
+                    break;
+                case NOTICE:
+                    this->serv->getCommando()->NoticeCmd(id_user, this->getOneCommandLine().getOneParameter(3));
+                    break;
+                case JOIN:
+                    this->serv->getCommando()->JoinCmd(id_user, this->getOneCommandLine().getOneParameter(2));
+                    break;
+                case OPER:
+                    this->serv->getCommando()->OperCmd(this->getOneCommandLine().getOneParameter(2), this->getOneCommandLine().getOneParameter(3));
+                    break;
+                case KILL:
 //                    handleKill(command);
-				break;
-			case KICK:
-				this->serv->getCommando()->KickCmd(id_user, id_user
-						/* ???this->getOneCommandLine().getOneParameter(3) ???*/, this->getOneCommandLine().getOneParameter(2));
-				break;
-			case LIST:
+                    break;
+                case KICK:
+                    this->serv->getCommando()->KickCmd(id_user, id_user
+                            /* ???this->getOneCommandLine().getOneParameter(3) ???*/, this->getOneCommandLine().getOneParameter(2));
+                    break;
+                case LIST:
 //                    logStream << "LIST method is not implemented" << std::endl;
 //                    logger.logMessage(logStream, DEV);
-				break;
-			case PART:
+                    break;
+                case PART:
 //                    handlePart(command);
-				break;
-			case WHO:
+                    break;
+                case WHO:
 //                    handleWho(command);
-				break;
-			default:
-				break;
-		}
-		this->popOneCommandLine();
+                    break;
+                default:
+                    break;
+            }
+            this->popOneCommandLine();
+        }
+    } else {
+        while (!this->getAllCommandLine().empty()) {
+            word = toUppercase(this->getOneCommandLine().getOneParameter(1));
+            switch (verbToCommand(word)) {
+                case PASS:
+                    this->serv->setPassword(this->getOneCommandLine().getOneParameter(2)); //?
+                    break;
+                case USER:
+                    this->serv->getCommando()->UserCmd(id_user, this->getOneCommandLine().getOneParameter(2),
+                                                       this->getOneCommandLine().getOneParameter(3));
+                    break;
+                case NICK:
+                    this->serv->getCommando()->NickCmd(id_user, this->getOneCommandLine().getOneParameter(2));
+                    break;
+                default:
+                    break;
+            }
+            this->popOneCommandLine();
+        }
     }
 }
 

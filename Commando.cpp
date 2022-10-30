@@ -110,9 +110,9 @@ int Commando::UserCmd(int id, std::string clientname,
         std::cout << LogIdentifier::info("COMMANDO_CLASS_")
                   << "send MOTD from UserCmd" << std::endl;
         //SEND_FROM_HERE: MOTD
-        AnswerMessage(clientname, RPL_MOTDSTART, "");
-        AnswerMessage(clientname, RPL_MOTD, "");
-        AnswerMessage(clientname, RPL_ENDOFMOTD, "");
+        AnswerMessage(this->idToNick(id), RPL_MOTDSTART, "");
+        AnswerMessage(this->idToNick(id), RPL_MOTD, "");
+        AnswerMessage(this->idToNick(id), RPL_ENDOFMOTD, "");
     }
     return (NEW_USER_CREATE);
 }
