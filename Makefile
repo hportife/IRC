@@ -9,7 +9,9 @@ SOURCE			= srcs_connect/Connect.cpp \
                   Commando.cpp MainCircuit.cpp Parser.cpp Serv.cpp
 HEADERS			= includes/*.hpp
 
-OBJECT			=	$(SOURCE:.cpp=.o)
+OBJECTDIR		=	objects/
+
+OBJECT			=	$(addprefix $(OBJECTDIR), $(SOURCE:.cpp=.o))
 
 CXX				= 	c++
 
@@ -25,11 +27,17 @@ RED 			= 	\033[38;5;160m
 
 all: $(NAME)
 
-%.o: %.cpp $(HEADERS)
+$(OBJECTDIR):
+	mkdir objects
+	mkdir objects/srcs_connect
+	mkdir objects/srv_inside
+	mkdir objects/tools
+
+$(OBJECTDIR)%.o: %.cpp $(HEADERS)
 	@echo "$(GREY)Compiling...				$(WHITE)$<"
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(NAME): $(OBJECT)
+$(NAME): $(OBJECTDIR) $(OBJECT)
 	@echo "$(GREEN)----------------------------------------------------"
 	@$(CXX) $(CXXFLAGS) $(OBJECT) -o $(NAME)
 	@echo "Executable				./$(NAME) $(RESET)"
@@ -37,6 +45,7 @@ $(NAME): $(OBJECT)
 clean:
 	@echo "$(RED)----------------------------------------------------"
 	@/bin/rm -f $(OBJECT)
+	@/bin/rm -rf $(OBJECTDIR)
 	@echo "$(WHITE)REMOVED O-FILES $(RESET)"
 
 fclean: clean
