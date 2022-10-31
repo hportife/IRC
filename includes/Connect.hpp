@@ -43,6 +43,7 @@ public:
 	int		send_msg(int, const std::string&); // отправляет сообщения по fd
 	void	call_poll();
     void    remove_poolhup();// удаляет отвалившихся клиентов
+    void    closefd(int id); // закрытие соединения и удаления fd из пула
 
 
 protected:

@@ -29,22 +29,16 @@ void Connect::call_poll()
 		exit(EXIT_FAILURE);
 	}
 
-//	if (_polls[0].at(0).revents & POLLIN)
-//		add();
 }
 
 void   Connect::remove_poolhup()
 {
     for (iter = _polls->begin() + 1; iter != _polls->end(); ++iter) {
-        //std::cout << "poolhup_fd= " << iter->fd << " events= " << iter->events << " revents= " << iter->revents << std::endl;
-        //sleep(1);
         if ((iter->revents & POLLHUP) || (iter->revents & POLLNVAL) || (iter->revents & POLLERR)
         //)
         || (iter->revents & POLLRDHUP))
         {
-            //irc->remove(iter);
             this->remove(iter);
-            //std::cout << "----------22\n";
             break;
         }
     }
@@ -54,29 +48,7 @@ void   Connect::remove_poolhup()
 void Connect::start()
 {
 	init();
-
     _polls->push_back((pollfd){_socket, POLLIN, 0});
-//    std::vector<pollfd>::iterator iter;
-//    for (;;)
-//    {
-//        for (iter = _polls->begin() + 1; iter != _polls->end(); ++iter) {
-//            if (iter->revents & POLLHUP) {
-//                remove(iter);
-//                break;
-//            }
-////            if (iter->revents & POLLOUT)
-////                send_msg(iter->fd);
-//
-//            if (iter->revents & POLLIN)
-//                receive(iter->fd);
-//
-////            if (!processed(iter->fd)) {
-////                remove(iter);
-////                break;
-////            }
-//        }
-//    }
-
 }
 
 
@@ -126,11 +98,6 @@ int Connect::add()
 
     int client_socket = accept(_socket, (struct sockaddr *) &clientaddr, &len);
 
-//    if (fcntl(client_socket, F_SETFL, O_NONBLOCK) < 0) {
-//        std::cerr << "fcntl nonblock failure" << std::endl;
-//        exit(EXIT_FAILURE);
-//    }
-
     _polls->push_back((pollfd){client_socket, POLLIN | POLLERR | POLLNVAL | POLLHUP | POLLOUT
                                //, 0});
                                | POLLRDHUP, 0});
@@ -156,6 +123,21 @@ void Connect::remove(std::vector<pollfd>::iterator iter)
 	_polls->erase(iter);
 }
 
+void Connect::closefd(int id)
+{
+    for (iter = _polls->begin() + 1; iter != _polls->end(); ++iter) {
+        if (iter->fd == id)
+        {
+            close(iter->fd);
+            //std::cout << "--1--\n";
+            iter->revents = POLLHUP;
+            //_polls->erase(iter);
+            //std::cout << "--2--\n";
+            break;
+        }
+    }
+}
+
 const std::string Connect::receive(int client_socket)
 {
     char msg[buffSize];
@@ -165,35 +147,13 @@ const std::string Connect::receive(int client_socket)
         std::cerr << "recv() failure" << std::endl;
         exit(EXIT_FAILURE);
     }
-    std::cout << "msg = [" << msg << "]" << strlen(msg) << std::endl;
-
-    if (strlen(msg) == 5)
-    {
-        std::cout << "send msg\n";
-        send_msg(client_socket, "сообщение получено");
-    }
-//    if (strlen(msg) == 63)
+//    std::cout << "msg = [" << msg << "]" << strlen(msg) << std::endl;
+//
+//    if (strlen(msg) == 5)
 //    {
 //        std::cout << "send msg\n";
-//        send_msg(client_socket, ":IRCat 375 salyce :- IRCat Message of the day - \r\n"
-//                                ":IRCat 372 salyce :- ⠀⠀⠀⠀ ⣴⠉⡙⠳⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⠤⣚⡯⠴⢬⣱⡀⠀\r\n"
-//                                ":IRCat 372 salyce :- ⠀⠀⠀⠀⢰⡇⣷⡌⢲⣄⡑⢢⡀⠀⠀⠀⠀⠀⢠⠾⢋⠔⣨⣴⣿⣷⡌⠇⡇⠀\r\n"
-//                                ":IRCat 372 salyce :- ⠀⠀⠀⠀⢸⢹⣿⣿⣄⢻⣿⣷⣝⠷⢤⣤⣤⡶⢋⣴⣑⠟⠿⠿⠿⣿⣿⡀⡇⠀\r\n"
-//                                ":IRCat 372 salyce :- ⠀⠀⠀⠀⢸⢸⣿⡄⢁⣸⣿⣋⣥⣶⣶⣶⣶⣶⣶⣿⣿⣶⣟⡁⠚⣿⣿⡇⡇⠀\r\n"
-//                                ":IRCat 372 salyce :- ⢀⣠⡤⠤⠾⡘⠋⢀⣘⠋⠉⠉⠉⠉⢭⣭⣭⣭⣍⠉⢩⣭⠉⠉⠂⠙⠛⠃⣇⡀\r\n"
-//                                ":IRCat 372 salyce :- ⠏⠀⠀⢿⣿⣷⡀⠀⢿⡄⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⣆⠀⢿⣇⠀⠀⠀⠀⠀⠀⠈⢱\r\n"
-//                                ":IRCat 372 salyce :- ⣦⠀⠀⠈⢿⣿⣧⠀⠘⣿⠀⠀⠀⡀⠀⠀⠘⣿⣿⣿⣿⡆⠀⢻⡆⠀⠀⠀⠀⠀⠀⢸\r\n"
-//                                ":IRCat 372 salyce :- ⢻⡄⠀⠀⠘⠛⠉⠂⠀⠙⠁⠀⣼⣧⠀⠀⠀⠈⠀⠀⠈⠙⠀⠘⠓⠀⠀⠀⠀⠀⢀⡟\r\n"
-//                                ":IRCat 372 salyce :- ⠀⢳⡀⠀⠀⠀⠀⠀⠀⠀⠀⠸⠿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⣏⠀\r\n"
-//                                ":IRCat 372 salyce :- ⠀⠀⠛⢶⢰⣶⢢⣤⣤⣄⠲⣶⠖⠀⣙⣀⠀⠀⠀⠤⢤⣀⣀⡀⣀⣠⣾⠟⡌⠀\r\n"
-//                                ":IRCat 372 salyce :- ⠀⠀⠀⠘⢄⠃⣿⣿⣿⣿⠗⠀⠾⢿⣿⣿⣿⣿⣿⣿⣶⣶⣶⣶⠸⠟⣡⣤⡳⢦\r\n"
-//                                ":IRCat 372 salyce :- ⠀⠀⠀⠀⠀⢻⡆⣙⡿⢷⣾⣿⣶⣾⣿⣿⣿⣿⣿⣿⣿⡿⠟⢡⣴⣾⣿⣿⣿⣦\r\n"
-//                                ":IRCat 372 salyce :- ⠀⠀⠀⠀⠀⡼⢁⡟⣫⣶⣍⡙⠛⠛⠛⠛⠛⣽⡖⣉⣠⣶⣶⣌⠛⢿⣿⣿⣿⣿\r\n"
-//                                ":IRCat 372 salyce :- ⠀⠀⠀⢀⠔⢡⢎⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠹⣿⣿⣿\r\n"
-//                                ":IRCat 372 salyce :- ⠀⢠⠖⢁⣴⡿⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⢹⣿⣿\r\n"
-//                                ":IRCat 376 salyce :End of /MOTD command");
+//        send_msg(client_socket, "сообщение получено");
 //    }
-
 	return (msg);
 }
 

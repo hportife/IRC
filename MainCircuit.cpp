@@ -15,9 +15,6 @@ int main(int arc, char **arg){
         exit(EXIT_FAILURE);
     }
     unsigned short port = atoi(arg[1]);
-//    std::cout << "Привет! Чтобы запустить сервер, "
-//                 "нужно ввести пароль, который будет"
-//                 "использоваться для сервера:\n";
     std::cout << "Сервер запускается...\n";
     Serv *IRC_server = new Serv(arg[2], port);
 
@@ -33,56 +30,27 @@ int main(int arc, char **arg){
         IRC_server->getConnect()->remove_poolhup();
 
         for (iter = IRC_server->getPolls()->begin() + 1;
-             iter != IRC_server->getPolls()->end(); ++iter) {
-            //std::cout << "fd= " << iter->fd << " events= " << iter->events << " revents= " << iter->revents << std::endl;
-            //sleep(1);
+            iter != IRC_server->getPolls()->end(); ++iter) {
+            //std::cout << " fd=" << iter->fd << " ev= " << iter->events << " rev= " << iter->revents << std::endl;
             if ((iter->revents & POLLHUP) || (iter->revents & POLLNVAL) || (iter->revents & POLLERR)
             //)
                || (iter->revents & POLLRDHUP))
             {
                 IRC_server->getConnect()->remove(iter);
-                //std::cout << "----------11\n";
                 break;
             }
             if (iter->revents & POLLIN) {
-                //std::cout << IRC_server->getConnect()->receive(iter->fd) << std::endl;
                 std::string msg = IRC_server->getConnect()->receive(iter->fd); //данный метод получает сообщение от получателя
-
                 Parser parser(msg, iter->fd, IRC_server);
-
-
                 if (parser.start_parser() != ERR_UNKNOWNCOMMAND)
                     parser.commandHandler();
-
-
 
                 /// этим блоком проверяешь правильно ли распарсил, сожержимое
                 /// таски-командлайна, если возникнут сомнения,
                 /// но тогда сверху в условии закоментируй parser.commandHandler();,
                 /// а так логи парса сделаны
 
-//				parser.start_parser();
-//
-//                std::cout << "queue size = " << (int)parser.getAllCommandLine().size() << std::endl;
-//                while (!parser.getAllCommandLine().empty()) {
-//                    std::cout << parser.getOneCommandLine().getParameters() << std::endl;
-//                    std::cout << parser.getOneCommandLine().getNumberOfParameter() << std::endl;
-//                    std::cout << parser.getOneCommandLine().getOneParameter(1) << std::endl;
-//                    std::cout << parser.getOneCommandLine().getOneParameter(2) << std::endl;
-//                    std::cout << parser.getOneCommandLine().getOneParameter(3) << std::endl;
-//                    std::cout << parser.getOneCommandLine().getOneParameter(4) << std::endl;
-//                    std::cout << parser.getOneCommandLine().getOneParameter(5) << std::endl;
-//                    std::cout << parser.getOneCommandLine().getOneParameter(6) << std::endl;
-//                    parser.popOneCommandLine();
-//                }
-
-
             }
-
-//            if (!processed(iter->fd)) {
-//                remove(iter);
-//                break;
-//            }
         }
     }
 }

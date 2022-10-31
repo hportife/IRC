@@ -607,4 +607,5 @@ void Commando::QuitCmd(int id, std::string message) {
                                                                         ->search_by_id(id));
     //УДАЛИТЬ ПОЛЬЗОВАТЕЛЯ ИЗ ПУЛА ФДШНИКОВ
     //ЗАКРЫТЬ СОЕДИНЕНИЕ
+    this->general_serv->getConnect()->closefd(id);
 }
